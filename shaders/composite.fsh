@@ -116,7 +116,8 @@ void main() {
 	
 	vec3 fogColor = skyColor + skyCol;
 
-	fogColor *= smoothstep(54.0, 58.0, eyeAltitude);
+	if(isEyeInWater == 0)
+		fogColor *= smoothstep(54.0, 58.0, eyeAltitude);
 
 	if(clouds.r > 0.0001) {
 		clouds.rgb = mix(col*0.8, clouds.rgb, 0.75) + 0.1;
