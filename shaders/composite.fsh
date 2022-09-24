@@ -46,6 +46,7 @@ uniform float rainStrength;
 uniform int worldTime;
 uniform int isEyeInWater;
 uniform float playerMood;
+uniform float eyeAltitude;
 
 vec3 getSkyColor(vec3 fposition) {
 	const vec3 moonlightS = vec3(0.00575, 0.0105, 0.014);
@@ -114,6 +115,9 @@ void main() {
 	sunmoon *= (1.0-rainStrength);
 	
 	vec3 fogColor = skyColor + skyCol;
+
+	fogColor *= smoothstep(54.0, 58.0, eyeAltitude);
+
 	if(clouds.r > 0.0001) {
 		clouds.rgb = mix(col*0.8, clouds.rgb, 0.75) + 0.1;
 		float cloudsDepth = depth * 1000 - 999.2;
