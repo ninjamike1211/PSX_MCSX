@@ -126,7 +126,7 @@ void main() {
 		skyCol = getSkyColor(fragpos.xyz);
 	}
 	
-	vec4 sunmoon = texture2D(gaux2, texcoord);
+	vec4 sunmoon = texture2D(gaux2, texcoord) * fog_sunmoon;
 	vec4 clouds = texture2D(gaux3, texcoord);
 	
 	sunmoon *= (1.0-rainStrength);
