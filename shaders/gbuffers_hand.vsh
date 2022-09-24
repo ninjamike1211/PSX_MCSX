@@ -14,6 +14,7 @@ varying vec4 lightLevels;
 
 attribute vec4 mc_Entity;
 uniform vec2 texelSize;
+uniform float aspectRatio;
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
@@ -27,6 +28,9 @@ void main() {
 	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
 	
 	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
+
+	position4.x -= sign(position4.x) * 0.3 * (aspectRatio - 1.7) / (1.0 - 1.7);
+
 	vec3 position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
 
 	color = gl_Color;
