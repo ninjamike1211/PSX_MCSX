@@ -29,7 +29,9 @@ void main() {
 	
 	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
 
-	position4.x -= sign(position4.x) * 0.3 * (aspectRatio - 1.7) / (1.0 - 1.7);
+	#ifdef aspectRatio_fix
+		position4.x -= sign(position4.x) * 0.13 * clamp((aspectRatio - 1.7) / (1.0 - 1.7), 0.0, 1.0) * position4.w;
+	#endif
 
 	vec3 position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
 
