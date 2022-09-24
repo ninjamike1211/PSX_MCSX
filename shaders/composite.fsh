@@ -48,6 +48,10 @@ uniform int isEyeInWater;
 uniform float playerMood;
 uniform float eyeAltitude;
 
+float linearizeDepthFast(float depth) {
+	return (near * far) / (depth * (near - far) + far);
+}
+
 vec3 getSkyColor(vec3 fposition) {
 	const vec3 moonlightS = vec3(0.00575, 0.0105, 0.014);
 	vec3 sVector = normalize(fposition);
@@ -88,16 +92,27 @@ vec3 getSkyColor(vec3 fposition) {
 void main() {
 	float depth = texture2D(depthtex0, texcoord).r;
 	float depth1 = texture2D(depthtex1, texcoord).r;
+
+	float linearDepth = linearizeDepthFast(depth);
 	
 	bool sky = depth >= 1.0;
 	bool skyNoClouds = depth1 >= 1.0;
 	
 	#ifdef fog_enabled
-	float fogDepth = depth * fog_distance - (fog_distance-1);
-	fogDepth = clamp(fogDepth, 0.0, 1.0);
+		float fogDepth;
+
+		if(isEyeInWater == 0)
+			// fogDepth = depth * fog_distance - (fog_distance-1);
+			fogDepth = (linearDepth - fog_distance) / fog_slope;
+		else if(isEyeInWater == 1)
+			fogDepth = depth * fog_distance_water - (fog_distance_water-1);
+		else
+			fogDepth = depth * fog_distance_lava - (fog_distance_lava-1);
+
+		fogDepth = clamp(fogDepth, 0.0, 1.0);
 	#else
-	float fogDepth = (sky) ? 1.0 : 0.0;
-	#endif
+		float fogDepth = (sky) ? 1.0 : 0.0;
+		#endif
 	vec3 col = texture2D(colortex0, texcoord).rgb;
 	
 	vec4 fragpos = gbufferProjectionInverse * (vec4(texcoord, depth1, 1.0) * 2.0 - 1.0);
