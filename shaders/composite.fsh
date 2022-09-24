@@ -94,6 +94,7 @@ void main() {
 	float depth1 = texture2D(depthtex1, texcoord).r;
 
 	float linearDepth = linearizeDepthFast(depth);
+	// float linearDepth = depth * (far - near) + near;
 	
 	bool sky = depth >= 1.0;
 	bool skyNoClouds = depth1 >= 1.0;
@@ -101,13 +102,14 @@ void main() {
 	#ifdef fog_enabled
 		float fogDepth;
 
+		// fogDepth = depth * fog_distance - (fog_distance-1);
+
 		if(isEyeInWater == 0)
-			// fogDepth = depth * fog_distance - (fog_distance-1);
 			fogDepth = (linearDepth - fog_distance) / fog_slope;
 		else if(isEyeInWater == 1)
-			fogDepth = depth * fog_distance_water - (fog_distance_water-1);
+			fogDepth = (linearDepth - fog_distance_water) / fog_slope_water;
 		else
-			fogDepth = depth * fog_distance_lava - (fog_distance_lava-1);
+			fogDepth = (linearDepth - fog_distance_lava) / fog_slope_lava;
 
 		fogDepth = clamp(fogDepth, 0.0, 1.0);
 	#else
