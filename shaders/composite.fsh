@@ -29,6 +29,7 @@ varying float moonVisibility;
 varying vec3 avgAmbient2;
 
 uniform vec3 skyColor;
+uniform vec3 fogColor;
 uniform mat4 gbufferProjectionInverse;
 uniform sampler2D colortex0;
 uniform sampler2D depthtex0;
@@ -131,19 +132,23 @@ void main() {
 	
 	sunmoon *= (1.0-rainStrength);
 	
-	vec3 fogColor = skyColor + skyCol;
+	vec3 fogColorFinal;
 
 	if(isEyeInWater == 0)
-		fogColor *= smoothstep(54.0, 58.0, eyeAltitude);
+		fogColorFinal = (skyColor + skyCol) * (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
+	else if(isEyeInWater == 1)
+		fogColorFinal = (fogColor + length(skyCol));
+	else
+		fogColorFinal = vec3(2.0, 0.4, 0.1);
 
 	if(clouds.r > 0.0001) {
 		clouds.rgb = mix(col*0.8, clouds.rgb, 0.75) + 0.1;
 		float cloudsDepth = depth * 1000 - 999.2;
 		cloudsDepth = clamp(cloudsDepth, 0.0, 1.0);
-		col = mix(clouds.rgb, fogColor, cloudsDepth);
+		col = mix(clouds.rgb, fogColorFinal, cloudsDepth);
 		col += sunmoon.rgb/2 * vec3(skyNoClouds?1.0:0.0);
 	} else {
-		col = mix(col, fogColor, fogDepth);
+		col = mix(col, fogColorFinal, fogDepth);
 		col += sunmoon.rgb * vec3(sky?1.0:0.0);
 	}
 	
