@@ -21,6 +21,9 @@ uniform mat4 gbufferModelView;
 uniform sampler2D lightmap;
 uniform float far;
 
+uniform bool inNether;
+uniform bool inEnd;
+
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
 vec4 toClipSpace3(vec3 viewSpacePosition) {
@@ -30,9 +33,12 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 void main() {
 	texcoord = gl_MultiTexCoord0;
 	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
+
+	if(inNether)
+		lmcoord.r = lmcoord.r * 0.5 + 0.5;
 	
 	vec4 ftrans = ftransform();
-	float depth = clamp(ftrans.w, 0.001, 1000);
+	float depth = clamp(ftrans.w, 0.001, 1000.0);
 	float sqrtDepth = sqrt(depth);
 	
 	vec4 position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
