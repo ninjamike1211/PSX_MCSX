@@ -49,6 +49,9 @@ uniform int isEyeInWater;
 uniform float playerMood;
 uniform float eyeAltitude;
 
+uniform bool inEnd;
+uniform bool inNether;
+
 float linearizeDepthFast(float depth) {
 	return (near * far) / (depth * (near - far) + far);
 }
@@ -104,9 +107,18 @@ void main() {
 		float fogDepth;
 
 		// fogDepth = depth * fog_distance - (fog_distance-1);
+		
+		if(isEyeInWater == 0) {
+			if(inNether) {
+				fogDepth = (linearDepth - fog_distance_nether) / fog_slope_nether;
+			}
+			else if(inEnd) {
 
-		if(isEyeInWater == 0)
-			fogDepth = (linearDepth - fog_distance) / fog_slope;
+			}
+			else {
+				fogDepth = (linearDepth - fog_distance) / fog_slope;
+			}
+		}
 		else if(isEyeInWater == 1)
 			fogDepth = (linearDepth - fog_distance_water) / fog_slope_water;
 		else
@@ -134,12 +146,35 @@ void main() {
 	
 	vec3 fogColorFinal;
 
-	if(isEyeInWater == 0)
-		fogColorFinal = (skyColor + skyCol) * (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
-	else if(isEyeInWater == 1)
-		fogColorFinal = (fogColor + length(skyCol));
-	else
-		fogColorFinal = vec3(2.0, 0.4, 0.1);
+	if(inNether) {
+		if(isEyeInWater == 0)
+			fogColorFinal = normalize(fogColor) * 0.3 + 0.1;
+		else if(isEyeInWater == 1)
+			fogColorFinal = (fogColor + length(skyCol));
+		else
+			fogColorFinal = vec3(2.0, 0.4, 0.1);
+	}
+	else if(inEnd) {
+		if(isEyeInWater == 0)
+			fogColorFinal = (fogColor + skyCol);
+		else if(isEyeInWater == 1)
+			fogColorFinal = (fogColor + length(skyCol));
+		else
+			fogColorFinal = vec3(2.0, 0.4, 0.1);
+	}
+	else {
+		if(isEyeInWater == 0) {
+			fogColorFinal = (skyColor + skyCol);
+
+			#ifdef fog_yLevelDarken
+				fogColorFinal *= (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
+			#endif
+		}
+		else if(isEyeInWater == 1)
+			fogColorFinal = (fogColor + length(skyCol));
+		else
+			fogColorFinal = vec3(2.0, 0.4, 0.1);
+	}
 
 	if(clouds.r > 0.0001) {
 		clouds.rgb = mix(col*0.8, clouds.rgb, 0.75) + 0.1;
