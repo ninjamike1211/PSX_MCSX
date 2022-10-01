@@ -8,7 +8,7 @@
 varying vec2 texcoord;
 
 uniform sampler2D colortex0;
-uniform sampler2D gaux4;
+uniform sampler2D colortex8;
 uniform vec2 texelSize;
 uniform float viewWidth;
 uniform float viewHeight;
@@ -37,4 +37,6 @@ void main() {
 	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
 	
 	gl_FragColor.rgb = col;
+
+	// gl_FragColor = texture2D(colortex8, texcoord);
 }

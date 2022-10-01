@@ -6,7 +6,11 @@
 #define gbuffers_terrain
 #include "/shaders.settings"
 
+varying vec4 texcoord;
+varying vec4 texcoordAffine;
+varying vec4 lmcoord;
 varying vec4 color;
+varying vec4 normalMat;
 
 attribute vec4 mc_Entity;
 uniform vec2 texelSize;
@@ -18,11 +22,17 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 }
 
 void main() {
+	texcoord = gl_MultiTexCoord0;
+	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
 	
 	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
-	// vec3 position = PixelSnap(position4, vertex_inaccuracy_terrain).xyz;
+	vec3 position = PixelSnap(position4, vertex_inaccuracy_terrain).xyz;
+	
+	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
+	wVal = clamp(wVal, -10000.0, 0.0);
+	texcoordAffine = vec4(texcoord.xy * wVal, wVal, 0);
 
 	color = gl_Color;
 	
-	gl_Position = toClipSpace3(position4.xyz);
+	gl_Position = toClipSpace3(position);
 }
