@@ -19,10 +19,11 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 
 void main() {
 	
-	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
-	// vec3 position = PixelSnap(position4, vertex_inaccuracy_terrain).xyz;
+	// vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
+	gl_Position = ftransform();
+	// vec3 position = PixelSnap(gl_Position, vertex_inaccuracy_terrain).xyz;
 
 	color = gl_Color;
 	
-	gl_Position = toClipSpace3(position4.xyz);
+	// gl_Position = toClipSpace3(position);
 }
