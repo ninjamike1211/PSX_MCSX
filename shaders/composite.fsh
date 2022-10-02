@@ -187,7 +187,7 @@ void main() {
 		col += sunmoon.rgb/2 * vec3(skyNoClouds?1.0:0.0);
 	} else {
 		col = mix(col, fogColorFinal, fogDepth);
-		col += sunmoon.rgb * vec3(sky?1.0:0.0);
+		// col += sunmoon.rgb * vec3(sky?1.0:0.0);
 	}
 	
 	vec4 rain = texture2D(gaux4, texcoord);
