@@ -177,8 +177,6 @@ void main() {
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
 	}
 
-	fogColorFinal = vec3(0.5);
-
 	if(clouds.r > 0.0001) {
 		clouds.rgb = mix(col*0.8, clouds.rgb, 0.75) + 0.1;
 		float cloudsDepth = depth * 1000 - 999.2;
@@ -187,7 +185,8 @@ void main() {
 		col += sunmoon.rgb/2 * vec3(skyNoClouds?1.0:0.0);
 	} else {
 		col = mix(col, fogColorFinal, fogDepth);
-		// col += sunmoon.rgb * vec3(sky?1.0:0.0);
+		if(!inEnd)
+			col += sunmoon.rgb * vec3(sky?1.0:0.0);
 	}
 	
 	vec4 rain = texture2D(gaux4, texcoord);
