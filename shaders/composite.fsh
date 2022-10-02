@@ -32,6 +32,7 @@ uniform vec3 skyColor;
 uniform vec3 fogColor;
 uniform mat4 gbufferProjectionInverse;
 uniform sampler2D colortex0;
+uniform sampler2D colortex5;
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
 uniform sampler2D depthtex2;
@@ -113,7 +114,7 @@ void main() {
 				fogDepth = (linearDepth - fog_distance_nether) / fog_slope_nether;
 			}
 			else if(inEnd) {
-
+				fogDepth = (linearDepth - fog_distance_end) / fog_slope_end;
 			}
 			else {
 				fogDepth = (linearDepth - fog_distance) / fog_slope;
@@ -161,6 +162,8 @@ void main() {
 			fogColorFinal = (fogColor + length(skyCol));
 		else
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
+		
+		fogColorFinal = texture2D(colortex5, texcoord).xyz;
 	}
 	else {
 		if(isEyeInWater == 0) {
