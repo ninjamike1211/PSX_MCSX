@@ -21,9 +21,15 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 
 void main() {
 	
-	// vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
-	gl_Position = ftransform();
-	// vec3 position = PixelSnap(gl_Position, vertex_inaccuracy_terrain).xyz;
+	vec4 ftrans = ftransform();
+	float depth = clamp(ftrans.w, 0.001, 1000.0);
+	float sqrtDepth = sqrt(depth);
+	
+	vec4 position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
+
+	// position4.z -= 0.01 * position4.w;
+
+	gl_Position = position4;
 
 	color = gl_Color;
 
@@ -31,5 +37,5 @@ void main() {
 		color.xyz = mix(vec3(outline_darkColor), vec3(outline_lightColor), sin(frameTimeCounter * outline_speed) * 0.5 + 0.5);
 	}
 	
-	// gl_Position = toClipSpace3(position);
+	// gl_Position = toClipSpace3(gl_Position);
 }
