@@ -24,6 +24,10 @@
 	#define aspectRatio_fix
 #endif
 
+#ifdef gbuffers_skytextured
+	#define endsky_speed 8.0				// Speed of end heartbeat animation [0.0 0.5 1.0 1.5 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0]
+#endif
+
 #ifdef composite
 	#define resolution_scale 0.25			//Changes screen resolution multiplier [0.1 0.1111 0.125 0.1428 0.1667 0.2 0.25 0.3334 0.5 1.0]
 	#define dither_amount 0.005				//Adjusts screen-space dithering amount [0.0 0.001 0.002 0.003 0.004 0.005 0.006 0.007 0.008 0.009 0.01]
