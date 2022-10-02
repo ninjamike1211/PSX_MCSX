@@ -125,7 +125,8 @@ void main() {
 		else
 			fogDepth = (linearDepth - fog_distance_lava) / fog_slope_lava;
 
-		fogDepth = clamp(fogDepth, 0.0, 1.0);
+		fogDepth = clamp(log2(fogDepth + 1.0), 0.0, 1.0);
+		// fogDepth = clamp(fogDepth, 0.0, 1.0);
 	#else
 		float fogDepth = (sky) ? 1.0 : 0.0;
 		#endif
