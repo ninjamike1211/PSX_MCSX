@@ -157,13 +157,11 @@ void main() {
 	}
 	else if(inEnd) {
 		if(isEyeInWater == 0)
-			fogColorFinal = (fogColor + skyCol);
+			fogColorFinal = texture2D(colortex5, texcoord).xyz;
 		else if(isEyeInWater == 1)
 			fogColorFinal = (fogColor + length(skyCol));
 		else
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
-		
-		fogColorFinal = texture2D(colortex5, texcoord).xyz;
 	}
 	else {
 		if(isEyeInWater == 0) {
@@ -178,6 +176,8 @@ void main() {
 		else
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
 	}
+
+	fogColorFinal = vec3(0.5);
 
 	if(clouds.r > 0.0001) {
 		clouds.rgb = mix(col*0.8, clouds.rgb, 0.75) + 0.1;

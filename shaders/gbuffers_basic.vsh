@@ -25,11 +25,11 @@ void main() {
 	float depth = clamp(ftrans.w, 0.001, 1000.0);
 	float sqrtDepth = sqrt(depth);
 	
-	vec4 position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
+	// vec4 position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
 
 	// position4.z -= 0.01 * position4.w;
 
-	gl_Position = position4;
+	gl_Position = ftrans;
 
 	color = gl_Color;
 
