@@ -10,6 +10,8 @@ varying vec4 color;
 
 attribute vec4 mc_Entity;
 uniform vec2 texelSize;
+uniform float frameTimeCounter;
+uniform int renderStage;
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
@@ -24,6 +26,10 @@ void main() {
 	// vec3 position = PixelSnap(gl_Position, vertex_inaccuracy_terrain).xyz;
 
 	color = gl_Color;
+
+	if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+		color.xyz = mix(vec3(outline_darkColor), vec3(outline_lightColor), sin(frameTimeCounter * outline_speed) * 0.5 + 0.5);
+	}
 	
 	// gl_Position = toClipSpace3(position);
 }
