@@ -38,8 +38,8 @@ void main() {
 	vec4 linePosStart = gl_ProjectionMatrix * (VIEW_SCALE * (gl_ModelViewMatrix * gl_Vertex));
 	vec4 linePosEnd   = gl_ProjectionMatrix * (VIEW_SCALE * (gl_ModelViewMatrix * vec4(gl_Vertex.xyz + gl_Normal, 1.0)));
 
-	linePosStart = PixelSnap(linePosStart, vertex_inaccuracy_terrain);
-	linePosEnd = PixelSnap(linePosEnd, vertex_inaccuracy_terrain);
+	linePosStart = PixelSnap(linePosStart, vertex_inaccuracy_terrain / sqrt(clamp(linePosStart.w, 0.001, 1000.0)));
+	linePosEnd = PixelSnap(linePosEnd, vertex_inaccuracy_terrain / sqrt(clamp(linePosEnd.w, 0.001, 1000.0)));
 
 	vec3 ndc1 = linePosStart.xyz / linePosStart.w;
 	vec3 ndc2 = linePosEnd.xyz   / linePosEnd.w;
