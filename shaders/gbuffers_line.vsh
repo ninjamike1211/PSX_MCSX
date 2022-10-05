@@ -57,7 +57,7 @@ void main() {
 	
 	// vec4 position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
 
-	ftrans.z -= 0.001 * ftrans.w;
+	ftrans.z -= 0.0001 * ftrans.w;
 
 	gl_Position = ftrans;
 	// gl_Position = position4;

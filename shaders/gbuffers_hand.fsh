@@ -20,7 +20,12 @@ uniform sampler2D lightmap;
 void main() {
 	vec3 normal = normalMat.xyz;
 
-	vec4 data0 = texture2D(texture, texcoord.xy) * color * (texture2D(lightmap, lmcoord.st) * 0.8 + 0.2);
+	vec4 colorVal = texture2D(texture, texcoord.xy) * color;
+
+	if(colorVal.a < 0.1)
+		discard;
+
+	vec4 data0 = colorVal * (texture2D(lightmap, lmcoord.st) * 0.8 + 0.2);
 	
 	gl_FragData[0] = data0;
 }
