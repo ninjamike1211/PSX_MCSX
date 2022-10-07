@@ -51,7 +51,7 @@ void main() {
 	
 	gl_Position = position4;
 	
-	mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
-                          tangent.y, binormal.y, normal.y,
-                          tangent.z, binormal.z, normal.z);
+	// mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
+    //                       tangent.y, binormal.y, normal.y,
+    //                       tangent.z, binormal.z, normal.z);
 }

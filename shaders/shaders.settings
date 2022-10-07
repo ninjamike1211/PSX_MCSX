@@ -10,9 +10,9 @@
 	#define outline_lightColor 	1.0			// Brightness of selection outline at brightest phase of animation [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 	#define outline_speed		8.0			// Speed of selection outline animation (0 is off) [0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 13.0 14.0 15.0 16.0]
 #endif
-	#define LINE_WIDTH  5.0			// Thickness of selection outline [0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 5.0 6.0 7.0 8.0 9.0 10.0]
+
 #ifdef gbuffers_line
-	
+	#define LINE_WIDTH  5.0			// Thickness of selection outline [0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 5.0 6.0 7.0 8.0 9.0 10.0]
 #endif
 
 #ifdef gbuffers_terrain

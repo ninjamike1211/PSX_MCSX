@@ -24,6 +24,8 @@ uniform float far;
 uniform bool inNether;
 uniform bool inEnd;
 
+uniform sampler2D normals;
+
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
 vec4 toClipSpace3(vec3 viewSpacePosition) {
@@ -37,25 +39,33 @@ void main() {
 	if(inNether)
 		lmcoord.r = lmcoord.r * 0.5 + 0.5;
 	
+	color = gl_Color;
+	
 	vec4 ftrans = ftransform();
 	float depth = clamp(ftrans.w, 0.001, 1000.0);
 	float sqrtDepth = sqrt(depth);
-	
-	vec4 position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
+
+
+	vec4 position4 = ftrans;
+
+	// if(all(lessThanEqual(texture2D(normals, texcoord.xy).rg, vec2(1e-6)))) {
+	// 	// position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
+	// 	// color = vec4(1.0);
+	// }
+
+	position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
 	vec3 position = position4.xyz;
 	
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, -10000.0, 0.0);
 	texcoordAffine = vec4(texcoord.xy * wVal, wVal, 0);
-
-	color = gl_Color;
 	
 	normal.a = 0.02;
 	normal.xyz = normalize(gl_NormalMatrix * gl_Normal);
 	
 	gl_Position = position4;
 	
-	mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
-                          tangent.y, binormal.y, normal.y,
-                          tangent.z, binormal.z, normal.z);
+	// mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
+    //                       tangent.y, binormal.y, normal.y,
+    //                       tangent.z, binormal.z, normal.z);
 }
