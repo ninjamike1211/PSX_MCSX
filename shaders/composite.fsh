@@ -158,9 +158,9 @@ void main() {
 	}
 	else if(inEnd) {
 		if(isEyeInWater == 0)
-			// fogColorFinal = texture2D(colortex5, texcoord).xyz;
+			fogColorFinal = texture2D(colortex5, texcoord).xyz;
 			// fogColorFinal = vec3(26, 0, 41) / 200.0 + fogColor;
-			fogColorFinal = sky ? texture2D(colortex5, texcoord).xyz : 0.08 + fogColor;
+			// fogColorFinal = sky ? texture2D(colortex5, texcoord).xyz : 0.08 + fogColor;
 		else if(isEyeInWater == 1)
 			fogColorFinal = (fogColor + length(skyCol));
 		else
