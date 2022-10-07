@@ -20,6 +20,8 @@ uniform sampler2D texture;
 uniform sampler2D lightmap;
 uniform sampler2D normals;
 
+uniform ivec2 atlasSize;
+
 void main() {
 	#ifdef affine_mapping
 	#ifdef affine_clamp_enabled
@@ -33,12 +35,13 @@ void main() {
 	#endif
 
 	// if(texture2D(normals, texcoord.xy).r, 1e-4) {
-	// 	affine = texcoord.xy;
+	if(atlasSize.y == 0) {
+		affine = texcoord.xy;
 
-	// 	gl_FragData[0] = vec4(1.0);
-	// 	gl_FragData[1] = vec4(vec3(gl_FragCoord.z), 1.0);
-	// 	return;
-	// }
+		gl_FragData[0] = vec4(1.0);
+		gl_FragData[1] = vec4(vec3(gl_FragCoord.z), 1.0);
+		return;
+	}
 
 	vec4 lighting = color * (texture2D(lightmap, lmcoord.st) * 0.8 + 0.2);
 	vec4 col = texture2D(texture, affine) * lighting;
