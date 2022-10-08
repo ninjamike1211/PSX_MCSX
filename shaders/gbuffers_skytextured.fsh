@@ -21,7 +21,7 @@ void main() {
 		// vec3 color = vec3(26, 0, 41) / 200.0 + fogColor;
 		// color += 1.0 * fogColor;
 
-		vec3 color = texture2D(texture,texcoord.xy).rgb * 0.25 + fogColor;
+		vec3 color = texture2D(texture,texcoord.xy).rgb * end_sky_brightness + fogColor;
 		// color = vec3(1.0);
 
 		gl_FragData[0] = vec4(color, 1.0);
