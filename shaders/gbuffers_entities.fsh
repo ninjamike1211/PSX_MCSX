@@ -36,7 +36,7 @@ void main() {
 	#endif
 
 	if(entityId == 10001) {
-		gl_FragData[0] = vec4(1.0, 1.0, 1.0, 0.1);
+		gl_FragData[0] = vec4(1.0);
 	}
 	else {
 		vec4 col = texture2D(texture, affine) * color;
