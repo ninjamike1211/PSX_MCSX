@@ -205,7 +205,14 @@ void main() {
 		const vec3 moonlight = vec3(0.0025, 0.0045, 0.007);
 		vec3 rainC = rainRGB*(pow(max(dot(normalfragpos, sunVec)*0.1+0.9,0.0),6.0)*(0.1+tr*0.9)*pow(sunlight,vec3(0.25))*sunVisibility+pow(max(dot(normalfragpos, -sunVec)*0.05+0.95,0.0),6.0)*48.0*moonlight*moonVisibility)*0.04 + 0.05*rainRGB*length(avgAmbient2);
 		rainC += torch_lightmap*vec3(1.0,1.0,0.5);
+
+		// rainC *= vec3(0.0, 0.0, 1.0);
+
 		col = ((1.0-rainA*0.3)+rainC*1.5*rainA)*0.3;
+
+		col *= vec3(0.5, 0.5, 2.0);
+
+		// col.rgb = mix(col.rgb, rain.rgb, rain.a);
 	}
 	
 	if(isEyeInWater > 0) {
