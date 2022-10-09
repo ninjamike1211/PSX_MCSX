@@ -13,6 +13,7 @@ uniform ivec2 atlasSize;
 uniform sampler2D texture;
 uniform sampler2D lightmap;
 uniform sampler2D normals;
+uniform sampler2D colortex0;
 uniform sampler2D colortex2;
 
 varying vec4 texcoord;
