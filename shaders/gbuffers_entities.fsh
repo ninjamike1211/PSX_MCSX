@@ -1,5 +1,5 @@
 #version 120
-/* DRAWBUFFERS:01 */
+/* DRAWBUFFERS:07 */
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
 
@@ -8,7 +8,7 @@
 
 varying vec4 texcoord;
 varying vec4 texcoordAffine;
-varying vec4 lmcoord;
+varying vec2 lmcoord;
 varying vec4 color;
 varying vec4 normalMat;
 
@@ -34,10 +34,12 @@ void main() {
 	vec2 affine = texcoord.xy;
 	#endif
 
-	vec4 col = texture2D(texture, affine) * texture2D(lightmap, lmcoord.st);
+	vec4 col = texture2D(texture, affine) * color;
 	col.rgb = mix(col.rgb, entityColor.rgb, entityColor.a);
+	col *= texture2D(lightmap, lmcoord);
 	
 	gl_FragData[0] = col;
 
-
+	gl_FragData[1] = vec4(lmcoord, 0.0, 1.0);
+	// gl_FragData[0] = vec4(1.0);
 }

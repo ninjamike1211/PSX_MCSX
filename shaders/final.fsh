@@ -8,7 +8,7 @@
 varying vec2 texcoord;
 
 uniform sampler2D colortex0;
-uniform sampler2D colortex8;
+uniform sampler2D colortex7;
 uniform sampler2D colortex2;
 uniform vec2 texelSize;
 uniform float viewWidth;
@@ -32,8 +32,9 @@ void main() {
 	vec2 downscale = floor(texcoord * (dsRes - 1) + 0.5) / (dsRes - 1);
 
     vec3 col = texture2D(colortex0,downscale).rgb;
+	vec4 textCol = texture2D(colortex2, texcoord);
 	
-	// col += texture2D(colortex2, texcoord).rgb;
+	col = mix(col, textCol.rgb, textCol.a);
 
 	col = clamp(1.2 * (col - 0.5) + 0.5, 0, 1);
 	col = GetDither(vec2(downscale.x, downscale.y / aspectRatio) * dsRes.x, col, dither_amount);
@@ -41,5 +42,5 @@ void main() {
 
 	gl_FragColor.rgb = col;
 
-	// gl_FragColor = texture2D(colortex2, texcoord);
+	// gl_FragColor = texture2D(colortex7, texcoord);
 }

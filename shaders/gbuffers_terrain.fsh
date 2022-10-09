@@ -47,16 +47,17 @@ void main() {
 	vec4 lighting = color * (texture2D(lightmap, lmcoord.st) * 0.8 + 0.2);
 	vec4 col = texture2D(texture, affine) * lighting;
 	
-	// // if(isText > 0.5) {
+	if(isText > 0.5) {
 	// if(atlasSize.x == 0) {
-	// 	gl_FragData[0] = vec4(0.0);
-	// 	gl_FragData[1] = vec4(vec3(gl_FragCoord.z), 1.0);
-	// 	gl_FragData[2] = vec4(1.0);
-	// }
-	// else {
+		gl_FragData[0] = col;
+		gl_FragData[1] = vec4(vec3(gl_FragCoord.z), 1.0);
+		gl_FragData[2] = vec4(col.rgb, 1.0);
+	}
+	else {
 		gl_FragData[0] = col;
 		gl_FragData[1] = vec4(vec3(gl_FragCoord.z), 1.0);
 		// gl_FragData[2] = vec4(texture2D(colortex2, texcoord.xy).rgb, 0.0);
+		// gl_FragData[2] = vec4(0.0);
 		gl_FragData[2] = vec4(0.0);
-	// }
+	}
 }

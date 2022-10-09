@@ -8,8 +8,10 @@
 
 varying vec4 texcoord;
 varying vec4 texcoordAffine;
-varying vec4 lmcoord;
+varying vec2 lmcoord;
 varying vec4 color;
+
+// attribute ivec2 vaUV2;
 
 uniform vec2 texelSize;
 
@@ -22,7 +24,8 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 void main() {
 	texcoord.xy = (gl_MultiTexCoord0).xy;
 	texcoord.zw = gl_MultiTexCoord1.xy/255.0;
-	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
+	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
+	// lmcoord     = vaUV2 * (1.0 / 256.0) + (1.0 / 32.0);
 	
 	vec4 ftrans = ftransform();
 	float depth = clamp(ftrans.w, 0.001, 1000);
@@ -37,4 +40,6 @@ void main() {
 	
 	color = gl_Color;
 	gl_Position = toClipSpace3(position);
+
+	// gl_Position = position4;
 }
