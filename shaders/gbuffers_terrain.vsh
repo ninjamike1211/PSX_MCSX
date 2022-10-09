@@ -13,6 +13,7 @@ varying vec4 color;
 varying vec4 normal;
 varying vec3 tangent;
 varying vec3 binormal;
+varying float isText;
 
 attribute vec4 mc_Entity;
 uniform vec2 texelSize;
@@ -23,6 +24,8 @@ uniform float far;
 
 uniform bool inNether;
 uniform bool inEnd;
+uniform int blockEntityId;
+uniform ivec2 atlasSize;
 
 uniform sampler2D normals;
 
@@ -36,6 +39,8 @@ void main() {
 	texcoord = gl_MultiTexCoord0;
 	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
 
+	isText = float(blockEntityId == 10001 && atlasSize.x == 0);
+
 	if(inNether)
 		lmcoord.r = lmcoord.r * 0.5 + 0.5;
 	
@@ -48,11 +53,6 @@ void main() {
 
 	vec4 position4 = ftrans;
 
-	// if(all(lessThanEqual(texture2D(normals, texcoord.xy).rg, vec2(1e-6)))) {
-	// 	// position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
-	// 	// color = vec4(1.0);
-	// }
-
 	position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
 	vec3 position = position4.xyz;
 	
@@ -63,6 +63,15 @@ void main() {
 	normal.a = 0.02;
 	normal.xyz = normalize(gl_NormalMatrix * gl_Normal);
 	
+	// if(all(lessThanEqual(texture2D(normals, texcoord.xy).rg, vec2(1e-6)))) {
+	if(isText > 0.5) {
+		// position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
+		// color = vec4(0.0, 0.0, 1.0, 1.0);
+		texcoordAffine = texcoord;
+		position4 = ftrans;
+		position4.z -= 0.01 * position4.w;
+	}
+
 	gl_Position = position4;
 	
 	// mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,

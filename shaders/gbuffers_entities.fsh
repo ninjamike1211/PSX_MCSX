@@ -34,7 +34,7 @@ void main() {
 	vec2 affine = texcoord.xy;
 	#endif
 
-	vec4 col = texture2D(texture, affine) * color * texture2D(lightmap, lmcoord.st);
+	vec4 col = texture2D(texture, affine) * texture2D(lightmap, lmcoord.st);
 	col.rgb = mix(col.rgb, entityColor.rgb, entityColor.a);
 	
 	gl_FragData[0] = col;

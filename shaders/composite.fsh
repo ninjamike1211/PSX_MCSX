@@ -1,5 +1,5 @@
 #version 120
-
+/* DRAWBUFFERS:0 */
 // Skybox and rain shader code from Sildurs Vibrant Shaders
 
 #define composite
