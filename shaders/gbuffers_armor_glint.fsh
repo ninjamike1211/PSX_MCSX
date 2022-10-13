@@ -46,6 +46,4 @@ void main() {
 	// col += 0.5;
 
 	gl_FragData[0] = col;
-
-	gl_FragData[0] = vec4(0.5);
 }
