@@ -34,9 +34,9 @@ void main() {
 
 	color = gl_Color;
 
-	if(renderStage == MC_RENDER_STAGE_OUTLINE) {
-		color.xyz = mix(vec3(outline_darkColor), vec3(outline_lightColor), sin(frameTimeCounter * outline_speed) * 0.5 + 0.5);
-	}
+	// if(renderStage == MC_RENDER_STAGE_OUTLINE) {
+	// 	color.xyz = mix(vec3(outline_darkColor), vec3(outline_lightColor), sin(frameTimeCounter * outline_speed) * 0.5 + 0.5);
+	// }
 	
 	// gl_Position = toClipSpace3(gl_Position);
 }
