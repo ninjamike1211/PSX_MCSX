@@ -44,4 +44,6 @@ void main() {
 	col.rgb = pow(col.rgb*0.5, lighting);
 
 	gl_FragData[0] = col;
+
+	gl_FragData[0] = vec4(0.5);
 }

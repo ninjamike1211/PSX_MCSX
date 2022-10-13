@@ -122,8 +122,10 @@ void main() {
 		}
 		else if(isEyeInWater == 1)
 			fogDepth = (linearDepth - fog_distance_water) / fog_slope_water;
-		else
+		else if(isEyeInWater == 2)
 			fogDepth = (linearDepth - fog_distance_lava) / fog_slope_lava;
+		else if(isEyeInWater == 3)
+			fogDepth = (linearDepth - fog_distance_snow) / fog_slope_snow;
 
 		fogDepth = clamp(log2(fogDepth + 1.0), 0.0, 1.0);
 		// fogDepth = clamp(fogDepth, 0.0, 1.0);
@@ -153,8 +155,10 @@ void main() {
 			fogColorFinal = normalize(fogColor) * 0.3 + 0.1;
 		else if(isEyeInWater == 1)
 			fogColorFinal = (fogColor + length(skyCol));
-		else
+		else if(isEyeInWater == 2)
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
+		else if(isEyeInWater == 3)
+			fogColorFinal = vec3(1.0);
 	}
 	else if(inEnd) {
 		if(isEyeInWater == 0)
@@ -163,8 +167,10 @@ void main() {
 			// fogColorFinal = sky ? texture2D(colortex5, texcoord).xyz : 0.08 + fogColor;
 		else if(isEyeInWater == 1)
 			fogColorFinal = (fogColor + length(skyCol));
-		else
+		else if(isEyeInWater == 2)
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
+		else if(isEyeInWater == 3)
+			fogColorFinal = vec3(1.0);
 
 		// fogColorFinal = fogColor;
 	}
@@ -178,8 +184,10 @@ void main() {
 		}
 		else if(isEyeInWater == 1)
 			fogColorFinal = (fogColor + length(skyCol));
-		else
+		else if(isEyeInWater == 2)
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
+		else if(isEyeInWater == 3)
+			fogColorFinal = vec3(1.0);
 	}
 
 	if(clouds.r > 0.0001) {
