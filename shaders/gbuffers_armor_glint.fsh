@@ -1,9 +1,9 @@
 #version 120
-/* DRAWBUFFERS:01 */
+/* DRAWBUFFERS:0 */
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
 
-#define gbuffers_solid
+#define gbuffers_armor_glint
 #include "/shaders.settings"
 
 uniform sampler2D texture;
@@ -41,9 +41,11 @@ void main() {
 	lighting /= 0.8 - 0.5*night;
 	lighting /= cavelight;
 
-	col.rgb = pow(col.rgb*0.5, lighting);
+	col.rgb = pow(col.rgb*enchanted_strength, lighting);
+
+	// col += 0.5;
 
 	gl_FragData[0] = col;
 
-	gl_FragData[0] = vec4(0.5);
+	// gl_FragData[0] = vec4(1.0);
 }

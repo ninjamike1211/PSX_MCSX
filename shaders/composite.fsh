@@ -117,7 +117,12 @@ void main() {
 				fogDepth = (linearDepth - fog_distance_end) / fog_slope_end;
 			}
 			else {
-				fogDepth = (linearDepth - fog_distance) / fog_slope;
+				if(rainStrength == 0.0)
+					fogDepth = (linearDepth - fog_distance) / fog_slope;
+				else if(rainStrength == 1.0)
+					fogDepth = (linearDepth - fog_rain_distance) / fog_rain_slope;
+				else
+					fogDepth = (linearDepth - mix(fog_distance, fog_rain_distance, rainStrength)) / mix(fog_slope, fog_rain_slope, rainStrength);
 			}
 		}
 		else if(isEyeInWater == 1)

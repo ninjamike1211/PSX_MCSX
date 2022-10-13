@@ -19,6 +19,7 @@ void main() {
 	texcoord.xy = (gl_MultiTexCoord0).xy;
 	texcoord.zw = gl_MultiTexCoord1.xy/255.0;
 	
+	color = gl_Color;
 	
 	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
 	vec3 position = PixelSnap(position4, vertex_inaccuracy_entities).xyz;
@@ -27,7 +28,6 @@ void main() {
 	wVal = clamp(wVal, -10000.0, 0.0);
 	texcoordAffine = vec4(texcoord.xy * wVal, wVal, 0);
 	
-	color = gl_Color;
 	gl_Position = toClipSpace3(position);
 
 	gl_Position = ftransform();
