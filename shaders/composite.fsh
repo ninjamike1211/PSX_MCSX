@@ -2,6 +2,11 @@
 /* DRAWBUFFERS:0 */
 // Skybox and rain shader code from Sildurs Vibrant Shaders
 
+/*
+const int colortex12Format = RGBA8_SNORM;
+const bool colortex12Clear = false;
+*/
+
 #define composite
 #include "/shaders.settings"
 
@@ -33,6 +38,7 @@ uniform vec3 fogColor;
 uniform mat4 gbufferProjectionInverse;
 uniform sampler2D colortex0;
 uniform sampler2D colortex5;
+uniform sampler2D colortex12;
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
 uniform sampler2D depthtex2;
@@ -184,10 +190,17 @@ void main() {
 		if(isEyeInWater == 0) {
 			fogColorFinal = (skyColor + skyCol);
 
-			#ifdef fog_yLevelDarken
-				// fogColorFinal *= (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
-				fogColorFinal *= mix(0.12, 1.0, eyeBrightnessSmooth.y / 240.0);
-			#endif
+			// #ifdef fog_Cave_Darken
+				if(depth < 1.0) {
+					#if fog_Darken_Mode == 1
+						fogColorFinal *= (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
+					#elif fog_Darken_Mode == 2
+						fogColorFinal *= mix(0.12, 1.0, eyeBrightnessSmooth.y / 240.0);
+					#elif fog_Darken_Mode == 3
+						fogColorFinal *= mix(0.12, 1.0, texture2D(colortex12, vec2(0.0)).a);
+					#endif
+				}
+			// #endif
 		}
 		else if(isEyeInWater == 1)
 			fogColorFinal = (fogColor + length(skyCol));
