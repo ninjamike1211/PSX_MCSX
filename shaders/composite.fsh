@@ -49,6 +49,7 @@ uniform int worldTime;
 uniform int isEyeInWater;
 uniform float playerMood;
 uniform float eyeAltitude;
+uniform ivec2 eyeBrightnessSmooth;
 
 uniform bool inEnd;
 uniform bool inNether;
@@ -184,7 +185,8 @@ void main() {
 			fogColorFinal = (skyColor + skyCol);
 
 			#ifdef fog_yLevelDarken
-				fogColorFinal *= (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
+				// fogColorFinal *= (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
+				fogColorFinal *= mix(0.12, 1.0, eyeBrightnessSmooth.y / 240.0);
 			#endif
 		}
 		else if(isEyeInWater == 1)
