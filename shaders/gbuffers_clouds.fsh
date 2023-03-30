@@ -12,6 +12,9 @@ uniform sampler2D lightmap;
 
 void main() {
 	vec4 col = texture2D(texture, texcoord.xy) * color;
+
+	if(col.a < 0.1)
+		discard;
 	
 	gl_FragData[0] = vec4(1.0);
 }
