@@ -1,5 +1,5 @@
 #version 120
-/* DRAWBUFFERS:012 */
+/* DRAWBUFFERS:02 */
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
 
@@ -29,5 +29,5 @@ void main() {
 	
 	gl_FragData[0] = data0;
 
-	gl_FragData[2] = vec4(0.0);
+	gl_FragData[1] = vec4(0.0);
 }
