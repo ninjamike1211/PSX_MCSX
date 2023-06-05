@@ -25,6 +25,7 @@ varying float isText;
 #include "/lib/psx_util.glsl"
 
 void main() {
+
 	#ifdef affine_mapping
 	#ifdef affine_clamp_enabled
 	vec2 texelSize = vec2(1.0/viewWidth, 1.0/viewHeight);
@@ -35,6 +36,10 @@ void main() {
 	#else 
 	vec2 affine = texcoord.xy;
 	#endif
+
+	if(isText > 0.5) {
+		affine = texcoord.xy;	
+	}
 
 	// // if(texture2D(normals, texcoord.xy).r, 1e-4) {
 	// if(atlasSize.y == 0) {
