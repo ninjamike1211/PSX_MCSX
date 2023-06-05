@@ -1,5 +1,5 @@
 #version 120
-/* DRAWBUFFERS:7 */
+/* DRAWBUFFERS:72 */
 
 varying vec4 color;
 
@@ -16,4 +16,5 @@ void main() {
 
 	// gl_FragData[0] = vec4(vec3(1.0,lmcoord,1.0),tex.a*length(tex.rgb)/1.732);
 	gl_FragData[0] = tex;
+	gl_FragData[1] = vec4(0.0);
 }
