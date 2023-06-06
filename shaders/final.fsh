@@ -31,16 +31,16 @@ void main() {
 	float pixelSize = dsRes.x / baseRes.x;
 	vec2 downscale = floor(texcoord * (dsRes - 1) + 0.5) / (dsRes - 1);
 
+	vec4 textCol     = texture2D(colortex2, texcoord);
+	vec4 textColDown = texture2D(colortex2, downscale);
+	if(textCol.r > 0.5 || textColDown.r > 0.5)
+		downscale = texcoord;
+
     vec3 col = texture2D(colortex0,downscale).rgb;
-	vec4 textCol = texture2D(colortex2, texcoord);
-	
-	col = mix(col, textCol.rgb, textCol.a);
 
 	col = clamp(1.2 * (col - 0.5) + 0.5, 0, 1);
 	col = GetDither(vec2(downscale.x, downscale.y / aspectRatio) * dsRes.x, col, dither_amount);
 	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
 
 	gl_FragColor.rgb = col;
-
-	// gl_FragColor = texture2D(colortex7, texcoord);
 }

@@ -69,7 +69,7 @@ void main() {
 		// color = vec4(0.0, 0.0, 1.0, 1.0);
 		texcoordAffine = texcoord;
 		position4 = ftrans;
-		position4.z -= 0.01 / position4.w;
+		position4.z -= 0.002 / position4.w;
 	}
 
 	gl_Position = position4;
