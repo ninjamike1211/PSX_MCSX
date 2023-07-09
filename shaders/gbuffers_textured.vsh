@@ -10,7 +10,6 @@ varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
-varying vec4 normalMat;
 
 attribute vec4 mc_Entity;
 uniform vec2 texelSize;

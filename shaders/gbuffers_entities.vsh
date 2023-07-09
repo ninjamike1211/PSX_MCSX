@@ -38,5 +38,4 @@ void main() {
 	color = gl_Color;
 	gl_Position = toClipSpace3(position);
 
-	gl_Position = ftrans;
 }

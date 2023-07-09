@@ -50,6 +50,10 @@ void main() {
 
 		if(heldItemId != 10001 && heldItemId2 != 10001)
 			position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
+
+		float wVal = (mat3(gl_ProjectionMatrix) * position).z;
+		wVal = clamp(wVal, -10000.0, 0.0);
+		texcoordAffine = vec4(texcoord.xy * wVal, wVal, 0);
 		
 		gl_Position = toClipSpace3(position);
 	}

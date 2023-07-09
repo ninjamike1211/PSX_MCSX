@@ -19,6 +19,8 @@ uniform vec2 texelSize;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferModelView;
 uniform sampler2D lightmap;
+uniform float frameTimeCounter;
+uniform vec3 cameraPosition;
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
@@ -29,8 +31,15 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 void main() {
 	texcoord = gl_MultiTexCoord0;
 	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
+
+	vec4 vertexPos = gl_Vertex;
+
+	if(abs(mc_Entity.x - 10001) < 0.1) {
+		vertexPos.y += water_wave_height * sin(water_wave_speed * frameTimeCounter + water_wave_length * (cos(water_wave_angle) * (vertexPos.x + cameraPosition.x) + sin(water_wave_angle) * (vertexPos.z + cameraPosition.z)));
+	}
 	
-	vec4 ftrans = ftransform();
+	// vec4 ftrans = ftransform();
+	vec4 ftrans = gl_ModelViewProjectionMatrix * vertexPos;
 	float depth = clamp(ftrans.w, 0.001, 1000);
 	float sqrtDepth = sqrt(depth);
 	

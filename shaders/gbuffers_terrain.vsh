@@ -10,9 +10,6 @@ varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
-varying vec4 normal;
-varying vec3 tangent;
-varying vec3 binormal;
 varying float isText;
 
 attribute vec4 mc_Entity;
@@ -26,8 +23,8 @@ uniform bool inNether;
 uniform bool inEnd;
 uniform int blockEntityId;
 uniform ivec2 atlasSize;
-
-uniform sampler2D normals;
+uniform float frameTimeCounter;
+uniform vec3 cameraPosition;
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
@@ -45,8 +42,15 @@ void main() {
 		lmcoord.r = lmcoord.r * 0.5 + 0.5;
 	
 	color = gl_Color;
+
+	vec4 vertexPos = gl_Vertex;
+
+	if(abs(mc_Entity.x - 10002) < 0.1) {
+		vertexPos.y += lava_wave_height * sin(lava_wave_speed * frameTimeCounter + lava_wave_length * (cos(lava_wave_angle) * (vertexPos.x + cameraPosition.x) + sin(lava_wave_angle) * (vertexPos.z + cameraPosition.z)));
+	}
 	
-	vec4 ftrans = ftransform();
+	// vec4 ftrans = ftransform();
+	vec4 ftrans = gl_ModelViewProjectionMatrix * vertexPos;
 	float depth = clamp(ftrans.w, 0.001, 1000.0);
 	float sqrtDepth = sqrt(depth);
 
@@ -59,22 +63,15 @@ void main() {
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, -10000.0, 0.0);
 	texcoordAffine = vec4(texcoord.xy * wVal, wVal, 0);
-	
-	normal.a = 0.02;
-	normal.xyz = normalize(gl_NormalMatrix * gl_Normal);
-	
-	// if(all(lessThanEqual(texture2D(normals, texcoord.xy).rg, vec2(1e-6)))) {
+
 	if(isText > 0.5) {
-		// position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
-		// color = vec4(0.0, 0.0, 1.0, 1.0);
 		texcoordAffine = texcoord;
 		position4 = ftrans;
-		position4.z -= 0.002 / position4.w;
+		
+		vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
+		normal = mat3(gl_ProjectionMatrix) * normal;
+		position4.xyz += 0.02 * normal / position4.w;
 	}
 
 	gl_Position = position4;
-	
-	// mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
-    //                       tangent.y, binormal.y, normal.y,
-    //                       tangent.z, binormal.z, normal.z);
 }

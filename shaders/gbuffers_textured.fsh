@@ -7,7 +7,6 @@ varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
-varying vec4 normalMat;
 
 #include "/lib/psx_util.glsl"
 

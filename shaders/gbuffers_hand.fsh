@@ -10,7 +10,6 @@ varying vec4 texcoord;
 varying vec4 lmcoord;
 varying vec4 color;
 varying vec4 blockColor;
-varying vec4 normalMat;
 
 #include "/lib/psx_util.glsl"
 
@@ -18,8 +17,6 @@ uniform sampler2D texture;
 uniform sampler2D lightmap;
 
 void main() {
-	vec3 normal = normalMat.xyz;
-
 	vec4 colorVal = texture2D(texture, texcoord.xy) * color;
 
 	if(colorVal.a < 0.1)

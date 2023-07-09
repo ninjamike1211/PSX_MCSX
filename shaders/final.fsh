@@ -42,5 +42,5 @@ void main() {
 	col = GetDither(vec2(downscale.x, downscale.y / aspectRatio) * dsRes.x, col, dither_amount);
 	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
 
-	gl_FragColor.rgb = col;
+	gl_FragData[0].rgb = col;
 }

@@ -10,8 +10,6 @@ varying vec3 sky2;
 
 varying float tr;
 
-varying vec2 lightPos;
-
 varying vec3 sunlight;
 varying vec3 nsunlight;
 

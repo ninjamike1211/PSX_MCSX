@@ -9,7 +9,6 @@
 varying vec4 texcoord;
 varying vec4 lmcoord;
 varying vec4 color;
-varying vec4 normalMat;
 varying vec4 lightLevels;
 
 attribute vec4 mc_Entity;

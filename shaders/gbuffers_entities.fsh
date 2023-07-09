@@ -10,7 +10,6 @@ varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
-varying vec4 normalMat;
 
 uniform float viewWidth;
 uniform float viewHeight;
