@@ -138,6 +138,9 @@ void main() {
 			fogDepth = (linearDepth - fog_distance_snow) / fog_slope_snow;
 
 		fogDepth = (sky) ? 1.0 : clamp(log2(fogDepth + 1.0), 0.0, 1.0);
+
+		if(fogDepth >= 0.99)
+			sky = true;
 	#else
 		float fogDepth = (sky) ? 1.0 : 0.0;
 		#endif
@@ -187,17 +190,19 @@ void main() {
 		if(isEyeInWater == 0) {
 			fogColorFinal = (skyColor + skyCol);
 
-			// #ifdef fog_Cave_Darken
-				// if(depth < 1.0) {
-					#if fog_Darken_Mode == 1
-						fogColorFinal *= (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
-					#elif fog_Darken_Mode == 2
-						fogColorFinal *= mix(0.12, 1.0, eyeBrightnessSmooth.y / 240.0);
-					#elif fog_Darken_Mode == 3
-						fogColorFinal *= mix(0.12, 1.0, texture2D(colortex12, vec2(0.0)).a);
-					#endif
-				// }
-			// #endif
+			#ifdef fog_Cave_SkipSky
+				if(depth < 1.0) {
+			#endif
+				#if fog_Darken_Mode == 1
+					fogColorFinal *= (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
+				#elif fog_Darken_Mode == 2
+					fogColorFinal *= mix(0.12, 1.0, eyeBrightnessSmooth.y / 240.0);
+				#elif fog_Darken_Mode == 3
+					fogColorFinal *= mix(0.12, 1.0, texture2D(colortex12, vec2(0.0)).a);
+				#endif
+			#ifdef fog_Cave_SkipSky
+				}
+			#endif
 		}
 		else if(isEyeInWater == 1)
 			fogColorFinal = (fogColor + length(skyCol));
