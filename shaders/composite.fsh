@@ -137,8 +137,7 @@ void main() {
 		else if(isEyeInWater == 3)
 			fogDepth = (linearDepth - fog_distance_snow) / fog_slope_snow;
 
-		fogDepth = clamp(log2(fogDepth + 1.0), 0.0, 1.0);
-		// fogDepth = clamp(fogDepth, 0.0, 1.0);
+		fogDepth = (sky) ? 1.0 : clamp(log2(fogDepth + 1.0), 0.0, 1.0);
 	#else
 		float fogDepth = (sky) ? 1.0 : 0.0;
 		#endif
