@@ -33,6 +33,8 @@ varying vec3 avgAmbient2;
 
 uniform vec3 skyColor;
 uniform vec3 fogColor;
+uniform mat4 gbufferModelView;
+uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
 uniform sampler2D colortex0;
 uniform sampler2D colortex5;
@@ -102,17 +104,24 @@ vec3 getSkyColor(vec3 fposition) {
 void main() {
 	float depth = texture2D(depthtex0, texcoord).r;
 	float depth1 = texture2D(depthtex1, texcoord).r;
+	
+	vec4 fragpos = gbufferProjectionInverse * (vec4(texcoord, depth1, 1.0) * 2.0 - 1.0);
+	fragpos /= fragpos.w;
+	vec3 normalfragpos = normalize(fragpos.xyz);
 
-	float linearDepth = linearizeDepthFast(depth);
-	// float linearDepth = depth * (far - near) + near;
+	#if fog_depth_type == 0
+		float linearDepth = linearizeDepthFast(depth);
+	#elif fog_depth_type == 1
+		float linearDepth = length(fragpos.xyz);
+	#elif fog_depth_type == 2
+		float linearDepth = length((gbufferModelViewInverse * fragpos).xz);
+	#endif
 	
 	bool sky = depth >= 1.0;
 	bool skyNoClouds = depth1 >= 1.0;
 	
 	#ifdef fog_enabled
 		float fogDepth;
-
-		// fogDepth = depth * fog_distance - (fog_distance-1);
 		
 		if(isEyeInWater == 0) {
 			if(inNether) {
@@ -143,12 +152,8 @@ void main() {
 			sky = true;
 	#else
 		float fogDepth = (sky) ? 1.0 : 0.0;
-		#endif
+	#endif
 	vec3 col = texture2D(colortex0, texcoord).rgb;
-	
-	vec4 fragpos = gbufferProjectionInverse * (vec4(texcoord, depth1, 1.0) * 2.0 - 1.0);
-	fragpos /= fragpos.w;
-	vec3 normalfragpos = normalize(fragpos.xyz);
 	
 	vec3 skyCol;
 	if (texcoord.x < 1.0 && texcoord.y < 1.0 && texcoord.x > 0.0 && texcoord.y > 0.0 && fogDepth > 0.0) {
@@ -158,7 +163,7 @@ void main() {
 	vec4 sunmoon = texture2D(gaux2, texcoord) * fog_sunmoon;
 	vec4 clouds = texture2D(gaux3, texcoord);
 	
-	sunmoon *= (1.0-rainStrength);
+	sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
 	
 	vec3 fogColorFinal;
 
