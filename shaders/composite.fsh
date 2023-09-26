@@ -188,7 +188,7 @@ void main() {
 			fogColorFinal = (skyColor + skyCol);
 
 			// #ifdef fog_Cave_Darken
-				if(depth < 1.0) {
+				// if(depth < 1.0) {
 					#if fog_Darken_Mode == 1
 						fogColorFinal *= (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
 					#elif fog_Darken_Mode == 2
@@ -196,7 +196,7 @@ void main() {
 					#elif fog_Darken_Mode == 3
 						fogColorFinal *= mix(0.12, 1.0, texture2D(colortex12, vec2(0.0)).a);
 					#endif
-				}
+				// }
 			// #endif
 		}
 		else if(isEyeInWater == 1)
