@@ -13,14 +13,9 @@ varying vec4 color;
 varying float isText;
 
 attribute vec4 mc_Entity;
-uniform vec2 texelSize;
-uniform mat4 gbufferModelViewInverse;
-uniform mat4 gbufferModelView;
-uniform sampler2D lightmap;
-uniform float far;
+uniform sampler2D depthtex1;
 
 uniform bool inNether;
-uniform bool inEnd;
 uniform int blockEntityId;
 uniform ivec2 atlasSize;
 uniform float frameTimeCounter;
@@ -36,7 +31,7 @@ void main() {
 	texcoord = gl_MultiTexCoord0;
 	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
 
-	isText = float(blockEntityId == 10001 && atlasSize.x == 0);
+	isText = float(blockEntityId == 10003 && atlasSize.x == 0);
 
 	if(inNether)
 		lmcoord.r = lmcoord.r * 0.5 + 0.5;
@@ -67,10 +62,11 @@ void main() {
 	if(isText > 0.5) {
 		texcoordAffine = texcoord;
 		position4 = ftrans;
-		
-		vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
-		normal = mat3(gl_ProjectionMatrix) * normal;
-		position4.xyz += 0.02 * normal / position4.w;
+
+		vec3 ndcPos = position4.xyz / position4.w;
+		float depth = texture2D(depthtex1, ndcPos.xy * 0.5 + 0.5).r - 0.01;
+
+		position4.z = (depth * 2.0 - 1.0) * position4.w;
 	}
 
 	gl_Position = position4;
