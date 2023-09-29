@@ -1,4 +1,4 @@
-#version 120
+#version 450 compatibility
 #extension GL_EXT_gpu_shader4 : enable
 #include "/lib/psx_util.glsl"
 
@@ -11,15 +11,22 @@ varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
 varying float isText;
+varying vec3 lightColor;
 
 attribute vec4 mc_Entity;
+attribute vec3 at_midBlock;
+
 uniform sampler2D depthtex1;
+uniform usampler2D shadowcolor0;
+uniform sampler2D shadowcolor1;
 
 uniform bool inNether;
 uniform int blockEntityId;
 uniform ivec2 atlasSize;
 uniform float frameTimeCounter;
 uniform vec3 cameraPosition;
+
+#include "/voxel/lib/voxelization.glsl"
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
@@ -70,4 +77,11 @@ void main() {
 	}
 
 	gl_Position = position4;
+
+	vec3 voxelPos = SceneSpaceToVoxelSpace(vertexPos.xyz + at_midBlock / 64.0);
+	ivec3 voxelIndex = ivec3(floor(voxelPos));
+
+	ivec2 storagePos = GetVoxelStoragePos(voxelIndex);
+
+	lightColor = texelFetch(shadowcolor1, storagePos, 0).rgb;
 }

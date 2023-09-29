@@ -1,15 +1,22 @@
-#version 120
+#version 450 compatibility
 #extension GL_EXT_gpu_shader4 : enable
+
+const vec4 shadowcolor0ClearColor = vec4(0,0,0,0);
+const vec4 shadowcolor1ClearColor = vec4(0,0,0,0);
+const bool shadowcolor1Clear = false;
 
 #define composite
 #include "/shaders.settings"
+#include "/lib/final.glsl"
+
+const int shadowMapResolution = 2048; // [1024 2048 4096 8192 16384]
 
 #define DITHER_COLORS 128
 varying vec2 texcoord;
 
-uniform sampler2D colortex0;
-uniform sampler2D colortex7;
-uniform sampler2D colortex2;
+// uniform sampler2D colortex0;
+// uniform sampler2D colortex7;
+// uniform sampler2D colortex2;
 uniform vec2 texelSize;
 uniform float viewWidth;
 uniform float viewHeight;
@@ -43,4 +50,11 @@ void main() {
 	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
 
 	gl_FragData[0].rgb = col;
+
+	#if viewBuffer != 0
+		// if(texcoord.x > viewBufferSweep) {
+		// 	gl_FragData[0] = debugBufferView(texcoord);
+		// }
+		gl_FragColor = texelFetch(shadowcolor1, ivec2(gl_FragCoord.xy - vec2(0.25 * viewWidth, 0.5 * viewHeight) + 0.5 * shadowMapResolution), 0);
+	#endif
 }

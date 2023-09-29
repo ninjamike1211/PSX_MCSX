@@ -17,6 +17,7 @@ varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
 varying float isText;
+varying vec3 lightColor;
 
 #include "/lib/psx_util.glsl"
 
@@ -38,8 +39,9 @@ void main() {
 	}
 
 	
-	vec4 lighting = color * (texture2D(lightmap, lmcoord.st) * 0.8 + 0.2);
-	vec4 col = texture2D(texture, affine) * lighting;
+	vec4 lighting = (texture2D(lightmap, vec2(0.0, lmcoord.t)) * 0.8 + 0.2);
+	lighting.xyz += lightColor;
+	vec4 col = color * texture2D(texture, affine) * lighting;
 	
 	gl_FragData[0] = col;
 	gl_FragData[1] = vec4(isText, isText, isText, 1.0);
