@@ -31,8 +31,8 @@ void main() {
 	float pixelSize = dsRes.x / baseRes.x;
 	vec2 downscale = floor(texcoord * (dsRes - 1) + 0.5) / (dsRes - 1);
 
-	vec4 textCol     = texture2D(colortex2, texcoord);
-	vec4 textColDown = texture2D(colortex2, downscale);
+	vec2 textCol     = texture2D(colortex2, texcoord).rg;
+	vec2 textColDown = texture2D(colortex2, downscale).rg;
 	if(textCol.r > 0.5 || textColDown.r > 0.5)
 		downscale = texcoord;
 

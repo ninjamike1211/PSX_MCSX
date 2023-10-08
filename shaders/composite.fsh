@@ -3,6 +3,7 @@
 // Skybox and rain shader code from Sildurs Vibrant Shaders
 
 /*
+const int colortex2Format = R8;
 const int colortex12Format = RGBA8_SNORM;
 const bool colortex12Clear = false;
 */

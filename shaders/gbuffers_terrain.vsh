@@ -62,11 +62,7 @@ void main() {
 	if(isText > 0.5) {
 		texcoordAffine = texcoord;
 		position4 = ftrans;
-
-		vec3 ndcPos = position4.xyz / position4.w;
-		float depth = texture2D(depthtex1, ndcPos.xy * 0.5 + 0.5).r - 0.01;
-
-		position4.z = (depth * 2.0 - 1.0) * position4.w;
+		position4.z -= 0.005;
 	}
 
 	gl_Position = position4;

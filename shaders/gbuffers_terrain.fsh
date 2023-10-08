@@ -42,5 +42,5 @@ void main() {
 	vec4 col = texture2D(texture, affine) * lighting;
 	
 	gl_FragData[0] = col;
-	gl_FragData[1] = vec4(isText, isText, isText, 1.0);
+	gl_FragData[1] = vec4(isText, 0.0, 0.0, 1.0);
 }
