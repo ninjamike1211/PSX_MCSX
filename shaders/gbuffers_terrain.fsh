@@ -1,5 +1,5 @@
 #version 120
-/* DRAWBUFFERS:02 */
+/* DRAWBUFFERS:01 */
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
 
@@ -16,6 +16,7 @@ varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
+varying vec3 voxelLightColor;
 varying float isText;
 
 #include "/lib/psx_util.glsl"
@@ -37,9 +38,14 @@ void main() {
 		affine = texcoord.xy;
 	}
 
-	
-	vec4 lighting = color * (texture2D(lightmap, lmcoord.st) * 0.8 + 0.2);
-	vec4 col = texture2D(texture, affine) * lighting;
+	vec2 lmcoordAdjusted = lmcoord.st;
+	vec4 lighting = vec4(0.0);
+	// if(any(greaterThan(voxelLightColor, vec3(0.0)))) {
+		lighting.rgb += voxelLightColor;
+		lmcoordAdjusted.s = 1.0/32.0;
+	// }
+	lighting += (texture2D(lightmap, lmcoordAdjusted.st) * 0.8 + 0.2);
+	vec4 col = texture2D(texture, affine) * color * lighting;
 	
 	gl_FragData[0] = col;
 	gl_FragData[1] = vec4(isText, 0.0, 0.0, 1.0);

@@ -1,5 +1,5 @@
 #version 120
-/* DRAWBUFFERS:012 */
+/* DRAWBUFFERS:01 */
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
 
@@ -35,6 +35,5 @@ void main() {
 	vec4 col = texture2D(texture, affine) * color * (texture2D(lightmap, lmcoord.st) * 0.8 + 0.2);
 	
 	gl_FragData[0] = col;
-	gl_FragData[1] = vec4(vec3(gl_FragCoord.z), 1.0);
-	gl_FragData[2] = vec4(0.0);
+	gl_FragData[1] = vec4(0.0);
 }

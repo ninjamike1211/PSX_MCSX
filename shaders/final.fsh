@@ -1,4 +1,4 @@
-#version 120
+#version 420 compatibility
 #extension GL_EXT_gpu_shader4 : enable
 
 #define composite
@@ -9,11 +9,13 @@ varying vec2 texcoord;
 
 uniform sampler2D colortex0;
 uniform sampler2D colortex7;
-uniform sampler2D colortex2;
+uniform sampler2D colortex1;
 uniform vec2 texelSize;
 uniform float viewWidth;
 uniform float viewHeight;
 uniform float aspectRatio;
+
+layout (rgba8) uniform image2D colorimg5;
 
 vec3 GetDither(vec2 pos, vec3 c, float intensity) {
 	int DITHER_THRESHOLDS[16] = int[]( -4, 0, -3, 1, 2, -2, 3, -1, -3, 1, -4, 0, 3, -1, 2, -2 );
@@ -31,8 +33,8 @@ void main() {
 	float pixelSize = dsRes.x / baseRes.x;
 	vec2 downscale = floor(texcoord * (dsRes - 1) + 0.5) / (dsRes - 1);
 
-	vec2 textCol     = texture2D(colortex2, texcoord).rg;
-	vec2 textColDown = texture2D(colortex2, downscale).rg;
+	vec2 textCol     = texture2D(colortex1, texcoord).rg;
+	vec2 textColDown = texture2D(colortex1, downscale).rg;
 	if(textCol.r > 0.5 || textColDown.r > 0.5)
 		downscale = texcoord;
 
@@ -41,6 +43,11 @@ void main() {
 	col = clamp(1.2 * (col - 0.5) + 0.5, 0, 1);
 	col = GetDither(vec2(downscale.x, downscale.y / aspectRatio) * dsRes.x, col, dither_amount);
 	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
+
+	// if(clamp(gl_FragCoord.xy, 0, 2048) == gl_FragCoord.xy) {
+	// 	col += imageLoad(colorimg5, ivec2(gl_FragCoord.xy)).rgb;
+	// 	col *= 0.5;
+	// }
 
 	gl_FragData[0].rgb = col;
 }

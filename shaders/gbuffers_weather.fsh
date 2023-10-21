@@ -1,5 +1,5 @@
 #version 120
-/* DRAWBUFFERS:72 */
+/* DRAWBUFFERS:71 */
 
 varying vec4 color;
 

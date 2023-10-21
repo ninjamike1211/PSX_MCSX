@@ -3,9 +3,11 @@
 // Skybox and rain shader code from Sildurs Vibrant Shaders
 
 /*
-const int colortex2Format = R8;
-const int colortex12Format = RGBA8_SNORM;
-const bool colortex12Clear = false;
+const int  colortex1Format  = R8;
+const int  colortex4Format  = R8I;
+const bool colortex5Clear  = false;
+const int  colortex12Format = RGBA8_SNORM;
+const bool colortex12Clear  = false;
 */
 
 #define composite
@@ -38,14 +40,13 @@ uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
 uniform sampler2D colortex0;
-uniform sampler2D colortex5;
+uniform sampler2D colortex3;
+uniform sampler2D colortex6;
+uniform sampler2D colortex7;
 uniform sampler2D colortex12;
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
 uniform sampler2D depthtex2;
-uniform sampler2D gaux2;
-uniform sampler2D gaux3;
-uniform sampler2D gaux4;
 uniform vec2 texelSize;
 uniform float viewWidth;
 uniform float viewHeight;
@@ -161,8 +162,8 @@ void main() {
 		skyCol = getSkyColor(fragpos.xyz);
 	}
 	
-	vec4 sunmoon = texture2D(gaux2, texcoord) * fog_sunmoon;
-	vec4 clouds = texture2D(gaux3, texcoord);
+	vec4 sunmoon = texture2D(colortex3, texcoord) * fog_sunmoon;
+	vec4 clouds = texture2D(colortex6, texcoord);
 	
 	sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
 	
@@ -180,9 +181,9 @@ void main() {
 	}
 	else if(inEnd) {
 		if(isEyeInWater == 0)
-			fogColorFinal = texture2D(colortex5, texcoord).xyz;
+			fogColorFinal = texture2D(colortex3, texcoord).xyz;
 			// fogColorFinal = vec3(26, 0, 41) / 200.0 + fogColor;
-			// fogColorFinal = sky ? texture2D(colortex5, texcoord).xyz : 0.08 + fogColor;
+			// fogColorFinal = sky ? texture2D(colortex3, texcoord).xyz : 0.08 + fogColor;
 		else if(isEyeInWater == 1)
 			fogColorFinal = (fogColor + length(skyCol));
 		else if(isEyeInWater == 2)
@@ -230,7 +231,7 @@ void main() {
 			col += sunmoon.rgb * vec3(sky?1.0:0.0);
 	}
 	
-	vec4 rain = texture2D(gaux4, texcoord);
+	vec4 rain = texture2D(colortex7, texcoord);
 	if (rain.r > 0.0001 && rainStrength > 0.01 && !(depth1 < texture2D(depthtex2, texcoord).x)){
 		// float rainRGB = 0.25;
 		// float rainA = rain.r;

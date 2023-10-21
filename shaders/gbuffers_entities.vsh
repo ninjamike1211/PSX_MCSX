@@ -1,4 +1,4 @@
-#version 120
+#version 420 compatibility
 #extension GL_EXT_gpu_shader4 : enable
 #include "/lib/psx_util.glsl"
 
@@ -12,6 +12,11 @@ varying vec2 lmcoord;
 varying vec4 color;
 
 uniform vec2 texelSize;
+uniform vec3 cameraPosition;
+uniform int entityId;
+uniform mat4 gbufferModelViewInverse;
+
+#include "/lib/voxel.glsl"
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define  projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
@@ -38,4 +43,13 @@ void main() {
 	color = gl_Color;
 	gl_Position = toClipSpace3(position);
 
+	// // Voxelization
+	// if(entityId > 11000) {
+	// 	vec3 centerPos = (gbufferModelViewInverse * (gl_ModelViewMatrix * gl_Vertex)).xyz;
+	// 	ivec3 voxelPos = ivec3(SceneSpaceToVoxelSpace(centerPos));
+	// 	if(IsInVoxelizationVolume(voxelPos)) {
+	// 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
+	// 		imageStore(colorimg4, voxelIndex, uvec4(entityId - 11000) + 1);
+	// 	}
+	// }
 }
