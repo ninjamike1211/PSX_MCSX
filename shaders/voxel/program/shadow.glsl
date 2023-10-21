@@ -32,6 +32,7 @@ uniform sampler2D normals;
 	out vec3 midBlock;
 	out vec2 texCoord;
 	out vec2 midCoord;
+	out vec2 lmcoord;
 	flat out int blockId;
 	out float isNotOpaque;
 
@@ -46,6 +47,7 @@ uniform sampler2D normals;
 		texCoord = gl_MultiTexCoord0.st;
 		midBlock = (at_midBlock / 64.0);
 		midCoord = mc_midTexCoord;
+		lmcoord = gl_MultiTexCoord1.xy / 240.0;
 
 		// if(renderStage == 8)
 		// 	blockId = int(mc_Entity.x);
@@ -82,22 +84,22 @@ uniform sampler2D normals;
 		vec3(1.0, 1.0, 0.0),
 		vec3(0.7, 1.0, 0.0),
 		vec3(1.0, 0.5, 0.5),
-		vec3(0.6, 0.6, 0.6),
-		vec3(0.85, 0.85, 0.85),
+		vec3(1.0, 1.0, 1.0),
+		vec3(1.0, 1.0, 1.0),
 		vec3(0.0, 1.0, 0.9),
 		vec3(0.7, 0.0, 1.0),
 		vec3(0.5, 0.5, 1.0),
-		vec3(0.7, 0.5, 0.1),
+		vec3(1.0, 0.7, 0.15),
 		vec3(0.3, 1.0, 0.2),
 		vec3(1.0, 0.3, 0.3),
-		vec3(0.4, 0.4, 0.4),
-		vec3(0.8, 0.3, 0.6),
+		vec3(1.0, 1.0, 1.0),
+		vec3(1.0, 0.4, 0.8),
 		vec3(0.7, 1.0, 1.0),
-		vec3(0.5, 0.6, 0.3),
-		vec3(0.3, 0.3, 0.3),
+		vec3(0.8, 1.0, 0.5),
+		vec3(1.0, 1.0, 1.0),
 		vec3(0.7, 1.0, 0.8),
 		vec3(1.0, 0.7, 0.9),
-		vec3(0.3, 0.53, 0.49)
+		vec3(0.57, 1.0, 0.92)
 	);
 
 	layout (triangles) in;
@@ -108,6 +110,7 @@ uniform sampler2D normals;
 	in vec3[3] midBlock;
 	in vec2[3] texCoord;
 	in vec2[3] midCoord;
+	in vec2[3] lmcoord;
 	flat in int[3] blockId;
 	in float[3] isNotOpaque;
 
@@ -183,6 +186,8 @@ uniform sampler2D normals;
 		else {
 			fData2 = vec4(0.0, 0.0, 0.0, 0.5);
 		}
+
+		fData2 *= lmcoord[0].r;
 
 		gl_Position  = p2d;
 		gl_PointSize = 1.0;

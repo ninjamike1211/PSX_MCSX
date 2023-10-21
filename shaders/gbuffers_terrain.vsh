@@ -8,7 +8,7 @@
 
 varying vec4 texcoord;
 varying vec4 texcoordAffine;
-varying vec4 lmcoord;
+varying vec2 lmcoord;
 varying vec4 color;
 varying float isText;
 varying vec3 lightColor;
@@ -36,7 +36,8 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 
 void main() {
 	texcoord = gl_MultiTexCoord0;
-	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
+	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
+	// lmcoord = gl_MultiTexCoord1.xy / 240.0;
 
 	isText = float(blockEntityId == 10003 && atlasSize.x == 0);
 

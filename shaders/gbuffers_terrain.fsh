@@ -14,7 +14,7 @@ uniform sampler2D lightmap;
 
 varying vec4 texcoord;
 varying vec4 texcoordAffine;
-varying vec4 lmcoord;
+varying vec2 lmcoord;
 varying vec4 color;
 varying float isText;
 varying vec3 lightColor;
@@ -40,7 +40,13 @@ void main() {
 
 	
 	vec4 lighting = (texture2D(lightmap, vec2(0.0, lmcoord.t)) * 0.8 + 0.2);
-	lighting.xyz += lightColor;
+	if(any(greaterThan(lightColor, vec3(0.0)))) {
+		lighting.xyz += lightColor;
+	}
+	else if(lmcoord.r > 1.0 / 32.0) {
+		lighting.xyz += lmcoord.x * vec3(1.0);
+	}
+
 	vec4 col = color * texture2D(texture, affine) * lighting;
 	
 	gl_FragData[0] = col;
