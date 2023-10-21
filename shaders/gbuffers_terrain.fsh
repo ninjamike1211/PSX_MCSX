@@ -39,13 +39,16 @@ void main() {
 	}
 
 	
-	vec4 lighting = (texture2D(lightmap, vec2(0.0, lmcoord.t)) * 0.8 + 0.2);
+	vec4 lighting = vec4(0.0, 0.0, 0.0, 1.0);
+	vec2 finalLmcoord = lmcoord;
 	if(any(greaterThan(lightColor, vec3(0.0)))) {
 		lighting.xyz += lightColor;
+		finalLmcoord.r = 1.0/32.0;
 	}
-	else if(lmcoord.r > 1.0 / 32.0) {
-		lighting.xyz += lmcoord.x * vec3(1.0);
-	}
+	// else if(lmcoord.r > 1.0 / 32.0) {
+	// 	lighting.xyz += lmcoord.x * vec3(1.0, 0.85, 0.6);
+	// }
+	lighting += (texture2D(lightmap, finalLmcoord) * 0.8 + 0.2);
 
 	vec4 col = color * texture2D(texture, affine) * lighting;
 	
