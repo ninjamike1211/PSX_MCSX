@@ -48,14 +48,14 @@ void main() {
 	col = GetDither(vec2(downscale.x, downscale.y / aspectRatio) * dsRes.x, col, dither_amount);
 	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
 
-	ivec2 pixelCoords = ivec2(gl_FragCoord.xy);
-	if(clamp(pixelCoords, 0, voxelMapResolution) == pixelCoords) {
-		col += texelFetch(colortex4, pixelCoords, 0).rgb;
-		col *= 0.5;
+	// ivec2 pixelCoords = ivec2(gl_FragCoord.xy);
+	// if(clamp(pixelCoords, 0, voxelMapResolution) == pixelCoords) {
+	// 	col += texelFetch(colortex4, pixelCoords, 0).rgb;
+	// 	col *= 0.5;
 
-		if(pixelCoords == ivec2(voxelMapResolution / 2))
-			col = vec3(1.0);
-	}
+	// 	if(pixelCoords == ivec2(voxelMapResolution / 2))
+	// 		col = vec3(1.0);
+	// }
 
 	gl_FragData[0].rgb = col;
 }

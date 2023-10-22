@@ -30,8 +30,15 @@ vec3 VoxelSpaceToWorldSpace(vec3 voxelPosition, vec3 cameraPosition) {
 	return voxelPosition;
 }
 
-ivec2 GetVoxelStoragePos(ivec3 voxelIndex) { // in pixels/texels
+ivec2 GetVoxelStoragePos(ivec3 voxelIndex) {
 	return (voxelIndex.xz + xzRadiusBlocks) * 16 + ivec2(voxelIndex.y % 16, voxelIndex.y / 16);
+}
+
+ivec3 GetVoxelIndex(ivec2 storagePos) {
+	ivec3 voxelIndex;
+    voxelIndex.xz = storagePos / 16 - xzRadiusBlocks;
+    voxelIndex.y = (storagePos.x % 16) + 16 * (storagePos.y % 16);
+    return voxelIndex;
 }
 
 

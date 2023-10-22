@@ -12,16 +12,19 @@ uniform vec3 previousCameraPosition;
 void main() {
 
 	ivec2 storagePos = ivec2(gl_FragCoord.xy);
+	ivec3 voxelIndex = GetVoxelIndex(storagePos);
 
 	vec4 currentBlock = texelFetch(colortex4, storagePos, 0);
 
 	ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
-	storagePos += deltaCameraPos.xz * 16;
+	// storagePos += deltaCameraPos.xz * 16;
 
-	ivec2 rowStart = (storagePos / 16) * 16;
-	storagePos.x += deltaCameraPos.y;
-	storagePos.y += (storagePos.x - rowStart.x) / 16;
-	storagePos.x = rowStart.x + (storagePos.x - rowStart.x) % 16;
+	// ivec2 rowStart = (storagePos / 16) * 16;
+	// storagePos.x += deltaCameraPos.y;
+	// storagePos.y += int((storagePos.x - rowStart.x) / 16.0) * 16;
+	// storagePos.x = rowStart.x + (storagePos.x - rowStart.x) % 16;
+	voxelIndex += deltaCameraPos;
+	storagePos = GetVoxelStoragePos(voxelIndex);
 
 	vec4 light = texelFetch(colortex5, storagePos, 0);
 

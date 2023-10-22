@@ -94,16 +94,17 @@ void main() {
 		imageStore(colorimg4, voxelIndex, lightVal);
 	}
 
+	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, previousCameraPosition)));
 	voxelPos += ivec3(gl_Normal.xyz);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
-		voxelIndex += deltaCameraPos.xz * 16;
+		// ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
+		// voxelIndex += deltaCameraPos.xz * 16;
 
-		ivec2 rowStart = (voxelIndex / 16) * 16;
-		voxelIndex.x += deltaCameraPos.y;
-		voxelIndex.y += (voxelIndex.x - rowStart.x) / 16;
-		voxelIndex.x = rowStart.x + (voxelIndex.x - rowStart.x) % 16;
+		// ivec2 rowStart = (voxelIndex / 16) * 16;
+		// voxelIndex.x += deltaCameraPos.y;
+		// voxelIndex.y += (voxelIndex.x - rowStart.x) / 16;
+		// voxelIndex.x = rowStart.x + (voxelIndex.x - rowStart.x) % 16;
 
 		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb;
 	}

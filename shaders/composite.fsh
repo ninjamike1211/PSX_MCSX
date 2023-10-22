@@ -4,6 +4,7 @@
 
 /*
 const int  colortex1Format  = R8;
+const vec4 colortex1ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 const bool colortex5Clear  = false;
 const int  colortex12Format = RGBA8_SNORM;
 const bool colortex12Clear  = false;
