@@ -34,6 +34,7 @@ ivec2 GetVoxelStoragePos(ivec3 voxelIndex) { // in pixels/texels
 	return (voxelIndex.xz + xzRadiusBlocks) * 16 + ivec2(voxelIndex.y % 16, voxelIndex.y / 16);
 }
 
+
 const vec3[] custLightColors = vec3[](
     vec3(0.0, 0.0, 0.0),
     vec3(1.0, 0.85, 0.6),

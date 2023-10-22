@@ -4,7 +4,6 @@
 
 /*
 const int  colortex1Format  = R8;
-const int  colortex4Format  = R8I;
 const bool colortex5Clear  = false;
 const int  colortex12Format = RGBA8_SNORM;
 const bool colortex12Clear  = false;
