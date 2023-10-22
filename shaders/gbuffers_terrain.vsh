@@ -81,6 +81,11 @@ void main() {
 	// Voxelization
 	vec3 playerPos = (gbufferModelViewInverse * (gl_ModelViewMatrix * gl_Vertex)).xyz;
 	vec3 centerPos = playerPos + at_midBlock/64.0;
+
+	if(all(equal(at_midBlock, vec3(0.0)))) {
+		centerPos -= 0.5 * gl_Normal.xyz;
+	}
+
 	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 	if(IsInVoxelizationVolume(voxelPos)) {
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
