@@ -1,4 +1,4 @@
-const int voxelMapResolution = 2048;
+#define voxelMapResolution 2048 // [1024 2048 4096]
 const int xzRadiusBlocks = voxelMapResolution / 32;
 
 bool IsInVoxelizationVolume(ivec3 voxelIndex) {

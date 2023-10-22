@@ -1,7 +1,5 @@
 #version 450 compatibility
 
-varying vec2 texcoord;
-
 uniform sampler2D colortex5;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
@@ -70,7 +68,7 @@ void main() {
 	// 	light = currentBlock;
 
 
-	light.rgb *= minOf2(smoothstep(1.0, 0.9, abs(texcoord * 2.0 - 1.0)));
+	// light.rgb *= minOf2(smoothstep(1.0, 0.9, abs(texcoord * 2.0 - 1.0)));
 
 	gl_FragData[0] = light;
 	// }

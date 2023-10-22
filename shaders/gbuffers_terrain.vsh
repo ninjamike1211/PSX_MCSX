@@ -80,11 +80,9 @@ void main() {
 	// Voxelization
 	vec3 playerPos = (gbufferModelViewInverse * (gl_ModelViewMatrix * gl_Vertex)).xyz;
 	vec3 centerPos = playerPos + at_midBlock/64.0;
-	ivec3 voxelPos = ivec3(SceneSpaceToVoxelSpace(centerPos, cameraPosition));
+	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 	if(IsInVoxelizationVolume(voxelPos)) {
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		// imageStore(colorimg4, voxelIndex, uvec4(mc_Entity - 10999.5) + 1);
-		// imageStore(colorimg4, voxelIndex, vec4(custLightColors[int(mc_Entity.x - 11000.5)], 1.0));
 		int blockID = int(mc_Entity.x - 10999.5);
 
 		vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.5);

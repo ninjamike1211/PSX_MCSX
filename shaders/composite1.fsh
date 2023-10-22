@@ -1,7 +1,5 @@
 #version 450 compatibility
 
-varying vec2 texcoord;
-
 uniform sampler2D colortex4;
 uniform sampler2D colortex5;
 uniform vec3 cameraPosition;
@@ -17,7 +15,7 @@ void main() {
 
 	vec4 currentBlock = texelFetch(colortex4, storagePos, 0);
 
-	ivec3 deltaCameraPos = ivec3(cameraPosition.xyz) - ivec3(previousCameraPosition.xyz);
+	ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
 	storagePos += deltaCameraPos.xz * 16;
 
 	ivec2 rowStart = (storagePos / 16) * 16;

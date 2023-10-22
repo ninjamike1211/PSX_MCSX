@@ -3,6 +3,7 @@
 
 #define composite
 #include "/shaders.settings"
+#include "/lib/voxel.glsl"
 
 #define DITHER_COLORS 128
 varying vec2 texcoord;
@@ -45,7 +46,7 @@ void main() {
 	col = GetDither(vec2(downscale.x, downscale.y / aspectRatio) * dsRes.x, col, dither_amount);
 	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
 
-	if(clamp(gl_FragCoord.xy, 0, 2048) == gl_FragCoord.xy) {
+	if(clamp(gl_FragCoord.xy, 0, voxelMapResolution) == gl_FragCoord.xy) {
 		col += imageLoad(colorimg4, ivec2(gl_FragCoord.xy)).rgb;
 		col *= 0.5;
 	}
