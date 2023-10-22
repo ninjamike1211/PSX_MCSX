@@ -17,6 +17,7 @@ varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
 varying vec3 voxelLightColor;
+varying float isText;
 
 #include "/lib/psx_util.glsl"
 
@@ -33,6 +34,10 @@ void main() {
 	vec2 affine = texcoord.xy;
 	#endif
 
+	if(isText > 0.5) {
+		affine = texcoord.xy;
+	}
+
 	vec2 lmcoordAdjusted = lmcoord.st;
 	vec4 lighting = vec4(0.0);
 	// if(any(greaterThan(voxelLightColor, vec3(0.0)))) {
@@ -43,5 +48,5 @@ void main() {
 	vec4 col = texture2D(texture, affine) * color * lighting;
 	
 	gl_FragData[0] = col;
-	gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);
+	gl_FragData[1] = vec4(isText, 0.0, 0.0, 1.0);
 }
