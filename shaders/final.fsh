@@ -9,6 +9,8 @@
 varying vec2 texcoord;
 
 uniform sampler2D colortex0;
+uniform sampler2D colortex4;
+uniform sampler2D colortex5;
 uniform sampler2D colortex7;
 uniform sampler2D colortex1;
 uniform vec2 texelSize;
@@ -16,7 +18,6 @@ uniform float viewWidth;
 uniform float viewHeight;
 uniform float aspectRatio;
 
-layout (rgba8) uniform image2D colorimg4;
 layout (rgba8) uniform image2D colorimg5;
 
 vec3 GetDither(vec2 pos, vec3 c, float intensity) {
@@ -29,6 +30,7 @@ vec3 GetDither(vec2 pos, vec3 c, float intensity) {
 	return c;
 }
 
+/* DRAWBUFFERS:0 */
 void main() {
 	vec2 baseRes = vec2(viewWidth, viewHeight);
 	vec2 dsRes = baseRes * resolution_scale;
@@ -46,9 +48,13 @@ void main() {
 	col = GetDither(vec2(downscale.x, downscale.y / aspectRatio) * dsRes.x, col, dither_amount);
 	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
 
-	if(clamp(gl_FragCoord.xy, 0, voxelMapResolution) == gl_FragCoord.xy) {
-		col += imageLoad(colorimg4, ivec2(gl_FragCoord.xy)).rgb;
+	ivec2 pixelCoords = ivec2(gl_FragCoord.xy);
+	if(clamp(pixelCoords, 0, voxelMapResolution) == pixelCoords) {
+		col += texelFetch(colortex4, pixelCoords, 0).rgb;
 		col *= 0.5;
+
+		if(pixelCoords == ivec2(voxelMapResolution / 2))
+			col = vec3(1.0);
 	}
 
 	gl_FragData[0].rgb = col;

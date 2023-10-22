@@ -22,8 +22,9 @@ uniform int blockEntityId;
 uniform ivec2 atlasSize;
 uniform float frameTimeCounter;
 uniform vec3 cameraPosition;
-uniform sampler2D colortex5;
+uniform vec3 previousCameraPosition;
 uniform mat4 gbufferModelViewInverse;
+uniform sampler2D colortex5;
 
 layout (rgba8) uniform image2D colorimg4;
 layout (rgba8) uniform image2D colorimg5;
@@ -96,6 +97,14 @@ void main() {
 	voxelPos += ivec3(gl_Normal.xyz);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
+		ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
+		voxelIndex += deltaCameraPos.xz * 16;
+
+		ivec2 rowStart = (voxelIndex / 16) * 16;
+		voxelIndex.x += deltaCameraPos.y;
+		voxelIndex.y += (voxelIndex.x - rowStart.x) / 16;
+		voxelIndex.x = rowStart.x + (voxelIndex.x - rowStart.x) % 16;
+
 		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb;
 	}
 	else {

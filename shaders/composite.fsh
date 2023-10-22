@@ -102,6 +102,7 @@ vec3 getSkyColor(vec3 fposition) {
 	return pow(L*(c*exp(d*Y)+A),invRain07)*sunVisibility *length(rawAvg) * (0.85+rainStrength*0.425)*grad3+ 0.2*pow(L2*1.2+1.2,invRain07)*moonVisibility*gradN;
 }
 
+/* DRAWBUFFERS:0 */
 void main() {
 	float depth = texture2D(depthtex0, texcoord).r;
 	float depth1 = texture2D(depthtex1, texcoord).r;
