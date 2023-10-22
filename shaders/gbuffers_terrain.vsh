@@ -89,11 +89,15 @@ void main() {
 	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 	if(IsInVoxelizationVolume(voxelPos)) {
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		int blockID = int(mc_Entity.x - 10999.5);
+		// int blockID = int(round(mc_Entity.x - 10999.5));
+		int blockID = int(round(mc_Entity.x));
 
 		vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.5);
-		if(blockID > 0 && blockID < 31) {
-			lightVal = vec4(custLightColors[blockID] /* * gl_MultiTexCoord1.x/240.0 */, 1.0);
+		if(blockID > 11000) {
+			lightVal = vec4(custLightColors[blockID - 11000] /* * gl_MultiTexCoord1.x/240.0 */, 1.0);
+		}
+		else if(blockID == 10999) {
+			lightVal.a = 0.0;
 		}
 
 		imageStore(colorimg4, voxelIndex, lightVal);
