@@ -56,7 +56,7 @@ void main() {
 	// Voxelization
 	vec3 playerPos = (gbufferModelViewInverse * gl_Vertex).xyz;
 	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos - vec3(0.0, 0.5, 0.0), cameraPosition)));
-	if(gl_VertexID % 4 == 0) {
+	if(gl_VertexID % 4 == 0 && entityId != 10002) {
 
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
