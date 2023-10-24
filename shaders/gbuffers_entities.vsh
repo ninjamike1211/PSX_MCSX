@@ -38,7 +38,7 @@ void main() {
 	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	
 	vec4 ftrans = ftransform();
-	float depth = clamp(ftrans.w, 0.001, 1000);
+	float depth = clamp(ftrans.w, 0.001, 1000.0);
 	float sqrtDepth = sqrt(depth);
 	
 	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;

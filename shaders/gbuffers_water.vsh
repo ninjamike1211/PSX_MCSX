@@ -45,7 +45,7 @@ void main() {
 	
 	// vec4 ftrans = ftransform();
 	vec4 ftrans = gl_ModelViewProjectionMatrix * vertexPos;
-	float depth = clamp(ftrans.w, 0.001, 1000);
+	float depth = clamp(ftrans.w, 0.001, 1000.0);
 	float sqrtDepth = sqrt(depth);
 	
 	vec4 position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
