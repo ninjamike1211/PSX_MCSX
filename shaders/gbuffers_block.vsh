@@ -74,38 +74,19 @@ void main() {
 
 
 	// Voxelization
-	vec3 playerPos = (gbufferModelViewInverse * (gl_ModelViewMatrix * gl_Vertex)).xyz;
-	vec3 centerPos = playerPos - 0.5 * gl_Normal.xyz;
-	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
-	if(gl_VertexID % 4 == 0 && blockEntityId > 10999) {
+	vec3 playerPos = (gbufferModelViewInverse * (gl_ModelViewMatrix * (gl_Vertex - 0.5 * vec4(gl_Normal.xyz, 0.0)))).xyz;
+	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, cameraPosition)));
+	if(gl_VertexID % 4 == 0 && blockEntityId > 11000) {
 
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-
-			vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.5);
-			if(blockEntityId > 11000) {
-				lightVal = vec4(custLightColors[blockEntityId - 11000] /* * gl_MultiTexCoord1.x/240.0 */, 1.0);
-			}
-			else if(blockEntityId == 10999) {
-				lightVal.a = 0.0;
-			}
-
-			imageStore(colorimg4, voxelIndex, lightVal);
+			imageStore(colorimg4, voxelIndex, vec4(custLightColors[blockEntityId - 11000], 1.0));
 		}
 	}
 
 	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, previousCameraPosition)));
-	// voxelPos += ivec3(gl_Normal.xyz);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		// ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
-		// voxelIndex += deltaCameraPos.xz * 16;
-
-		// ivec2 rowStart = (voxelIndex / 16) * 16;
-		// voxelIndex.x += deltaCameraPos.y;
-		// voxelIndex.y += (voxelIndex.x - rowStart.x) / 16;
-		// voxelIndex.x = rowStart.x + (voxelIndex.x - rowStart.x) % 16;
-
 		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb;
 	}
 	else {

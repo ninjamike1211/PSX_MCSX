@@ -1,26 +1,31 @@
-#version 120
+#version 420 compatibility
 #extension GL_EXT_gpu_shader4 : enable
 #include "/lib/psx_util.glsl"
 
 #define gbuffers_solid
 #define gbuffers_terrain
 #include "/shaders.settings"
+#include "/lib/voxel.glsl"
 
 varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
-varying vec4 normal;
-varying vec3 tangent;
-varying vec3 binormal;
+varying vec3 voxelLightColor;
 
 attribute vec4 mc_Entity;
+attribute vec3 at_midBlock;
+
 uniform vec2 texelSize;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferModelView;
-uniform sampler2D lightmap;
 uniform float frameTimeCounter;
 uniform vec3 cameraPosition;
+uniform vec3 previousCameraPosition;
+uniform sampler2D lightmap;
+
+layout (rgba8) uniform image2D colorimg4;
+layout (rgba8) uniform image2D colorimg5;
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
@@ -53,14 +58,32 @@ void main() {
 	color = gl_Color;
 	
 	// "Fixes" z fighting with waterlogged blocks
+	vec4 normal;
 	normal.a = 4.0 / sqrtDepth;
 	normal.xyz = normalize(gl_NormalMatrix * gl_Normal);
 	
 	position4 += normal * -0.001;
 	
 	gl_Position = position4;
-	
-	// mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
-    //                       tangent.y, binormal.y, normal.y,
-    //                       tangent.z, binormal.z, normal.z);
+
+	// Voxelization
+	vec3 centerPos = gl_Vertex.xyz + at_midBlock/64.0;
+	int blockID = int(mc_Entity.x + 0.5);
+	if(gl_VertexID % 4 == 0 && blockID > 11000) {
+		ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
+		if(IsInVoxelizationVolume(voxelPos)) {
+			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
+			imageStore(colorimg4, voxelIndex, vec4(custLightColors[blockID - 11000], 1.0));
+		}
+	}
+
+	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, previousCameraPosition)));
+	voxelPos += ivec3(gl_Normal.xyz);
+	if(IsInVoxelizationVolume(voxelPos)) {
+		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
+		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb;
+	}
+	else {
+		voxelLightColor = vec3(0.0);
+	}
 }
