@@ -1,4 +1,4 @@
-#version 450 compatibility
+#version 330 compatibility
 
 uniform sampler2D colortex4;
 uniform sampler2D colortex5;

@@ -1,6 +1,8 @@
 #define voxelMapResolution 2048 // [1024 2048 4096]
 const int xzRadiusBlocks = voxelMapResolution / 32;
 
+#define Floodfill_SkyLightFactor 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+
 bool IsInVoxelizationVolume(ivec3 voxelIndex) {
 	const ivec3 lo = ivec3(-xzRadiusBlocks    ,   0,-xzRadiusBlocks    );
 	const ivec3 hi = ivec3( xzRadiusBlocks - 1, 255, xzRadiusBlocks - 1);
@@ -88,3 +90,26 @@ const vec3[] custLightColors = vec3[](
     vec3(0.3, 0.3, 0.3),
     vec3(1.0, 0.9, 0.6)
 );
+
+vec3 getLightColor(ivec2 storagePos, sampler2D lightSampler) {
+    vec3 maxLight = vec3(0.0);
+
+    maxLight = max(maxLight, texelFetch(lightSampler, storagePos + ivec2( 0, 16), 0).rgb);
+    maxLight = max(maxLight, texelFetch(lightSampler, storagePos + ivec2( 0,-16), 0).rgb);
+    maxLight = max(maxLight, texelFetch(lightSampler, storagePos + ivec2( 16, 0), 0).rgb);
+    maxLight = max(maxLight, texelFetch(lightSampler, storagePos + ivec2(-16, 0), 0).rgb);
+
+    ivec2 rowStart = (storagePos / 16) * 16;
+    int yIndex = storagePos.x - rowStart.x + 16 * (storagePos.y - rowStart.y);
+
+    ivec2 storagePosY = rowStart + ivec2((yIndex + 1) % 16, (yIndex + 1) / 16);
+    maxLight = max(maxLight, texelFetch(lightSampler, storagePosY, 0).rgb);
+
+    storagePosY = rowStart + ivec2((yIndex - 1) % 16, (yIndex - 1) / 16);
+    maxLight = max(maxLight, texelFetch(lightSampler, storagePosY, 0).rgb);
+
+    // maxLight /= 4.0;
+    maxLight = clamp(maxLight - 1.0/16.0, 0.0, 1.0);
+
+    return maxLight;
+}

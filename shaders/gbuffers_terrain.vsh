@@ -20,6 +20,7 @@ uniform float frameTimeCounter;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform mat4 gbufferModelViewInverse;
+uniform sampler2D lightmap;
 
 layout (rgba8) uniform image2D colorimg4;
 layout (rgba8) uniform image2D colorimg5;
@@ -78,7 +79,7 @@ void main() {
 
 			vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.5);
 			if(blockID > 11000) {
-				lightVal = vec4(custLightColors[blockID - 11000] /* * gl_MultiTexCoord1.x/240.0 */, 1.0);
+				lightVal = vec4(custLightColors[blockID - 11000]/* * gl_MultiTexCoord1.x/240.0 */, 1.0);
 			}
 
 			imageStore(colorimg4, voxelIndex, lightVal);
@@ -88,8 +89,12 @@ void main() {
 	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, previousCameraPosition)));
 	voxelPos += ivec3(gl_Normal.xyz);
 	if(IsInVoxelizationVolume(voxelPos)) {
+		vec3 skyLightVal = texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)).rgb;
+		vec3 fullLightVal = texture2D(lightmap, vec2(31.0/32.0, lmcoord.y)).rgb;
+		float lightDiff = (fullLightVal.r - skyLightVal.r) * Floodfill_SkyLightFactor + (1.0 - Floodfill_SkyLightFactor);
+
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb;
+		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightDiff;
 	}
 	else {
 		voxelLightColor = vec3(0.0);
