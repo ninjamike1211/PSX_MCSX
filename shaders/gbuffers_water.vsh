@@ -36,11 +36,15 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 void main() {
 	texcoord = gl_MultiTexCoord0;
 	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
+	int blockID = int(mc_Entity.x + 0.5);
 
 	vec4 vertexPos = gl_Vertex;
 
-	if(abs(mc_Entity.x - 10001) < 0.1) {
+	if(blockID == 10001) {
 		vertexPos.y += water_wave_height * sin(water_wave_speed * frameTimeCounter + water_wave_length * (cos(water_wave_angle) * (vertexPos.x + cameraPosition.x) + sin(water_wave_angle) * (vertexPos.z + cameraPosition.z)));
+	}
+	else if(blockID == 11030) {
+		vertexPos.y += lava_wave_height * sin(lava_wave_speed * frameTimeCounter + lava_wave_length * (cos(lava_wave_angle) * (vertexPos.x + cameraPosition.x) + sin(lava_wave_angle) * (vertexPos.z + cameraPosition.z)));
 	}
 	
 	// vec4 ftrans = ftransform();
@@ -68,7 +72,6 @@ void main() {
 
 	// Voxelization
 	vec3 centerPos = gl_Vertex.xyz + at_midBlock/64.0;
-	int blockID = int(mc_Entity.x + 0.5);
 	if(gl_VertexID % 4 == 0 && blockID > 11000) {
 		ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 		if(IsInVoxelizationVolume(voxelPos)) {

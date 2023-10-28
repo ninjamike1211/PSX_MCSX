@@ -43,10 +43,6 @@ void main() {
 	color = gl_Color;
 
 	vec4 vertexPos = gl_Vertex;
-
-	if(abs(mc_Entity.x - 11030) < 0.1) {
-		vertexPos.y += lava_wave_height * sin(lava_wave_speed * frameTimeCounter + lava_wave_length * (cos(lava_wave_angle) * (vertexPos.x + cameraPosition.x) + sin(lava_wave_angle) * (vertexPos.z + cameraPosition.z)));
-	}
 	
 	// vec4 ftrans = ftransform();
 	vec4 ftrans = gl_ModelViewProjectionMatrix * vertexPos;
