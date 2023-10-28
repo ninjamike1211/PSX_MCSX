@@ -80,8 +80,9 @@ void main() {
 	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, previousCameraPosition)));
 	voxelPos += ivec3(gl_Normal.xyz);
 	if(IsInVoxelizationVolume(voxelPos)) {
+		float lightMult = getLightMult(lmcoord.y, lightmap);
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb;
+		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
 	}
 	else {
 		voxelLightColor = vec3(0.0);

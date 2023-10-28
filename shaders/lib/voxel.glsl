@@ -1,6 +1,7 @@
 #define voxelMapResolution 2048 // [1024 2048 4096]
 const int xzRadiusBlocks = voxelMapResolution / 32;
 
+#define Floodfill_Brightness 1.0 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0]
 #define Floodfill_SkyLightFactor 0.8 // [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 bool IsInVoxelizationVolume(ivec3 voxelIndex) {
@@ -41,6 +42,12 @@ ivec3 GetVoxelIndex(ivec2 storagePos) {
     voxelIndex.xz = storagePos / 16 - xzRadiusBlocks;
     voxelIndex.y = (storagePos.x % 16) + 16 * (storagePos.y % 16);
     return voxelIndex;
+}
+
+float getLightMult(float skyLmcoord, sampler2D lightmap) {
+    vec3 skyLightVal = texture2D(lightmap, vec2(1.0/32.0, skyLmcoord)).rgb;
+    vec3 fullLightVal = texture2D(lightmap, vec2(31.0/32.0, skyLmcoord)).rgb;
+    return (fullLightVal.r - skyLightVal.r) * Floodfill_SkyLightFactor + (1.0 - Floodfill_SkyLightFactor) * Floodfill_Brightness;
 }
 
 

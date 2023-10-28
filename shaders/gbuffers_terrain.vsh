@@ -89,12 +89,9 @@ void main() {
 	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, previousCameraPosition)));
 	voxelPos += ivec3(gl_Normal.xyz);
 	if(IsInVoxelizationVolume(voxelPos)) {
-		vec3 skyLightVal = texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)).rgb;
-		vec3 fullLightVal = texture2D(lightmap, vec2(31.0/32.0, lmcoord.y)).rgb;
-		float lightDiff = (fullLightVal.r - skyLightVal.r) * Floodfill_SkyLightFactor + (1.0 - Floodfill_SkyLightFactor);
-
+		float lightMult = getLightMult(lmcoord.y, lightmap);
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightDiff;
+		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
 	}
 	else {
 		voxelLightColor = vec3(0.0);

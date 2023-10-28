@@ -23,7 +23,7 @@ uniform float frameTimeCounter;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform mat4 gbufferModelViewInverse;
-uniform sampler2D colortex5;
+uniform sampler2D lightmap;
 
 layout (rgba8) uniform image2D colorimg4;
 layout (rgba8) uniform image2D colorimg5;
@@ -86,8 +86,9 @@ void main() {
 
 	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, previousCameraPosition)));
 	if(IsInVoxelizationVolume(voxelPos)) {
+		float lightMult = getLightMult(lmcoord.y, lightmap);
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb;
+		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
 	}
 	else {
 		voxelLightColor = vec3(0.0);

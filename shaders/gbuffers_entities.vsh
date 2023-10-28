@@ -20,6 +20,7 @@ uniform vec3 previousCameraPosition;
 uniform int entityId;
 uniform mat4 gbufferModelViewInverse;
 uniform sampler2D gtexture;
+uniform sampler2D lightmap;
 
 layout (rgba8) uniform image2D colorimg4;
 layout (rgba8) uniform image2D colorimg5;
@@ -89,16 +90,9 @@ void main() {
 	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, previousCameraPosition)));
 	// voxelPos += ivec3(gl_Normal.xyz);
 	if(IsInVoxelizationVolume(voxelPos)) {
+		float lightMult = getLightMult(lmcoord.y, lightmap);
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		// ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
-		// voxelIndex += deltaCameraPos.xz * 16;
-
-		// ivec2 rowStart = (voxelIndex / 16) * 16;
-		// voxelIndex.x += deltaCameraPos.y;
-		// voxelIndex.y += (voxelIndex.x - rowStart.x) / 16;
-		// voxelIndex.x = rowStart.x + (voxelIndex.x - rowStart.x) % 16;
-
-		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb;
+		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
 	}
 	else {
 		voxelLightColor = vec3(0.0);
