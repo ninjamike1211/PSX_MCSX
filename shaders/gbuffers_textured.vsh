@@ -25,9 +25,11 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
     return vec4(projMAD(gl_ProjectionMatrix, viewSpacePosition),-viewSpacePosition.z);
 }
 
-layout (rgba8) uniform image2D colorimg5;
-
 #include "/lib/voxel.glsl"
+
+#ifdef Floodfill_Particles
+	layout (rgba8) uniform image2D colorimg5;
+#endif
 
 void main() {
 	texcoord = gl_MultiTexCoord0;
@@ -45,14 +47,16 @@ void main() {
 	gl_Position = toClipSpace3(position);
 
 	// Voxelization
-	vec3 playerPos = (gbufferModelViewInverse * position4).xyz;
-	ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
-	if(IsInVoxelizationVolume(voxelPos)) {
-		float lightMult = getLightMult(lmcoord.y, lightmap);
-		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
-	}
-	else {
-		voxelLightColor = vec3(0.0);
-	}
+	#ifdef Floodfill_Particles
+		vec3 playerPos = (gbufferModelViewInverse * position4).xyz;
+		ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
+		if(IsInVoxelizationVolume(voxelPos)) {
+			float lightMult = getLightMult(lmcoord.y, lightmap);
+			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
+			voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
+		}
+		else {
+			voxelLightColor = vec3(0.0);
+		}
+	#endif
 }
