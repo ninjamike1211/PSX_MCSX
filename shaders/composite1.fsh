@@ -16,18 +16,15 @@ void main() {
 
 	vec4 currentBlock = texelFetch(colortex4, storagePos, 0);
 
-	ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
-	// storagePos += deltaCameraPos.xz * 16;
+	#ifdef Floodfill_Instant
+		gl_FragData[0] = currentBlock.a < 0.4 ? vec4(0.0) : currentBlock;
+	#else
+		ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
+		voxelIndex += deltaCameraPos;
+		storagePos = GetVoxelStoragePos(voxelIndex);
 
-	// ivec2 rowStart = (storagePos / 16) * 16;
-	// storagePos.x += deltaCameraPos.y;
-	// storagePos.y += int((storagePos.x - rowStart.x) / 16.0) * 16;
-	// storagePos.x = rowStart.x + (storagePos.x - rowStart.x) % 16;
-	voxelIndex += deltaCameraPos;
-	storagePos = GetVoxelStoragePos(voxelIndex);
-
-	vec4 light = texelFetch(colortex5, storagePos, 0);
-
-	gl_FragData[0] = currentBlock.a < 0.4 ? light : currentBlock;
+		vec4 light = vec4(texelFetch(colortex5, storagePos, 0).rgb, 0.0);
+		gl_FragData[0] = currentBlock.a < 0.4 ? light : currentBlock;
+	#endif
 
 }

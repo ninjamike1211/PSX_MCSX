@@ -1,5 +1,5 @@
 #version 120
-/* DRAWBUFFERS:6 */
+/* DRAWBUFFERS:8 */
 
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable

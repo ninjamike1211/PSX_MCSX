@@ -55,8 +55,19 @@ void main() {
 
 
 	// Voxelization
-	vec3 playerPos = (gbufferModelViewInverse * gl_Vertex).xyz;
-	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos - vec3(0.0, 0.5, 0.0), cameraPosition)));
+	vec3 playerPos = (gbufferModelViewInverse * (gl_ModelViewMatrix * (gl_Vertex + vec4(0.5, 0.0, 0.0, 0.0)))).xyz;
+
+	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, previousCameraPosition)));
+	if(IsInVoxelizationVolume(voxelPos)) {
+		float lightMult = getLightMult(lmcoord.y, lightmap);
+		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
+		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
+	}
+	else {
+		voxelLightColor = vec3(0.0);
+	}
+
+	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos - vec3(0.0, 0.5, 0.0), cameraPosition)));
 	if(gl_VertexID % 4 == 0 && entityId != 10002) {
 
 		if(IsInVoxelizationVolume(voxelPos)) {
@@ -85,16 +96,5 @@ void main() {
 
 			// imageStore(colorimg4, voxelIndex, lightVal);
 		}
-	}
-
-	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, previousCameraPosition)));
-	// voxelPos += ivec3(gl_Normal.xyz);
-	if(IsInVoxelizationVolume(voxelPos)) {
-		float lightMult = getLightMult(lmcoord.y, lightmap);
-		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
-	}
-	else {
-		voxelLightColor = vec3(0.0);
 	}
 }

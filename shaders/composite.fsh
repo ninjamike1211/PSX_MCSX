@@ -41,7 +41,7 @@ uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
 uniform sampler2D colortex0;
 uniform sampler2D colortex3;
-uniform sampler2D colortex6;
+uniform sampler2D colortex8;
 uniform sampler2D colortex7;
 uniform sampler2D colortex12;
 uniform sampler2D depthtex0;
@@ -164,7 +164,7 @@ void main() {
 	}
 	
 	vec4 sunmoon = texture2D(colortex3, texcoord) * fog_sunmoon;
-	vec4 clouds = texture2D(colortex6, texcoord);
+	vec4 clouds = texture2D(colortex8, texcoord);
 	
 	sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
 	
