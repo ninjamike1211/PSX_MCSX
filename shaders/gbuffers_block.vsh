@@ -79,7 +79,7 @@ void main() {
 	vec3 tangent = mat3(gbufferModelViewInverse) * (gl_NormalMatrix * at_tangent);
 	vec3 bitangent = cross(normal, tangent);
 
-	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, previousCameraPosition)));
+	ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		float lightMult = getLightMult(lmcoord.y, lightmap);
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);

@@ -72,15 +72,8 @@ void main() {
 
 	// Voxelization
 	vec3 centerPos = gl_Vertex.xyz + at_midBlock/64.0;
-	if(gl_VertexID % 4 == 0 && blockID > 11000) {
-		ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
-		if(IsInVoxelizationVolume(voxelPos)) {
-			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-			imageStore(colorimg4, voxelIndex, vec4(custLightColors[blockID - 11000], 1.0));
-		}
-	}
 
-	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, previousCameraPosition)));
+	ivec3 voxelPos = getPreviousVoxelIndex(centerPos, cameraPosition, previousCameraPosition);
 	voxelPos += ivec3(gl_Normal.xyz);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		float lightMult = getLightMult(lmcoord.y, lightmap);
@@ -89,5 +82,13 @@ void main() {
 	}
 	else {
 		voxelLightColor = vec3(0.0);
+	}
+
+	if(gl_VertexID % 4 == 0 && blockID > 11000) {
+		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
+		if(IsInVoxelizationVolume(voxelPos)) {
+			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
+			imageStore(colorimg4, voxelIndex, vec4(custLightColors[blockID - 11000], 1.0));
+		}
 	}
 }

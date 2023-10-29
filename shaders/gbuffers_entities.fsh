@@ -39,15 +39,11 @@ void main() {
 		gl_FragData[0] = vec4(1.0);
 	}
 	else {
-		vec2 lmcoordAdjusted = lmcoord.st;
-		vec4 lighting = vec4(0.0);
-		// if(any(greaterThan(voxelLightColor, vec3(0.0)))) {
-			lighting.rgb += voxelLightColor;
-			lmcoordAdjusted.s = 1.0/32.0;
-		// }
-		lighting += (texture2D(lightmap, lmcoordAdjusted.st) * 0.8 + 0.2);
 		vec4 col = texture2D(texture, affine) * color;
 		col.rgb = mix(col.rgb, entityColor.rgb, entityColor.a);
+		
+		vec4 lighting = vec4(voxelLightColor, 0.0);
+		lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
 		col *= lighting;
 		
 		gl_FragData[0] = col;

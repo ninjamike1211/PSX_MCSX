@@ -57,7 +57,7 @@ void main() {
 	// Voxelization
 	vec3 playerPos = (gbufferModelViewInverse * (gl_ModelViewMatrix * (gl_Vertex + vec4(0.5, 0.0, 0.0, 0.0)))).xyz;
 
-	ivec3 voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, previousCameraPosition)));
+	ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		float lightMult = getLightMult(lmcoord.y, lightmap);
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
@@ -93,8 +93,6 @@ void main() {
 			else if(cornerColor == vec4(0.0, 1.0, 1.0, 25.0/255.0)) {
 				imageStore(colorimg4, voxelIndex, vec4(custLightColors[1] * 0.25, 1.0));
 			}
-
-			// imageStore(colorimg4, voxelIndex, lightVal);
 		}
 	}
 }

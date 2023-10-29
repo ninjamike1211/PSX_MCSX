@@ -45,6 +45,11 @@ ivec3 GetVoxelIndex(ivec2 storagePos) {
     return voxelIndex;
 }
 
+ivec3 getPreviousVoxelIndex(vec3 playerPos, vec3 cameraPosition, vec3 previousCameraPosition) {
+    playerPos += cameraPosition - previousCameraPosition;
+    return ivec3(floor(SceneSpaceToVoxelSpace(playerPos, previousCameraPosition)));
+}
+
 float getLightMult(float skyLmcoord, sampler2D lightmap) {
     vec3 skyLightVal = texture2D(lightmap, vec2(1.0/32.0, skyLmcoord)).rgb;
     vec3 fullLightVal = texture2D(lightmap, vec2(31.0/32.0, skyLmcoord)).rgb;
