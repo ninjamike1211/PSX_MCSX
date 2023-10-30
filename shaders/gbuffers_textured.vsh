@@ -28,7 +28,7 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 #include "/lib/voxel.glsl"
 
 #ifdef Floodfill_Particles
-	layout (rgba8) uniform image2D colorimg5;
+	readonly layout (rgba8) uniform image2D colorimg5;
 #endif
 
 void main() {

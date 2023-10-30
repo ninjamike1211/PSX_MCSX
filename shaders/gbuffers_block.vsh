@@ -25,8 +25,8 @@ uniform vec3 previousCameraPosition;
 uniform mat4 gbufferModelViewInverse;
 uniform sampler2D lightmap;
 
-layout (rgba8) uniform image2D colorimg4;
-layout (rgba8) uniform image2D colorimg5;
+writeonly layout (rgba8) uniform image2D colorimg4;
+readonly layout (rgba8) uniform image2D colorimg5;
 
 #include "/lib/voxel.glsl"
 

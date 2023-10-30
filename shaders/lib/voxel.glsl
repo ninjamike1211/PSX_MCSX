@@ -102,7 +102,8 @@ const vec3[] custLightColors = vec3[](
     vec3(0.6, 0.6, 0.6),
     vec3(0.3, 0.3, 0.3),
     vec3(0.3, 0.3, 0.3),
-    vec3(1.0, 0.9, 0.6)
+    vec3(1.0, 0.9, 0.6),
+    vec3(0.4, 0.6, 0.7)
 );
 
 vec3 getLightColor(ivec2 storagePos, sampler2D lightSampler) {

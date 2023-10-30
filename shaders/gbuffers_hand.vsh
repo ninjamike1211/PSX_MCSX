@@ -21,7 +21,7 @@ uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform sampler2D lightmap;
 
-layout (rgba8) uniform image2D colorimg5;
+readonly layout (rgba8) uniform image2D colorimg5;
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
