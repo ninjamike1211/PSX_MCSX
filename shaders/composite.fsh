@@ -206,7 +206,9 @@ void main() {
 				#elif fog_Darken_Mode == 2
 					fogColorFinal *= mix(0.12, 1.0, eyeBrightnessSmooth.y / 240.0);
 				#elif fog_Darken_Mode == 3
-					fogColorFinal *= mix(0.12, 1.0, texture2D(colortex12, vec2(0.0)).a);
+					float caveFactor = texture2D(colortex12, vec2(0.0)).a;
+					fogColorFinal *= mix(0.12, 1.0, caveFactor);
+					sunmoon *= caveFactor;
 				#endif
 			#ifdef fog_Cave_SkipSky
 				}
