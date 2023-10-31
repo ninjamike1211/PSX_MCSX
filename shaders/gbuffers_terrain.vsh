@@ -78,13 +78,13 @@ void main() {
 		voxelLightColor = vec3(0.0);
 	}
 
-	if(gl_VertexID % 4 == 0 && (blockID < 10990 || blockID > 11000)) {
+	if(gl_VertexID % 4 == 0 && (blockID < 10990 || blockID >= 11000)) {
 		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
 
 			vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.5);
-			if(blockID > 11000) {
+			if(blockID >= 11000) {
 				lightVal = vec4(custLightColors[blockID - 11000], 1.0);
 			}
 

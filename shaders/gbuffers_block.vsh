@@ -90,7 +90,7 @@ void main() {
 	}
 
 	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos - 0.5 * (normal + tangent + bitangent), cameraPosition)));
-	if(gl_VertexID % 4 == 0 && blockEntityId > 11000) {
+	if(gl_VertexID % 4 == 0 && blockEntityId >= 11000) {
 
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);

@@ -84,7 +84,7 @@ void main() {
 		voxelLightColor = vec3(0.0);
 	}
 
-	if(gl_VertexID % 4 == 0 && blockID > 11000) {
+	if(gl_VertexID % 4 == 0 && blockID >= 11000) {
 		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);

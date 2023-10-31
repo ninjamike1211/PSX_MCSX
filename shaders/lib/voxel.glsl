@@ -59,9 +59,9 @@ float getLightMult(float skyLmcoord, sampler2D lightmap) {
 
 
 const vec3[] custLightColors = vec3[](
-    vec3(0.0, 0.0, 0.0),
     vec3(1.0, 0.85, 0.6),
     vec3(1.0, 0.7, 0.2),
+    vec3(1.0, 0.5, 0.0),
     vec3(1.0, 0.3, 0.1),
     vec3(0.8, 0.2, 1.0),
     vec3(0.2, 0.7, 1.0),

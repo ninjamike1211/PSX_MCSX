@@ -74,17 +74,17 @@ void main() {
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
 
-			if(entityId > 11000) {
+			if(entityId >= 11000) {
 				imageStore(colorimg4, voxelIndex, vec4(custLightColors[entityId - 11000], 1.0));
 			}
 			else {
 				vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.0);
 				vec4 cornerColor = texture2D(gtexture, 0.8 * ((gl_MultiTexCoord0).xy + 0.25 * mc_midTexCoord));
 				if(cornerColor == vec4(0.0, 1.0, 0.0, 25.0/255.0)) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[1], 1.0));
+					imageStore(colorimg4, voxelIndex, vec4(custLightColors[0], 1.0));
 				}
-				else if(cornerColor == vec4(1.0, 1.0, 0.0, 25.0/255.0) || atlasSize.x != 0) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[2], 1.0));
+				else if(cornerColor == vec4(1.0, 1.0, 0.0, 25.0/255.0)) {
+					imageStore(colorimg4, voxelIndex, vec4(custLightColors[1], 1.0));
 				}
 				else if(cornerColor == vec4(1.0, 0.0, 0.0, 25.0/255.0)) {
 					imageStore(colorimg4, voxelIndex, vec4(custLightColors[3], 1.0));
@@ -96,7 +96,10 @@ void main() {
 					imageStore(colorimg4, voxelIndex, vec4(custLightColors[5], 1.0));
 				}
 				else if(cornerColor == vec4(0.0, 1.0, 1.0, 25.0/255.0)) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[1] * 0.25, 1.0));
+					imageStore(colorimg4, voxelIndex, vec4(custLightColors[0] * 0.25, 1.0));
+				}
+				else if(atlasSize.x != 0) {
+					imageStore(colorimg4, voxelIndex, vec4(custLightColors[2], 1.0));
 				}
 			}
 		}
