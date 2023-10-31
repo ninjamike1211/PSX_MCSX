@@ -83,10 +83,10 @@ void main() {
 				if(cornerColor == vec4(0.0, 1.0, 0.0, 25.0/255.0)) {
 					imageStore(colorimg4, voxelIndex, vec4(custLightColors[1], 1.0));
 				}
-				else if(cornerColor == vec4(1.0, 1.0, 0.0, 25.0/255.0)) {
+				else if(cornerColor == vec4(1.0, 1.0, 0.0, 25.0/255.0) || atlasSize.x != 0) {
 					imageStore(colorimg4, voxelIndex, vec4(custLightColors[2], 1.0));
 				}
-				else if(cornerColor == vec4(1.0, 0.0, 0.0, 25.0/255.0) || atlasSize.x != 0) {
+				else if(cornerColor == vec4(1.0, 0.0, 0.0, 25.0/255.0)) {
 					imageStore(colorimg4, voxelIndex, vec4(custLightColors[3], 1.0));
 				}
 				else if(cornerColor == vec4(1.0, 0.0, 1.0, 25.0/255.0)) {
