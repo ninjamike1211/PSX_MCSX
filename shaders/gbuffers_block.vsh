@@ -13,7 +13,8 @@ varying vec4 color;
 varying vec3 voxelLightColor;
 varying float isText;
 
-attribute vec3 at_tangent;
+attribute vec4 at_tangent;
+attribute vec2 mc_midTexCoord;
 uniform sampler2D depthtex1;
 
 uniform bool inNether;
@@ -74,11 +75,13 @@ void main() {
 
 
 	// Voxelization
-	vec3 playerPos = (gbufferModelViewInverse * (gl_ModelViewMatrix * gl_Vertex)).xyz;
-	vec3 normal = mat3(gbufferModelViewInverse) * (gl_NormalMatrix * gl_Normal);
-	vec3 tangent = mat3(gbufferModelViewInverse) * (gl_NormalMatrix * at_tangent);
-	vec3 bitangent = cross(normal, tangent);
+	vec2 centerDir = sign(mc_midTexCoord - texcoord.xy);
+	vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
+	vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
+	vec3 tangent = normalize(gl_NormalMatrix * at_tangent.xyz);
+	vec3 bitangent = cross(normal, tangent) * sign(-at_tangent.w);
 
+	vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.5*normal + 0.01*centerDir.x*tangent + 0.01*centerDir.y*bitangent, 1.0)).xyz;
 	ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		float lightMult = getLightMult(lmcoord.y, lightmap);
@@ -89,8 +92,9 @@ void main() {
 		voxelLightColor = vec3(0.0);
 	}
 
-	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos - 0.5 * (normal + tangent + bitangent), cameraPosition)));
 	if(gl_VertexID % 4 == 0 && blockEntityId >= 11000) {
+		playerPos = (gbufferModelViewInverse * vec4(viewPos - 0.5*normal + 0.01*centerDir.x*tangent + 0.01*centerDir.y*bitangent, 1.0)).xyz;
+		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, cameraPosition)));
 
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);

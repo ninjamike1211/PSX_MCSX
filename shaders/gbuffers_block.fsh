@@ -16,7 +16,7 @@ varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
-varying vec3 voxelLightColor;
+in vec3 voxelLightColor;
 varying float isText;
 
 #include "/lib/psx_util.glsl"
