@@ -104,9 +104,6 @@ void main() {
 				else if(cornerColor == vec4(0.0, 1.0, 1.0, 25.0/255.0) && entityId != 10002) {
 					imageStore(colorimg4, voxelIndex, vec4(custLightColors[0] * 0.25, 1.0));
 				}
-				// else if(atlasSize.x != 0) {
-				// 	imageStore(colorimg4, voxelIndex, vec4(custLightColors[2], 1.0));
-				// }
 			}
 		}
 	}
