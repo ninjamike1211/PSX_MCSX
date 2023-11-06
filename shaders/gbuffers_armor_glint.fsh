@@ -43,8 +43,5 @@ void main() {
 
 	col.rgb = pow(col.rgb*enchanted_strength, lighting);
 
-	// col += 0.5;
-	col = vec4(0.5);
-
 	gl_FragData[0] = col;
 }

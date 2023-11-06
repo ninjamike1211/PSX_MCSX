@@ -63,10 +63,15 @@ void main() {
 
 
 
-	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
-	vec3 position;
+	vec4 position4 = gl_ModelViewMatrix * gl_Vertex + gl_ModelViewMatrix[3].xyzw;
+	vec3 position = position4.xyz;
 	
 	if(renderStage == MC_RENDER_STAGE_HAND_SOLID) {
+		if(gl_VertexID < 9) {
+			gl_Position = vec4(-10.0);
+			return;
+		}
+		
 		position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
 	}
 	else {
