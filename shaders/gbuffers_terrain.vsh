@@ -67,8 +67,10 @@ void main() {
 	int blockID = int(mc_Entity.x + 0.5);
 
 	ivec3 voxelPos = getPreviousVoxelIndex(centerPos, cameraPosition, previousCameraPosition);
-	if(all(greaterThan(abs(at_midBlock), vec3(27.0))))
+	if(all(greaterThan(abs(at_midBlock), vec3(27.0))) && any(equal(gl_Normal * sign(at_midBlock), vec3(-1.0)))) {
 		voxelPos += ivec3(gl_Normal.xyz);
+	}
+
 	if(IsInVoxelizationVolume(voxelPos)) {
 		float lightMult = getLightMult(lmcoord.y, lightmap);
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
