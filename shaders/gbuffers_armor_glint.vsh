@@ -30,7 +30,7 @@ void main() {
 	vec3 position = position4.xyz;
 	
 	if(renderStage == MC_RENDER_STAGE_HAND_SOLID) {
-		if(gl_VertexID < 9) {
+		if(gl_VertexID < 4 || gl_VertexID > 8) {
 			gl_Position = vec4(-10.0);
 			return;
 		}
