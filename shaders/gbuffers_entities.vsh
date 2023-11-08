@@ -13,6 +13,7 @@ varying vec4 color;
 varying vec3 voxelLightColor;
 
 attribute vec2 mc_midTexCoord;
+attribute vec4 at_tangent;
 
 uniform ivec2 atlasSize;
 uniform vec2 texelSize;
@@ -56,8 +57,13 @@ void main() {
 
 
 	// Voxelization
-	vec3 playerPos = (gbufferModelViewInverse * (gl_ModelViewMatrix * (gl_Vertex + vec4(0.5, 0.0, 0.0, 0.0)))).xyz;
+	vec2 centerDir = sign(mc_midTexCoord - texcoord.xy);
+	vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
+	vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
+	vec3 tangent = normalize(gl_NormalMatrix * at_tangent.xyz);
+	vec3 bitangent = cross(normal, tangent) * sign(-at_tangent.w);
 
+	vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.25*centerDir.x*tangent + 0.25*centerDir.y*bitangent, 1.0)).xyz;
 	ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		float lightMult = getLightMult(lmcoord.y, lightmap);
