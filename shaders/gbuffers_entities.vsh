@@ -63,7 +63,7 @@ void main() {
 	vec3 tangent = normalize(gl_NormalMatrix * at_tangent.xyz);
 	vec3 bitangent = cross(normal, tangent) * sign(-at_tangent.w);
 
-	vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.25*centerDir.x*tangent + 0.25*centerDir.y*bitangent, 1.0)).xyz;
+	vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.125*centerDir.x*tangent + 0.125*centerDir.y*bitangent, 1.0)).xyz;
 	ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		float lightMult = getLightMult(lmcoord.y, lightmap);
@@ -78,7 +78,8 @@ void main() {
 		voxelLightColor += item_glow;
 	}
 
-	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos - vec3(0.0, 0.5, 0.0), cameraPosition)));
+	playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.5*centerDir.x*tangent + 0.5*centerDir.y*bitangent, 1.0)).xyz;
+	voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, cameraPosition)));
 	if(gl_VertexID % 4 == 0) {
 
 		if(IsInVoxelizationVolume(voxelPos)) {
