@@ -1,4 +1,4 @@
-#version 120
+#version 330 compatibility
 /* DRAWBUFFERS:0 */
 // Skybox and rain shader code from Sildurs Vibrant Shaders
 
@@ -183,16 +183,12 @@ void main() {
 	else if(inEnd) {
 		if(isEyeInWater == 0)
 			fogColorFinal = texture2D(colortex3, texcoord).xyz;
-			// fogColorFinal = vec3(26, 0, 41) / 200.0 + fogColor;
-			// fogColorFinal = sky ? texture2D(colortex3, texcoord).xyz : 0.08 + fogColor;
 		else if(isEyeInWater == 1)
 			fogColorFinal = (fogColor + length(skyCol));
 		else if(isEyeInWater == 2)
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
 		else if(isEyeInWater == 3)
 			fogColorFinal = vec3(1.0);
-
-		// fogColorFinal = fogColor;
 	}
 	else {
 		if(isEyeInWater == 0) {
@@ -202,14 +198,15 @@ void main() {
 				if(depth < 1.0) {
 			#endif
 				#if fog_Darken_Mode == 1
-					fogColorFinal *= (smoothstep(54.0, 58.0, eyeAltitude) * 0.88 + 0.12);
+					float caveFactor = smoothstep(54.0, 58.0, eyeAltitude);
 				#elif fog_Darken_Mode == 2
-					fogColorFinal *= mix(0.12, 1.0, eyeBrightnessSmooth.y / 240.0);
+					float caveFactor = eyeBrightnessSmooth.y / 240.0;
 				#elif fog_Darken_Mode == 3
-					float caveFactor = texture2D(colortex12, vec2(0.0)).a;
-					fogColorFinal *= mix(0.12, 1.0, caveFactor);
-					sunmoon *= caveFactor;
+					float caveFactor = texelFetch(colortex12, ivec2(0), 0).a;
 				#endif
+
+				fogColorFinal *= mix(0.12, 1.0, caveFactor);
+				sunmoon *= caveFactor;
 			#ifdef fog_Cave_SkipSky
 				}
 			#endif
@@ -236,22 +233,6 @@ void main() {
 	
 	vec4 rain = texture2D(colortex7, texcoord);
 	if (rain.r > 0.0001 && rainStrength > 0.01 && !(depth1 < texture2D(depthtex2, texcoord).x)){
-		// float rainRGB = 0.25;
-		// float rainA = rain.r;
-
-		// float torch_lightmap = 12.0 - min(rain.g/rain.r * 12.0,11.0);
-		// torch_lightmap = 0.5 / torch_lightmap / torch_lightmap - 0.010595;
-
-		// const vec3 moonlight = vec3(0.0025, 0.0045, 0.007);
-		// vec3 rainC = rainRGB*(pow(max(dot(normalfragpos, sunVec)*0.1+0.9,0.0),6.0)*(0.1+tr*0.9)*pow(sunlight,vec3(0.25))*sunVisibility+pow(max(dot(normalfragpos, -sunVec)*0.05+0.95,0.0),6.0)*48.0*moonlight*moonVisibility)*0.04 + 0.05*rainRGB*length(avgAmbient2);
-		// rainC += torch_lightmap*vec3(1.0,1.0,0.5);
-
-		// // rainC *= vec3(0.0, 0.0, 1.0);
-
-		// col = ((1.0-rainA*0.3)+rainC*1.5*rainA)*0.3;
-
-		// col *= vec3(0.5, 0.5, 2.0);
-
 		col.rgb = mix(col.rgb, rain.rgb, rain.a);
 	}
 	
