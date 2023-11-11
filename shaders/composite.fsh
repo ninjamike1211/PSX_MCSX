@@ -124,7 +124,7 @@ void main() {
 	bool skyNoClouds = depth1 >= 1.0;
 	
 	#ifdef fog_enabled
-		float fogDepth;
+		float fogDepth = -1.0;
 		
 		if(isEyeInWater == 0) {
 			if(inNether) {
@@ -158,7 +158,7 @@ void main() {
 	#endif
 	vec3 col = texture2D(colortex0, texcoord).rgb;
 	
-	vec3 skyCol;
+	vec3 skyCol = vec3(-1.0);
 	if (texcoord.x < 1.0 && texcoord.y < 1.0 && texcoord.x > 0.0 && texcoord.y > 0.0 && fogDepth > 0.0) {
 		skyCol = getSkyColor(fragpos.xyz);
 	}
@@ -168,7 +168,7 @@ void main() {
 	
 	sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
 	
-	vec3 fogColorFinal;
+	vec3 fogColorFinal = vec3(-1.0);
 
 	if(inNether) {
 		if(isEyeInWater == 0)
