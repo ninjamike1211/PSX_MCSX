@@ -203,6 +203,8 @@ void main() {
 					float caveFactor = eyeBrightnessSmooth.y / 240.0;
 				#elif fog_Darken_Mode == 3
 					float caveFactor = texelFetch(colortex12, ivec2(0), 0).a;
+				#else
+					float caveFactor = 1.0;
 				#endif
 
 				fogColorFinal *= mix(0.12, 1.0, caveFactor);

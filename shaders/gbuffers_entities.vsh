@@ -21,6 +21,7 @@ uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform int entityId;
 uniform mat4 gbufferModelViewInverse;
+uniform float frameTimeCounter;
 uniform sampler2D gtexture;
 uniform sampler2D lightmap;
 
@@ -75,7 +76,7 @@ void main() {
 	}
 
 	if(entityId == 10003) {
-		voxelLightColor += item_glow;
+		voxelLightColor += mix(vec3(item_darkColor), vec3(item_lightColor), sin(frameTimeCounter * item_speed) * 0.5 + 0.5);
 	}
 
 	playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.5*centerDir.x*tangent + 0.5*centerDir.y*bitangent, 1.0)).xyz;
