@@ -52,8 +52,6 @@ void main() {
 	
 	gl_Position = toClipSpace3(position);
 
-	// gl_Position = gl_ModelViewProjectionMatrix * position4;
-
 	// Voxelization
 	ivec3 voxelPos = getPreviousVoxelIndex(vec3(0.0), cameraPosition, previousCameraPosition);
 	if(IsInVoxelizationVolume(voxelPos)) {
