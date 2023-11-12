@@ -45,8 +45,8 @@ void main() {
 
 	vec3 position = position4.xyz;
 
-	// if(heldItemId != 10001 && heldItemId2 != 10001)
-	// 	position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
+	if(heldItemId != 10001 && heldItemId2 != 10001)
+		position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
 
 	color = gl_Color;
 	
