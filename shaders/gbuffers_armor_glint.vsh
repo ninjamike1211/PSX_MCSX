@@ -45,7 +45,9 @@ void main() {
 		position = PixelSnap(position4, vertex_inaccuracy_entities / sqrtDepth).xyz;
 	}
 	
-	gl_Position = toClipSpace3(position);
+	// gl_Position = toClipSpace3(position);
+
+	gl_Position = ftransform();
 
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, 0.0, 10000.0);

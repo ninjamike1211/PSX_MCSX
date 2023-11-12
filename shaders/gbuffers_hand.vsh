@@ -50,9 +50,11 @@ void main() {
 
 	color = gl_Color;
 	
-	gl_Position = toClipSpace3(position);
+	// gl_Position = toClipSpace3(position);
 
 	// gl_Position = gl_ModelViewProjectionMatrix * position4;
+
+	gl_Position = ftransform();
 
 	// Voxelization
 	ivec3 voxelPos = getPreviousVoxelIndex(vec3(0.0), cameraPosition, previousCameraPosition);
