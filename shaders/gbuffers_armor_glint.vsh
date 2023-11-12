@@ -35,7 +35,7 @@ void main() {
 		// 	return;
 		// }
 		
-		position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
+		// position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
 	}
 	else {
 		vec4 ftrans = ftransform();
@@ -45,9 +45,7 @@ void main() {
 		position = PixelSnap(position4, vertex_inaccuracy_entities / sqrtDepth).xyz;
 	}
 	
-	// gl_Position = toClipSpace3(position);
-
-	gl_Position = ftransform();
+	gl_Position = toClipSpace3(position);
 
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, 0.0, 10000.0);

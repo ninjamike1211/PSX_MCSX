@@ -45,16 +45,14 @@ void main() {
 
 	vec3 position = position4.xyz;
 
-	if(heldItemId != 10001 && heldItemId2 != 10001)
-		position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
+	// if(heldItemId != 10001 && heldItemId2 != 10001)
+	// 	position = PixelSnap(position4, vertex_inaccuracy_hand).xyz;
 
 	color = gl_Color;
 	
-	// gl_Position = toClipSpace3(position);
+	gl_Position = toClipSpace3(position);
 
 	// gl_Position = gl_ModelViewProjectionMatrix * position4;
-
-	gl_Position = ftransform();
 
 	// Voxelization
 	ivec3 voxelPos = getPreviousVoxelIndex(vec3(0.0), cameraPosition, previousCameraPosition);
