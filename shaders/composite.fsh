@@ -40,6 +40,7 @@ uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
 uniform sampler2D colortex0;
+uniform sampler2D colortex2;
 uniform sampler2D colortex3;
 uniform sampler2D colortex8;
 uniform sampler2D colortex7;
@@ -112,12 +113,19 @@ void main() {
 	fragpos /= fragpos.w;
 	vec3 normalfragpos = normalize(fragpos.xyz);
 
+	vec4 fragpos_water = gbufferProjectionInverse * (vec4(texcoord, depth, 1.0) * 2.0 - 1.0);
+	fragpos_water /= fragpos_water.w;
+	vec3 normalfragpos_water = normalize(fragpos_water.xyz);
+
 	#if fog_depth_type == 0
-		float linearDepth = linearizeDepthFast(depth);
+		float linearDepth = linearizeDepthFast(depth1);
+		float linearDepth_water = linearizeDepthFast(depth);
 	#elif fog_depth_type == 1
 		float linearDepth = length(fragpos.xyz);
+		float linearDepth_water = length(fragpos_water.xyz);
 	#elif fog_depth_type == 2
 		float linearDepth = length((gbufferModelViewInverse * fragpos).xz);
+		float linearDepth_water = length((gbufferModelViewInverse * fragpos_water).xz);
 	#endif
 	
 	bool sky = depth >= 1.0;
@@ -125,38 +133,55 @@ void main() {
 	
 	#ifdef fog_enabled
 		float fogDepth = -1.0;
+		float fogDepth_water = -1.0;
 		
 		if(isEyeInWater == 0) {
 			if(inNether) {
 				fogDepth = (linearDepth - fog_distance_nether) / fog_slope_nether;
+				fogDepth_water = (linearDepth_water - fog_distance_nether) / fog_slope_nether;
 			}
 			else if(inEnd) {
 				fogDepth = (linearDepth - fog_distance_end) / fog_slope_end;
+				fogDepth_water = (linearDepth_water - fog_distance_end) / fog_slope_end;
 			}
 			else {
-				if(rainStrength == 0.0)
+				if(rainStrength == 0.0) {
 					fogDepth = (linearDepth - fog_distance) / fog_slope;
-				else if(rainStrength == 1.0)
+					fogDepth_water = (linearDepth_water - fog_distance) / fog_slope;
+				}
+				else if(rainStrength == 1.0) {
 					fogDepth = (linearDepth - fog_rain_distance) / fog_rain_slope;
-				else
+					fogDepth_water = (linearDepth_water - fog_rain_distance) / fog_rain_slope;
+				}
+				else {
 					fogDepth = (linearDepth - mix(fog_distance, fog_rain_distance, rainStrength)) / mix(fog_slope, fog_rain_slope, rainStrength);
+					fogDepth_water = (linearDepth_water - mix(fog_distance, fog_rain_distance, rainStrength)) / mix(fog_slope, fog_rain_slope, rainStrength);
+				}
 			}
 		}
-		else if(isEyeInWater == 1)
+		else if(isEyeInWater == 1) {
 			fogDepth = (linearDepth - fog_distance_water) / fog_slope_water;
-		else if(isEyeInWater == 2)
+			fogDepth_water = (linearDepth_water - fog_distance_water) / fog_slope_water;
+		}
+		else if(isEyeInWater == 2) {
 			fogDepth = (linearDepth - fog_distance_lava) / fog_slope_lava;
-		else if(isEyeInWater == 3)
+			fogDepth_water = (linearDepth_water - fog_distance_lava) / fog_slope_lava;
+		}
+		else if(isEyeInWater == 3) {
 			fogDepth = (linearDepth - fog_distance_snow) / fog_slope_snow;
+			fogDepth_water = (linearDepth_water - fog_distance_snow) / fog_slope_snow;
+		}
 
 		fogDepth = (sky) ? 1.0 : clamp(log2(fogDepth + 1.0), 0.0, 1.0);
+		fogDepth_water = (sky) ? 1.0 : clamp(log2(fogDepth_water + 1.0), 0.0, 1.0);
 
-		if(fogDepth >= 0.99)
+		if(fogDepth_water >= 0.99)
 			sky = true;
 	#else
 		float fogDepth = (sky) ? 1.0 : 0.0;
 	#endif
 	vec3 col = texture2D(colortex0, texcoord).rgb;
+	vec4 col_water = texture2D(colortex2, texcoord);
 	
 	vec3 skyCol = vec3(-1.0);
 	if (texcoord.x < 1.0 && texcoord.y < 1.0 && texcoord.x > 0.0 && texcoord.y > 0.0 && fogDepth > 0.0) {
@@ -195,7 +220,7 @@ void main() {
 			fogColorFinal = (skyColor + skyCol);
 
 			#ifdef fog_Cave_SkipSky
-				if(depth < 1.0) {
+				if(!sky) {
 			#endif
 				#if fog_Darken_Mode == 1
 					float caveFactor = smoothstep(54.0, 58.0, eyeAltitude);
@@ -228,10 +253,14 @@ void main() {
 		col = mix(clouds.rgb, fogColorFinal, cloudsDepth);
 		col += sunmoon.rgb/2 * vec3(skyNoClouds?1.0:0.0);
 	} else {
+		col_water.rgb /= col_water.a;
+		col_water.rgb = mix(col_water.rgb, fogColorFinal, fogDepth_water);
 		col = mix(col, fogColorFinal, fogDepth);
+		col = mix(col, col_water.rgb, col_water.a);
 		if(!inEnd)
 			col += sunmoon.rgb * vec3(sky?1.0:0.0);
 	}
+
 	
 	vec4 rain = texture2D(colortex7, texcoord);
 	if (rain.r > 0.0001 && rainStrength > 0.01 && !(depth1 < texture2D(depthtex2, texcoord).x)){
