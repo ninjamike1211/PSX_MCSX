@@ -256,7 +256,9 @@ void main() {
 		col_water.rgb /= col_water.a;
 		col_water.rgb = mix(col_water.rgb, fogColorFinal, fogDepth_water);
 		col = mix(col, fogColorFinal, fogDepth);
-		col = mix(col, col_water.rgb, col_water.a);
+		if(col_water.a > 0.5/255.0)
+			col = mix(col, col_water.rgb, col_water.a);
+			
 		if(!inEnd)
 			col += sunmoon.rgb * vec3(sky?1.0:0.0);
 	}
