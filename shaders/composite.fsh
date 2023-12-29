@@ -76,10 +76,7 @@ vec3 saturation(vec3 color, float intensity) {
 }
 
 vec3 adjustSkyColor(vec3 skyColor) {
-	if(gl_FragCoord.x < 2560.0/2.0)
-		return saturation(skyColor, 1.8) * vec3(1.2, 0.9, 1.4);
-	else
-		return skyColor;
+	return saturation(skyColor, 1.8) * vec3(1.2, 0.9, 1.4);
 }
 
 vec3 getSkyColor(vec3 fposition) {
