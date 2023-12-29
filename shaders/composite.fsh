@@ -67,6 +67,21 @@ float linearizeDepthFast(float depth) {
 	return (near * far) / (depth * (near - far) + far);
 }
 
+float luminance(vec3 v) {
+    return dot(v, vec3(0.2126f, 0.7152f, 0.0722f));
+}
+
+vec3 saturation(vec3 color, float intensity) {
+    return mix(vec3(luminance(color)), color, intensity);
+}
+
+vec3 adjustSkyColor(vec3 skyColor) {
+	if(gl_FragCoord.x < 2560.0/2.0)
+		return saturation(skyColor, 1.8) * vec3(1.2, 0.9, 1.4);
+	else
+		return skyColor;
+}
+
 vec3 getSkyColor(vec3 fposition) {
 	const vec3 moonlightS = vec3(0.00575, 0.0105, 0.014);
 	vec3 sVector = normalize(fposition);
@@ -217,7 +232,7 @@ void main() {
 	}
 	else {
 		if(isEyeInWater == 0) {
-			fogColorFinal = (skyColor + skyCol);
+			fogColorFinal = (adjustSkyColor(skyColor) + skyCol);
 
 			#ifdef fog_Cave_SkipSky
 				if(!sky) {
