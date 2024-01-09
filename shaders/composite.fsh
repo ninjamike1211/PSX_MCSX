@@ -229,7 +229,8 @@ void main() {
 	}
 	else {
 		if(isEyeInWater == 0) {
-			fogColorFinal = (adjustSkyColor(skyColor) + skyCol);
+
+			fogColorFinal = (mix(adjustSkyColor(skyColor), skyColor, rainStrength) + skyCol);
 
 			#ifdef fog_Cave_SkipSky
 				if(!sky) {
