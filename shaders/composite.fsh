@@ -1,9 +1,8 @@
 #version 330 compatibility
-/* DRAWBUFFERS:0 */
 // Skybox and rain shader code from Sildurs Vibrant Shaders
 
 /*
-const int  colortex1Format  = R8;
+const int  colortex1Format  = RG8;
 const vec4 colortex1ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 const bool colortex5Clear  = false;
 const int  colortex12Format = RGBA8_SNORM;
@@ -40,6 +39,7 @@ uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
 uniform sampler2D colortex0;
+uniform sampler2D colortex1;
 uniform sampler2D colortex2;
 uniform sampler2D colortex3;
 uniform sampler2D colortex8;
@@ -118,8 +118,13 @@ vec3 getSkyColor(vec3 fposition) {
 
 /* DRAWBUFFERS:0 */
 void main() {
+	float isParticle = texture2D(colortex1, texcoord).g;
 	float depth = texture2D(depthtex0, texcoord).r;
 	float depth1 = texture2D(depthtex1, texcoord).r;
+
+	if(isParticle > 0.5) {
+		depth1 = depth;
+	}
 	
 	vec4 fragpos = gbufferProjectionInverse * (vec4(texcoord, depth1, 1.0) * 2.0 - 1.0);
 	fragpos /= fragpos.w;
@@ -287,4 +292,6 @@ void main() {
 	}
 
 	gl_FragData[0] = vec4(col, 1.0);
+
+	// gl_FragData[0] = texture2D(colortex1, texcoord);
 }
