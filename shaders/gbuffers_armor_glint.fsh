@@ -2,7 +2,7 @@
 /* DRAWBUFFERS:0 */
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
-
+ 
 #define gbuffers_armor_glint
 #include "/shaders.settings"
 
