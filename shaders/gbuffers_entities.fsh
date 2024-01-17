@@ -47,6 +47,8 @@ void main() {
 		col *= lighting;
 		
 		gl_FragData[0] = col;
+
+		// gl_FragData[0] = vec4(entityColor.aaa, 1.0);
 	}
 
 	// gl_FragData[1] = vec4(lmcoord, 0.0, 1.0);
