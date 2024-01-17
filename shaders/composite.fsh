@@ -79,41 +79,83 @@ vec3 adjustSkyColor(vec3 skyColor) {
 	return saturation(skyColor, 1.8) * vec3(1.2, 0.9, 1.4);
 }
 
-vec3 getSkyColor(vec3 fposition) {
-	const vec3 moonlightS = vec3(0.00575, 0.0105, 0.014);
-	vec3 sVector = normalize(fposition);
+// vec3 getSkyColor(vec3 fposition) {
+// 	const vec3 moonlightS = vec3(0.00575, 0.0105, 0.014);
+// 	vec3 sVector = normalize(fposition);
 
-	float invRain07 = 1.0-rainStrength*0.4;
-	float cosT = dot(sVector,upVec);
-	float mCosT = max(cosT,0.0);
-	float absCosT = 1.0-max(cosT*0.82+0.26,0.2);
-	float cosY = dot(sunVec,sVector);
-	float Y = acos(cosY);
+// 	float invRain07 = 1.0-rainStrength*0.4;
+// 	float cosT = dot(sVector,upVec);
+// 	float mCosT = max(cosT,0.0);
+// 	float absCosT = 1.0-max(cosT*0.82+0.26,0.2);
+// 	float cosY = dot(sunVec,sVector);
+// 	float Y = acos(cosY);
 
-	const float a = -1.0;
-	const float b = -0.22;
-	const float c = 3.0;
-	const float d = -6.5;
-	const float e = 0.3;
+// 	const float a = -1.0;
+// 	const float b = -0.22;
+// 	const float c = 3.0;
+// 	const float d = -6.5;
+// 	const float e = 0.3;
 
-	//luminance
-	float L =  (1.0+a*exp(b/(mCosT)));
-	float A = 1.0+e*cosY*cosY;
+// 	//luminance
+// 	float L =  (1.0+a*exp(b/(mCosT)));
+// 	float A = 1.0+e*cosY*cosY;
 
-	//gradient
-	vec3 grad1 = mix(sky1,sky2,absCosT*absCosT);
-	float sunscat = max(cosY,0.0);
-	vec3 grad3 = mix(grad1,nsunlight*(1.0-isEyeInWater),sunscat*sunscat*(1.0-mCosT)*(0.9-rainStrength*0.5*0.9)*(clamp(-(SdotU)*4.0+3.0,0.0,1.0)*0.65+0.35)+0.1);
+// 	//gradient
+// 	vec3 grad1 = mix(sky1,sky2,absCosT*absCosT);
+// 	float sunscat = max(cosY,0.0);
+// 	vec3 grad3 = mix(grad1,nsunlight*(1.0-isEyeInWater),sunscat*sunscat*(1.0-mCosT)*(0.9-rainStrength*0.5*0.9)*(clamp(-(SdotU)*4.0+3.0,0.0,1.0)*0.65+0.35)+0.1);
 
-	float Y2 = 3.14159265359-Y;
-	float L2 = L * (8.0*exp(d*Y2)+A);
+// 	float Y2 = 3.14159265359-Y;
+// 	float L2 = L * (8.0*exp(d*Y2)+A);
 
-	const vec3 moonlight2 = pow(normalize(moonlightS),vec3(3.0))*length(moonlightS);
-	const vec3 moonlightRain = normalize(vec3(0.25,0.3,0.5))*length(moonlightS) + 0.45;
+// 	const vec3 moonlight2 = pow(normalize(moonlightS),vec3(3.0))*length(moonlightS);
+// 	const vec3 moonlightRain = normalize(vec3(0.25,0.3,0.5))*length(moonlightS) + 0.45;
 
-	vec3 gradN = mix(moonlightS,moonlight2,1.-L2/2.0) + 0.35;
-	gradN = mix(gradN,moonlightRain,rainStrength);
-	return pow(L*(c*exp(d*Y)+A),invRain07)*sunVisibility *length(rawAvg) * (0.85+rainStrength*0.425)*grad3+ 0.2*pow(L2*1.2+1.2,invRain07)*moonVisibility*gradN;
+// 	vec3 gradN = mix(moonlightS,moonlight2,1.-L2/2.0) + 0.35;
+// 	gradN = mix(gradN,moonlightRain,rainStrength);
+// 	return pow(L*(c*exp(d*Y)+A),invRain07)*sunVisibility *length(rawAvg) * (0.85+rainStrength*0.425)*grad3+ 0.2*pow(L2*1.2+1.2,invRain07)*moonVisibility*gradN;
+// }
+
+vec3 getOverworldSkyColor(vec3 viewPos) {
+	vec3 viewDir = normalize(viewPos);
+	float upDot = max(dot(viewDir, upVec), 0.0);
+	float mixFactor = smoothstep(0.0, 0.7, upDot);
+
+	float worldTimeAdjusted = ((worldTime + 785) % 24000) / 24000.0;
+
+	vec3 horizonSkyColor;
+	vec3 upperSkyColor;
+
+
+	if(worldTimeAdjusted < 0.1) {
+		horizonSkyColor = mix(vec3(0.7, 0.6, 0.6), vec3(0.4, 0.5, 1.0), worldTimeAdjusted / 0.1);
+		upperSkyColor = mix(vec3(0.4, 0.35, 0.75), vec3(0, 0.27, 0.95), worldTimeAdjusted / 0.1);
+	}
+	else if(worldTimeAdjusted >= 0.1 && worldTimeAdjusted < 0.465) {
+		horizonSkyColor = vec3(0.4, 0.5, 1.0);
+		upperSkyColor = vec3(0, 0.27, 0.95);
+	}
+	else if(worldTimeAdjusted >= 0.465 && worldTimeAdjusted < 0.565) {
+		horizonSkyColor = mix(vec3(0.4, 0.5, 1.0), vec3(0.7, 0.6, 0.6), (worldTimeAdjusted - 0.465) / 0.1);
+		upperSkyColor = mix(vec3(0, 0.27, 0.95), vec3(0.4, 0.35, 0.75), (worldTimeAdjusted - 0.465) / 0.1);
+	}
+	else if(worldTimeAdjusted >= 0.565 && worldTimeAdjusted < 0.605) {
+		horizonSkyColor = mix(vec3(0.7, 0.6, 0.6), vec3(0.2, 0.2, 0.3), (worldTimeAdjusted - 0.565) / 0.04);
+		upperSkyColor = mix(vec3(0.4, 0.35, 0.75), vec3(0.13, 0.13, 0.2), (worldTimeAdjusted - 0.565) / 0.04);
+	}
+	else if(worldTimeAdjusted >= 0.605 && worldTimeAdjusted < 0.97) {
+		horizonSkyColor = vec3(0.2, 0.2, 0.3);
+		upperSkyColor = vec3(0.13, 0.13, 0.2);
+	}
+	else {
+		horizonSkyColor = mix(vec3(0.2, 0.2, 0.3), vec3(0.7, 0.6, 0.6), (worldTimeAdjusted - 0.97) / 0.03);
+		upperSkyColor = mix(vec3(0.13, 0.13, 0.2), vec3(0.4, 0.35, 0.75), (worldTimeAdjusted - 0.97) / 0.03);
+	}
+
+	horizonSkyColor = mix(horizonSkyColor, fogColor, rainStrength);
+	upperSkyColor = mix(upperSkyColor, skyColor, rainStrength);
+
+	return mix(horizonSkyColor, upperSkyColor, mixFactor);
 }
 
 /* DRAWBUFFERS:0 */
@@ -200,15 +242,16 @@ void main() {
 	vec3 col = texture2D(colortex0, texcoord).rgb;
 	vec4 col_water = texture2D(colortex2, texcoord);
 	
-	vec3 skyCol = vec3(-1.0);
-	if (texcoord.x < 1.0 && texcoord.y < 1.0 && texcoord.x > 0.0 && texcoord.y > 0.0 && fogDepth > 0.0) {
-		skyCol = getSkyColor(fragpos.xyz);
-	}
+	// vec3 skyCol = vec3(-1.0);
+	// if (texcoord.x < 1.0 && texcoord.y < 1.0 && texcoord.x > 0.0 && texcoord.y > 0.0 && fogDepth > 0.0) {
+	// 	skyCol = getSkyColor(fragpos.xyz);
+	// }
+	vec3 skyCol = getOverworldSkyColor(fragpos.xyz); 
 	
 	vec4 sunmoon = texture2D(colortex3, texcoord) * fog_sunmoon;
 	vec4 clouds = texture2D(colortex8, texcoord);
 	
-	sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
+	// sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
 	
 	vec3 fogColorFinal = vec3(-1.0);
 
@@ -235,7 +278,8 @@ void main() {
 	else {
 		if(isEyeInWater == 0) {
 
-			fogColorFinal = (mix(adjustSkyColor(skyColor), skyColor, rainStrength) + skyCol);
+			// fogColorFinal = (mix(adjustSkyColor(skyColor), skyColor, rainStrength) + skyCol);
+			fogColorFinal = skyCol;
 
 			#ifdef fog_Cave_SkipSky
 				if(!sky) {
@@ -279,6 +323,7 @@ void main() {
 			
 		if(!inEnd)
 			col += sunmoon.rgb * vec3(sky?1.0:0.0);
+			// col = sky ? sunmoon.rgb : col;
 	}
 
 	
@@ -294,4 +339,5 @@ void main() {
 	gl_FragData[0] = vec4(col, 1.0);
 
 	// gl_FragData[0] = texture2D(colortex1, texcoord);
+	// gl_FragData[0] = sunmoon;
 }
