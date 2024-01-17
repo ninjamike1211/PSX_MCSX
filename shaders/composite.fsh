@@ -116,28 +116,28 @@ vec3 adjustSkyColor(vec3 skyColor) {
 // 	return pow(L*(c*exp(d*Y)+A),invRain07)*sunVisibility *length(rawAvg) * (0.85+rainStrength*0.425)*grad3+ 0.2*pow(L2*1.2+1.2,invRain07)*moonVisibility*gradN;
 // }
 
-vec3 getOverworldSkyColor(vec3 viewPos) {
+vec3 getOverworldSkyColor(vec3 viewPos, vec3 sunmoon) {
 	vec3 viewDir = normalize(viewPos);
 	float upDot = max(dot(viewDir, upVec), 0.0);
 	float mixFactor = smoothstep(0.0, 0.7, upDot);
 
 	float worldTimeAdjusted = ((worldTime + 785) % 24000) / 24000.0;
+	vec3 sunFix = luminance(sunmoon) > 0.3 ? vec3(0.3, 0.2, -0.4) : vec3(0.0);
 
 	vec3 horizonSkyColor;
 	vec3 upperSkyColor;
 
-
 	if(worldTimeAdjusted < 0.1) {
-		horizonSkyColor = mix(vec3(0.7, 0.6, 0.6), vec3(0.4, 0.5, 1.0), worldTimeAdjusted / 0.1);
-		upperSkyColor = mix(vec3(0.4, 0.35, 0.75), vec3(0, 0.27, 0.95), worldTimeAdjusted / 0.1);
+		horizonSkyColor = mix(vec3(0.7, 0.6, 0.6), vec3(0.4, 0.5, 1.0) + sunFix, worldTimeAdjusted / 0.1);
+		upperSkyColor = mix(vec3(0.4, 0.35, 0.75), vec3(0, 0.27, 0.95) + sunFix, worldTimeAdjusted / 0.1);
 	}
 	else if(worldTimeAdjusted >= 0.1 && worldTimeAdjusted < 0.465) {
-		horizonSkyColor = vec3(0.4, 0.5, 1.0);
-		upperSkyColor = vec3(0, 0.27, 0.95);
+		horizonSkyColor = vec3(0.4, 0.5, 1.0) + sunFix;
+		upperSkyColor = vec3(0, 0.27, 0.95) + sunFix;
 	}
 	else if(worldTimeAdjusted >= 0.465 && worldTimeAdjusted < 0.565) {
-		horizonSkyColor = mix(vec3(0.4, 0.5, 1.0), vec3(0.7, 0.6, 0.6), (worldTimeAdjusted - 0.465) / 0.1);
-		upperSkyColor = mix(vec3(0, 0.27, 0.95), vec3(0.4, 0.35, 0.75), (worldTimeAdjusted - 0.465) / 0.1);
+		horizonSkyColor = mix(vec3(0.4, 0.5, 1.0) + sunFix, vec3(0.7, 0.6, 0.6), (worldTimeAdjusted - 0.465) / 0.1);
+		upperSkyColor = mix(vec3(0, 0.27, 0.95) + sunFix, vec3(0.4, 0.35, 0.75), (worldTimeAdjusted - 0.465) / 0.1);
 	}
 	else if(worldTimeAdjusted >= 0.565 && worldTimeAdjusted < 0.605) {
 		horizonSkyColor = mix(vec3(0.7, 0.6, 0.6), vec3(0.2, 0.2, 0.3), (worldTimeAdjusted - 0.565) / 0.04);
@@ -246,10 +246,11 @@ void main() {
 	// if (texcoord.x < 1.0 && texcoord.y < 1.0 && texcoord.x > 0.0 && texcoord.y > 0.0 && fogDepth > 0.0) {
 	// 	skyCol = getSkyColor(fragpos.xyz);
 	// }
-	vec3 skyCol = getOverworldSkyColor(fragpos.xyz); 
 	
 	vec4 sunmoon = texture2D(colortex3, texcoord) * fog_sunmoon;
 	vec4 clouds = texture2D(colortex8, texcoord);
+
+	vec3 skyCol = getOverworldSkyColor(fragpos.xyz, sunmoon.rgb); 
 	
 	// sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
 	
@@ -321,9 +322,10 @@ void main() {
 		if(col_water.a > 0.5/255.0)
 			col = mix(col, col_water.rgb, col_water.a);
 			
-		if(!inEnd)
+		if(!inEnd) {
 			col += sunmoon.rgb * vec3(sky?1.0:0.0);
 			// col = sky ? sunmoon.rgb : col;
+		}
 	}
 
 	
