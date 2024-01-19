@@ -72,13 +72,13 @@ float luminance(vec3 v) {
 }
 
 
-vec3 getOverworldSkyColor(vec3 viewPos, vec3 sunmoon) {
+vec3 getOverworldSkyColor(vec3 viewPos, vec3 sunmoon, bool sky) {
 	vec3 viewDir = normalize(viewPos);
 	float upDot = max(dot(viewDir, upVec), 0.0);
 	float mixFactor = smoothstep(0.0, 0.7, upDot);
 
 	float worldTimeAdjusted = ((worldTime + 785) % 24000) / 24000.0;
-	vec3 sunFix = luminance(sunmoon) > 0.3 ? vec3(0.3, 0.2, -0.4) : vec3(0.0);
+	vec3 sunFix = (sky && luminance(sunmoon) > 0.3) ? vec3(0.3, 0.2, -0.4) : vec3(0.0);
 
 	vec3 horizonSkyColor;
 	vec3 upperSkyColor;
@@ -206,7 +206,7 @@ void main() {
 	vec4 sunmoon = texture2D(colortex3, texcoord) * fog_sunmoon;
 	vec4 clouds = texture2D(colortex8, texcoord);
 
-	vec3 skyCol = getOverworldSkyColor(fragpos.xyz, sunmoon.rgb); 
+	vec3 skyCol = getOverworldSkyColor(fragpos.xyz, sunmoon.rgb, sky); 
 	
 	// sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
 	
