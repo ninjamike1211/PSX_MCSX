@@ -71,50 +71,6 @@ float luminance(vec3 v) {
     return dot(v, vec3(0.2126f, 0.7152f, 0.0722f));
 }
 
-vec3 saturation(vec3 color, float intensity) {
-    return mix(vec3(luminance(color)), color, intensity);
-}
-
-vec3 adjustSkyColor(vec3 skyColor) {
-	return saturation(skyColor, 1.8) * vec3(1.2, 0.9, 1.4);
-}
-
-// vec3 getSkyColor(vec3 fposition) {
-// 	const vec3 moonlightS = vec3(0.00575, 0.0105, 0.014);
-// 	vec3 sVector = normalize(fposition);
-
-// 	float invRain07 = 1.0-rainStrength*0.4;
-// 	float cosT = dot(sVector,upVec);
-// 	float mCosT = max(cosT,0.0);
-// 	float absCosT = 1.0-max(cosT*0.82+0.26,0.2);
-// 	float cosY = dot(sunVec,sVector);
-// 	float Y = acos(cosY);
-
-// 	const float a = -1.0;
-// 	const float b = -0.22;
-// 	const float c = 3.0;
-// 	const float d = -6.5;
-// 	const float e = 0.3;
-
-// 	//luminance
-// 	float L =  (1.0+a*exp(b/(mCosT)));
-// 	float A = 1.0+e*cosY*cosY;
-
-// 	//gradient
-// 	vec3 grad1 = mix(sky1,sky2,absCosT*absCosT);
-// 	float sunscat = max(cosY,0.0);
-// 	vec3 grad3 = mix(grad1,nsunlight*(1.0-isEyeInWater),sunscat*sunscat*(1.0-mCosT)*(0.9-rainStrength*0.5*0.9)*(clamp(-(SdotU)*4.0+3.0,0.0,1.0)*0.65+0.35)+0.1);
-
-// 	float Y2 = 3.14159265359-Y;
-// 	float L2 = L * (8.0*exp(d*Y2)+A);
-
-// 	const vec3 moonlight2 = pow(normalize(moonlightS),vec3(3.0))*length(moonlightS);
-// 	const vec3 moonlightRain = normalize(vec3(0.25,0.3,0.5))*length(moonlightS) + 0.45;
-
-// 	vec3 gradN = mix(moonlightS,moonlight2,1.-L2/2.0) + 0.35;
-// 	gradN = mix(gradN,moonlightRain,rainStrength);
-// 	return pow(L*(c*exp(d*Y)+A),invRain07)*sunVisibility *length(rawAvg) * (0.85+rainStrength*0.425)*grad3+ 0.2*pow(L2*1.2+1.2,invRain07)*moonVisibility*gradN;
-// }
 
 vec3 getOverworldSkyColor(vec3 viewPos, vec3 sunmoon) {
 	vec3 viewDir = normalize(viewPos);
@@ -302,7 +258,7 @@ void main() {
 			#endif
 		}
 		else if(isEyeInWater == 1)
-			fogColorFinal = (fogColor + length(skyCol));
+			fogColorFinal = (fogColor * length(skyCol));
 		else if(isEyeInWater == 2)
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
 		else if(isEyeInWater == 3)
