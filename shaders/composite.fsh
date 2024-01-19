@@ -258,7 +258,7 @@ void main() {
 			#endif
 		}
 		else if(isEyeInWater == 1)
-			fogColorFinal = (fogColor * length(skyCol));
+			fogColorFinal = (fogColor * 0.7 * length(skyCol));
 		else if(isEyeInWater == 2)
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
 		else if(isEyeInWater == 3)
