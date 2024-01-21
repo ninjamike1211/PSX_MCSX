@@ -93,28 +93,8 @@ void main() {
 				vec2 halfTexSize = abs(texcoord.xy - mc_midTexCoord);
 				vec4 cornerColor = texture2D(gtexture, mc_midTexCoord - halfTexSize + 0.5 / atlasSize);
 
-				vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.0);
-				if(cornerColor == vec4(0.0, 1.0, 0.0, 25.0/255.0) && entityId != 10002 && entityId != 10003) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[0], 1.0));
-				}
-				else if(cornerColor == vec4(1.0, 1.0, 0.0, 25.0/255.0) && entityId != 10002 && entityId != 10003) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[1], 1.0));
-					lmcoord.y = 31.0/32.0;
-				}
-				else if(cornerColor == vec4(1.0, 1.0, 1.0, 25.0/255.0)) {
+				if(cornerColor == vec4(1.0, 1.0, 1.0, 25.0/255.0)) {
 					imageStore(colorimg4, voxelIndex, vec4(custLightColors[2], 1.0));
-				}
-				else if(cornerColor == vec4(1.0, 0.0, 0.0, 25.0/255.0) && entityId != 10002 && entityId != 10003) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[3], 1.0));
-				}
-				else if(cornerColor == vec4(1.0, 0.0, 1.0, 25.0/255.0) && entityId != 10002 && entityId != 10003) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[4] * lmcoord.x * 2.5, 1.0));
-				}
-				else if(cornerColor == vec4(0.0, 0.0, 1.0, 25.0/255.0) && entityId != 10002 && entityId != 10003) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[5], 1.0));
-				}
-				else if(cornerColor == vec4(0.0, 1.0, 1.0, 25.0/255.0) && entityId != 10002 && entityId != 10003) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[0] * 0.25, 1.0));
 				}
 			}
 		}

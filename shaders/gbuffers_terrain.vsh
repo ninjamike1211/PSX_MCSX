@@ -14,6 +14,8 @@ varying vec3 voxelLightColor;
 
 attribute vec4 mc_Entity;
 attribute vec3 at_midBlock;
+attribute vec4 at_tangent;
+attribute vec2 mc_midTexCoord;
 
 uniform bool inNether;
 uniform float frameTimeCounter;
@@ -34,6 +36,8 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 }
 
 void main() {
+	int blockID = int(mc_Entity.x + 0.5);
+
 	texcoord = gl_MultiTexCoord0;
 	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
 
@@ -43,6 +47,155 @@ void main() {
 	color = gl_Color;
 
 	vec4 vertexPos = gl_Vertex;
+
+	if(blockID == 10950) {
+		#ifdef Billboarding
+			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			vec2 centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+	}
+	else if(blockID == 10951) {
+		#ifdef Billboarding
+			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos = vec2(0.5 * sign(at_midBlock.z), 0.0);
+			vec2 centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+
+		blockID = 11004;
+	}
+	if(blockID == 10952) {
+		#ifdef Billboarding
+			if(sign(gl_Normal.yz) != vec2(1.0, 1.0)) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos = vec2(0.5 * -sign(at_midBlock.y), 0.0);
+			vec2 centerPos = vertexPos.yz + at_midBlock.yz / 64.0;
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].yz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.yz = (rotationMatrix * facePos) + centerPos;
+		#endif
+
+		blockID = 11004;
+	}
+	if(blockID == 10953) {
+		#ifdef Billboarding
+			if(sign(gl_Normal.xy) != vec2(1.0, 1.0)) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos = vec2(0.5 * -sign(at_midBlock.x), 0.0);
+			vec2 centerPos = vertexPos.xy + at_midBlock.xy / 64.0;
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xy);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xy = (rotationMatrix * facePos) + centerPos;
+		#endif
+
+		blockID = 11004;
+	}
+	else if(blockID == 10954) {
+		#ifdef Billboarding
+			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			vec2 centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+
+		blockID = 11000;
+	}
+	else if(blockID >= 10960 && blockID < 10970) {
+		#ifdef Billboarding
+			if(gl_Normal.x < 0.5 || at_midBlock.x < 0.0) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos = vec2(0.5 * sign(at_midBlock.z), 0.0);
+			vec2 centerPos = vertexPos.xz + at_midBlock.xz / 64.0;
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+
+		if(blockID == 10961) {
+			blockID = 11001;
+		}
+		else if(blockID == 10962) {
+			blockID = 11003;
+		}
+		else if(blockID == 10963) {
+			blockID = 11005;
+		}
+	}
+	else if(blockID >= 10970 && blockID < 10980) {
+		#ifdef Billboarding
+			if(gl_Normal.y > -0.1 || gl_Normal.y < -0.7) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			vec2 centerPos = vertexPos.xz + (at_midBlock.xz / 64.0) * sign(abs(gl_Normal.zx));
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+
+		if(blockID == 10970) {
+			blockID = 11001;
+		}
+		else if(blockID == 10971) {
+			blockID = 11003;
+		}
+		else if(blockID == 10973) {
+			blockID = 11005;
+		}
+	}
+	else if(blockID == 10980 && all(lessThan(abs(gl_Normal), vec3(0.9)))) {
+		#ifdef Billboarding
+			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			vec2 centerPos = vertexPos.xz - 0.7 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+	}
 	
 	// vec4 ftrans = ftransform();
 	vec4 ftrans = gl_ModelViewProjectionMatrix * vertexPos;
@@ -64,7 +217,6 @@ void main() {
 
 	// Voxelization
 	vec3 centerPos = gl_Vertex.xyz + at_midBlock/64.0;
-	int blockID = int(mc_Entity.x + 0.5);
 
 	ivec3 voxelPos = getPreviousVoxelIndex(centerPos, cameraPosition, previousCameraPosition);
 	if(all(greaterThan(abs(at_midBlock), vec3(27.0))) && any(equal(gl_Normal * sign(at_midBlock), vec3(-1.0)))) {
@@ -80,7 +232,7 @@ void main() {
 		voxelLightColor = vec3(0.0);
 	}
 
-	if(gl_VertexID % 4 == 0 && (blockID < 10990 || blockID >= 11000)) {
+	if(gl_VertexID % 4 == 0 && (blockID < 10900 || blockID >= 11000)) {
 		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
