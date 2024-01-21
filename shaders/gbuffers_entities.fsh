@@ -1,5 +1,5 @@
 #version 120
-/* DRAWBUFFERS:02 */
+/* DRAWBUFFERS:01 */
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
 
@@ -10,6 +10,7 @@ varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
+varying vec3 voxelLightColor;
 
 uniform float viewWidth;
 uniform float viewHeight;
@@ -40,9 +41,14 @@ void main() {
 	else {
 		vec4 col = texture2D(texture, affine) * color;
 		col.rgb = mix(col.rgb, entityColor.rgb, entityColor.a);
-		col *= texture2D(lightmap, lmcoord);
+		
+		vec4 lighting = vec4(voxelLightColor, 0.0);
+		lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
+		col *= lighting;
 		
 		gl_FragData[0] = col;
+
+		// gl_FragData[0] = vec4(entityColor.aaa, 1.0);
 	}
 
 	// gl_FragData[1] = vec4(lmcoord, 0.0, 1.0);

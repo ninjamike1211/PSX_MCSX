@@ -2,7 +2,7 @@
 /* DRAWBUFFERS:0 */
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
-
+ 
 #define gbuffers_armor_glint
 #include "/shaders.settings"
 
@@ -37,13 +37,11 @@ void main() {
 	vec4 col = texture2D(texture, affine + vec2(frameTimeCounter/8.0)) * color;
 
 	//Fix minecrafts way of handling enchanted effects and turn it into a somewhat consistent effect across day/night/cave/raining
-	vec3 lighting = vec3(1.0+ (0.4*rainStrength - 0.4*rainStrength*night));
+	vec3 lighting = vec3(1.0+ (0.4*rainStrength - 0.4*rainStrength*night)) * 0.9;
 	lighting /= 0.8 - 0.5*night;
 	lighting /= cavelight;
 
 	col.rgb = pow(col.rgb*enchanted_strength, lighting);
-
-	// col += 0.5;
 
 	gl_FragData[0] = col;
 }

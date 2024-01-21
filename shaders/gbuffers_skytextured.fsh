@@ -1,5 +1,5 @@
 #version 120
-/* DRAWBUFFERS:5 */
+/* DRAWBUFFERS:3 */
 
 #define gbuffers_skytextured
 #include "/shaders.settings"

@@ -11,11 +11,15 @@ varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
 varying vec3 voxelLightColor;
+varying float isText;
 
-attribute vec4 mc_Entity;
-attribute vec3 at_midBlock;
+attribute vec4 at_tangent;
+attribute vec2 mc_midTexCoord;
+uniform sampler2D depthtex1;
 
 uniform bool inNether;
+uniform int blockEntityId;
+uniform ivec2 atlasSize;
 uniform float frameTimeCounter;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
@@ -36,6 +40,8 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 void main() {
 	texcoord = gl_MultiTexCoord0;
 	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
+
+	isText = float(blockEntityId == 10003 && atlasSize.x == 0);
 
 	if(inNether)
 		lmcoord.r = lmcoord.r * 0.5 + 0.5;
@@ -59,18 +65,24 @@ void main() {
 	wVal = clamp(wVal, -10000.0, 0.0);
 	texcoordAffine = vec4(texcoord.xy * wVal, wVal, 0);
 
+	if(isText > 0.5) {
+		texcoordAffine = texcoord;
+		position4 = ftrans;
+		position4.z -= 0.005;
+	}
+
 	gl_Position = position4;
 
 
 	// Voxelization
-	vec3 centerPos = gl_Vertex.xyz + at_midBlock/64.0;
-	int blockID = int(mc_Entity.x + 0.5);
+	vec2 centerDir = sign(mc_midTexCoord - texcoord.xy);
+	vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
+	vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
+	vec3 tangent = normalize(gl_NormalMatrix * at_tangent.xyz);
+	vec3 bitangent = cross(normal, tangent) * sign(-at_tangent.w);
 
-	ivec3 voxelPos = getPreviousVoxelIndex(centerPos, cameraPosition, previousCameraPosition);
-	if(all(greaterThan(abs(at_midBlock), vec3(27.0))) && any(equal(gl_Normal * sign(at_midBlock), vec3(-1.0)))) {
-		voxelPos += ivec3(gl_Normal.xyz);
-	}
-
+	vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.5*normal + 0.01*centerDir.x*tangent + 0.01*centerDir.y*bitangent, 1.0)).xyz;
+	ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
 	if(IsInVoxelizationVolume(voxelPos)) {
 		float lightMult = getLightMult(lmcoord.y, lightmap);
 		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
@@ -80,17 +92,13 @@ void main() {
 		voxelLightColor = vec3(0.0);
 	}
 
-	if(gl_VertexID % 4 == 0 && (blockID < 10990 || blockID >= 11000)) {
-		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
+	if(gl_VertexID % 4 == 0 && blockEntityId >= 11000) {
+		playerPos = (gbufferModelViewInverse * vec4(viewPos - 0.5*normal + 0.01*centerDir.x*tangent + 0.01*centerDir.y*bitangent, 1.0)).xyz;
+		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, cameraPosition)));
+
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-
-			vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.5);
-			if(blockID >= 11000) {
-				lightVal = vec4(custLightColors[blockID - 11000], 1.0);
-			}
-
-			imageStore(colorimg4, voxelIndex, lightVal);
+			imageStore(colorimg4, voxelIndex, vec4(custLightColors[blockEntityId - 11000], 1.0));
 		}
 	}
 }
