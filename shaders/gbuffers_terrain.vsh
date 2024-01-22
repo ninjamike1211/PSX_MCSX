@@ -133,7 +133,7 @@ void main() {
 	}
 	else if(blockID >= 10960 && blockID < 10970) {
 		#ifdef Billboarding
-			if(gl_Normal.x < 0.5 || at_midBlock.x < 0.0) {
+			if(gl_Normal.x < 0.5) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
 				return;
 			}
