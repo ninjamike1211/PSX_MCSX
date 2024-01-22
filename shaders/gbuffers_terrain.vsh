@@ -48,22 +48,28 @@ void main() {
 
 	vec4 vertexPos = gl_Vertex;
 
-	if(blockID == 10950) {
+	// Cross models (grass, plants, flowers)
+	if(blockID == 10950 || blockID == 10951) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
 				return;
 			}
 			
-			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x) * sign(at_tangent.w), 0.0);
 			vec2 centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
 
 			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
 			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
 			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
 		#endif
+
+		if(blockID == 10951) {
+			blockID = 11000;
+		}
 	}
-	else if(blockID == 10951) {
+	// Vertical Amythest Buds
+	else if(blockID == 10952) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
@@ -80,7 +86,8 @@ void main() {
 
 		blockID = 11004;
 	}
-	if(blockID == 10952) {
+	// East/West Amythest Buds
+	if(blockID == 10953) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.yz) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
@@ -97,7 +104,8 @@ void main() {
 
 		blockID = 11004;
 	}
-	if(blockID == 10953) {
+	// North/South Amythest Buds
+	if(blockID == 10954) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.xy) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
@@ -114,7 +122,8 @@ void main() {
 
 		blockID = 11004;
 	}
-	else if(blockID == 10954) {
+	// Sunflower
+	else if(blockID == 10955 && gl_Normal.y == 0.0) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
@@ -129,11 +138,14 @@ void main() {
 			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
 		#endif
 
-		blockID = 11000;
+		if(blockID == 10951) {
+			blockID = 11000;
+		}
 	}
-	else if(blockID >= 10960 && blockID < 10970) {
+	// Hashes and torches
+	else if(blockID >= 10960 && blockID < 10964) {
 		#ifdef Billboarding
-			if(gl_Normal.x < 0.5) {
+			if(gl_Normal.x < 0.5 || at_midBlock.x/64.0 > 0.0) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
 				return;
 			}
@@ -156,6 +168,31 @@ void main() {
 			blockID = 11005;
 		}
 	}
+	// Bamboo
+	else if(blockID == 10964) {
+		#ifdef Billboarding
+			if(gl_Normal.z < 0.5 || gl_Normal.x < 0.0) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos;
+			vec2 centerPos;
+			if(gl_Normal.z > 0.9) {
+				facePos = vec2(1.5/16.0 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+				centerPos = vertexPos.xz + vec2(-0.09 * sign(texcoord.x - mc_midTexCoord.x), -1.5/16.0);
+			}
+			else {
+				facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+				centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
+			} 
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+	}
+	// Hanging torches
 	else if(blockID >= 10970 && blockID < 10980) {
 		#ifdef Billboarding
 			if(gl_Normal.y > -0.1 || gl_Normal.y < -0.7) {
@@ -181,15 +218,32 @@ void main() {
 			blockID = 11005;
 		}
 	}
-	else if(blockID == 10980 && all(lessThan(abs(gl_Normal), vec3(0.9)))) {
+	// Potted Plants
+	else if(blockID == 10980 && all(lessThan(abs(gl_Normal), vec3(0.9))) && gl_Normal.y == 0.0) {
 		#ifdef Billboarding
-			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
+			if(sign(gl_Normal.xz) != vec2(-1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
 				return;
 			}
 			
-			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
-			vec2 centerPos = vertexPos.xz - 0.7 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
+			vec2 facePos = vec2(0.4 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			vec2 centerPos = vertexPos.xz + at_midBlock.xz / 64.0;
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+	}
+	// Potted Beetroot
+	else if(blockID == 10981 && all(lessThan(abs(gl_Normal.xz), vec2(0.9))) && gl_Normal.y == 0.0) {
+		#ifdef Billboarding
+			if(sign(gl_Normal.xz) != vec2(-1.0, 1.0)) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+			
+			vec2 facePos = vec2(0.25 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			vec2 centerPos = vertexPos.xz + at_midBlock.xz / 64.0;
 
 			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
 			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
