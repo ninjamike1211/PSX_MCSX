@@ -49,7 +49,7 @@ void main() {
 
 	vec4 vertexPos = gl_Vertex;
 
-	// Cross models (grass, plants, flowers)
+	// Cross models with offset (grass, plants, flowers)
 	if(blockID == 10950 || blockID == 10951) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
@@ -57,8 +57,8 @@ void main() {
 				return;
 			}
 			
-			vec2 facePos = vec2((texcoord.x - mc_midTexCoord.x) * atlasSize.x / 16.0, 0.0);
-			vec2 centerPos = vertexPos.xz - 2.0 * facePos.x * normalize(at_tangent).xz;
+			vec2 facePos = vec2((texcoord.x - mc_midTexCoord.x) * sign(at_tangent.w) * atlasSize.x / 16.0, 0.0);
+			vec2 centerPos = vertexPos.xz - 2.0 * facePos.x * normalize(at_tangent).xz * sign(at_tangent.w);
 
 			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
 			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
