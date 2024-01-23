@@ -30,10 +30,10 @@ void main() {
 
 	#ifdef Floodfill_HeltItemLight
 		if(all(equal(voxelIndex, ivec3(0, 128, 0)))) {
-			if(heldItemId >= 11000) {
+			if(heldItemId >= 11000 && heldItemId < 12000) {
 				gl_FragData[0] = vec4(max(gl_FragData[0].rgb, custLightColors[heldItemId-11000]), 1.0);
 			}
-			if(heldItemId2 >= 11000) {
+			if(heldItemId2 >= 11000 && heldItemId < 12000) {
 				gl_FragData[0] = vec4(max(gl_FragData[0].rgb, custLightColors[heldItemId2-11000]), 1.0);
 			}
 		}

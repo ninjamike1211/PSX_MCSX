@@ -86,7 +86,7 @@ void main() {
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
 
-			if(entityId >= 11000) {
+			if(entityId >= 11000 && entityId < 12000) {
 				imageStore(colorimg4, voxelIndex, vec4(custLightColors[entityId - 11000], 1.0));
 			}
 			else {

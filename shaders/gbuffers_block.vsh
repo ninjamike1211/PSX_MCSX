@@ -41,7 +41,7 @@ void main() {
 	texcoord = gl_MultiTexCoord0;
 	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
 
-	isText = float(blockEntityId == 10003 && atlasSize.x == 0);
+	isText = float(blockEntityId == 10920 && atlasSize.x == 0);
 
 	if(inNether)
 		lmcoord.r = lmcoord.r * 0.5 + 0.5;
@@ -92,7 +92,7 @@ void main() {
 		voxelLightColor = vec3(0.0);
 	}
 
-	if(gl_VertexID % 4 == 0 && blockEntityId >= 11000) {
+	if(gl_VertexID % 4 == 0 && blockEntityId >= 11000 && blockEntityId < 12000) {
 		playerPos = (gbufferModelViewInverse * vec4(viewPos - 0.5*normal + 0.01*centerDir.x*tangent + 0.01*centerDir.y*bitangent, 1.0)).xyz;
 		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, cameraPosition)));
 

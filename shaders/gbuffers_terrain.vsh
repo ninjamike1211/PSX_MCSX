@@ -76,7 +76,7 @@ void main() {
 				return;
 			}
 			
-			vec2 facePos = vec2(0.5 * sign(at_midBlock.z), 0.0);
+			vec2 facePos = vec2(0.5 * sign(at_midBlock.z) * sign(at_tangent.w), 0.0);
 			vec2 centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
 
 			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
@@ -145,12 +145,13 @@ void main() {
 	// Hashes and torches
 	else if(blockID >= 10960 && blockID < 10964) {
 		#ifdef Billboarding
-			if(gl_Normal.x < 0.5 || at_midBlock.x/64.0 > 0.0) {
+			if(gl_Normal.y != 0.0 /* || at_midBlock.x/64.0 > 0.0 */) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
 				return;
 			}
 			
-			vec2 facePos = vec2(0.5 * sign(at_midBlock.z), 0.0);
+			// vec2 facePos = vec2(0.5 * sign(at_midBlock.z), 0.0);
+			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
 			vec2 centerPos = vertexPos.xz + at_midBlock.xz / 64.0;
 
 			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
@@ -250,6 +251,15 @@ void main() {
 			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
 		#endif
 	}
+	// Remove extra geometry frame attached melon/pumpkin stems
+	else if(blockID == 10983) {
+		#ifdef Billboarding
+			if(all(lessThan(abs(gl_Normal.xz), vec2(0.9)))) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
+		#endif
+	}
 	
 	// vec4 ftrans = ftransform();
 	vec4 ftrans = gl_ModelViewProjectionMatrix * vertexPos;
@@ -286,7 +296,7 @@ void main() {
 		voxelLightColor = vec3(0.0);
 	}
 
-	if(gl_VertexID % 4 == 0 && (blockID < 10900 || blockID >= 11000)) {
+	if(gl_VertexID % 4 == 0 && (blockID < 10900 || (blockID >= 11000 && blockID < 12000))) {
 		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 		if(IsInVoxelizationVolume(voxelPos)) {
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
