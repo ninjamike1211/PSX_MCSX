@@ -50,7 +50,7 @@ void main() {
 	vec4 vertexPos = gl_Vertex;
 
 	// Cross models with offset (grass, plants, flowers)
-	if(blockID == 10950 || blockID == 10951) {
+	if((blockID == 10950 || blockID == 10951)  && gl_Normal.y == 0.0) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
@@ -123,37 +123,6 @@ void main() {
 
 		blockID = 11004;
 	}
-	// Sunflower
-	else if(blockID == 10955 && gl_Normal.y == 0.0) {
-		#ifdef Billboarding
-			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
-				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
-				return;
-			}
-			
-			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
-			vec2 centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
-
-			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
-			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
-			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
-		#endif
-
-		if(blockID == 10951) {
-			blockID = 11000;
-		}
-	}
-	// Chain y axis
-	else if(blockID == 10956) {
-		#ifdef Billboarding
-			vec2 facePos = vec2((texcoord.x - mc_midTexCoord.x) * atlasSize.x / 16.0, 0.0);
-			vec2 centerPos = vertexPos.xz - 2.0 * facePos.x * normalize(at_tangent).xz;
-
-			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
-			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
-			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
-		#endif
-	}
 	// Chain x axis
 	else if(blockID == 10957) {
 		#ifdef Billboarding
@@ -195,8 +164,7 @@ void main() {
 				return;
 			}
 			
-			// vec2 facePos = vec2(0.5 * sign(at_midBlock.z), 0.0);
-			vec2 facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			vec2 facePos = vec2((texcoord.x - mc_midTexCoord.x) * atlasSize.x / 16.0, 0.0);
 			vec2 centerPos = vertexPos.xz + at_midBlock.xz / 64.0;
 
 			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
