@@ -18,6 +18,8 @@ uniform float viewWidth;
 uniform float viewHeight;
 uniform float aspectRatio;
 
+layout (rgba8) uniform image2D colorimg5;
+
 // HSV functions from Sam Hocevar (https://gamedev.stackexchange.com/a/59808/22302)
 
 vec3 rgb2hsv(vec3 c)

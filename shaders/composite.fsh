@@ -72,6 +72,13 @@ float luminance(vec3 v) {
 }
 
 
+#define NoonHorizonColor vec3(0.4, 0.5, 1.0)
+#define NoonSkyColor vec3(0, 0.27, 0.95)
+#define SunriseHorizonColor vec3(0.7, 0.6, 0.6)
+#define SunriseSkyColor vec3(0.4, 0.35, 0.75)
+#define NightHorizonColor vec3(0.15)
+#define NightSkyColor vec3(0.0)
+
 vec3 getOverworldSkyColor(vec3 viewPos, vec3 sunmoon, bool sky) {
 	vec3 viewDir = normalize(viewPos);
 	float upDot = max(dot(viewDir, upVec), 0.0);
@@ -84,28 +91,28 @@ vec3 getOverworldSkyColor(vec3 viewPos, vec3 sunmoon, bool sky) {
 	vec3 upperSkyColor;
 
 	if(worldTimeAdjusted < 0.1) {
-		horizonSkyColor = mix(vec3(0.7, 0.6, 0.6), vec3(0.4, 0.5, 1.0) + sunFix, worldTimeAdjusted / 0.1);
-		upperSkyColor = mix(vec3(0.4, 0.35, 0.75), vec3(0, 0.27, 0.95) + sunFix, worldTimeAdjusted / 0.1);
+		horizonSkyColor = mix(SunriseHorizonColor, NoonHorizonColor + sunFix, worldTimeAdjusted / 0.1);
+		upperSkyColor = mix(SunriseSkyColor, NoonSkyColor + sunFix, worldTimeAdjusted / 0.1);
 	}
 	else if(worldTimeAdjusted >= 0.1 && worldTimeAdjusted < 0.465) {
-		horizonSkyColor = vec3(0.4, 0.5, 1.0) + sunFix;
-		upperSkyColor = vec3(0, 0.27, 0.95) + sunFix;
+		horizonSkyColor = NoonHorizonColor + sunFix;
+		upperSkyColor = NoonSkyColor + sunFix;
 	}
 	else if(worldTimeAdjusted >= 0.465 && worldTimeAdjusted < 0.565) {
-		horizonSkyColor = mix(vec3(0.4, 0.5, 1.0) + sunFix, vec3(0.7, 0.6, 0.6), (worldTimeAdjusted - 0.465) / 0.1);
-		upperSkyColor = mix(vec3(0, 0.27, 0.95) + sunFix, vec3(0.4, 0.35, 0.75), (worldTimeAdjusted - 0.465) / 0.1);
+		horizonSkyColor = mix(NoonHorizonColor + sunFix, SunriseHorizonColor, (worldTimeAdjusted - 0.465) / 0.1);
+		upperSkyColor = mix(NoonSkyColor + sunFix, SunriseSkyColor, (worldTimeAdjusted - 0.465) / 0.1);
 	}
 	else if(worldTimeAdjusted >= 0.565 && worldTimeAdjusted < 0.605) {
-		horizonSkyColor = mix(vec3(0.7, 0.6, 0.6), vec3(0.2, 0.2, 0.3), (worldTimeAdjusted - 0.565) / 0.04);
-		upperSkyColor = mix(vec3(0.4, 0.35, 0.75), vec3(0.13, 0.13, 0.2), (worldTimeAdjusted - 0.565) / 0.04);
+		horizonSkyColor = mix(SunriseHorizonColor, NightHorizonColor, (worldTimeAdjusted - 0.565) / 0.04);
+		upperSkyColor = mix(SunriseSkyColor, NightSkyColor, (worldTimeAdjusted - 0.565) / 0.04);
 	}
 	else if(worldTimeAdjusted >= 0.605 && worldTimeAdjusted < 0.97) {
-		horizonSkyColor = vec3(0.2, 0.2, 0.3);
-		upperSkyColor = vec3(0.13, 0.13, 0.2);
+		horizonSkyColor = NightHorizonColor;
+		upperSkyColor = NightSkyColor;
 	}
 	else {
-		horizonSkyColor = mix(vec3(0.2, 0.2, 0.3), vec3(0.7, 0.6, 0.6), (worldTimeAdjusted - 0.97) / 0.03);
-		upperSkyColor = mix(vec3(0.13, 0.13, 0.2), vec3(0.4, 0.35, 0.75), (worldTimeAdjusted - 0.97) / 0.03);
+		horizonSkyColor = mix(NightHorizonColor, SunriseHorizonColor, (worldTimeAdjusted - 0.97) / 0.03);
+		upperSkyColor = mix(NightSkyColor, SunriseSkyColor, (worldTimeAdjusted - 0.97) / 0.03);
 	}
 
 	horizonSkyColor = mix(horizonSkyColor, fogColor, rainStrength);
