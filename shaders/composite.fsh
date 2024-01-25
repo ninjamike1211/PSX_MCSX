@@ -14,25 +14,6 @@ const bool colortex12Clear  = false;
 
 varying vec2 texcoord;
 
-varying vec3 lightColor;
-varying vec3 sunVec;
-varying vec3 upVec;
-varying vec3 sky1;
-varying vec3 sky2;
-
-varying float tr;
-
-varying vec3 sunlight;
-varying vec3 nsunlight;
-
-varying vec3 rawAvg;
-
-varying float SdotU;
-varying float sunVisibility;
-varying float moonVisibility;
-
-varying vec3 avgAmbient2;
-
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 uniform mat4 gbufferModelView;
@@ -42,21 +23,16 @@ uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
 uniform sampler2D colortex3;
-uniform sampler2D colortex8;
 uniform sampler2D colortex7;
+uniform sampler2D colortex8;
 uniform sampler2D colortex12;
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
-uniform sampler2D depthtex2;
-uniform vec2 texelSize;
-uniform float viewWidth;
-uniform float viewHeight;
 uniform float near;
 uniform float far;
 uniform float rainStrength;
 uniform int worldTime;
 uniform int isEyeInWater;
-uniform float playerMood;
 uniform float eyeAltitude;
 uniform ivec2 eyeBrightnessSmooth;
 
@@ -81,7 +57,7 @@ float luminance(vec3 v) {
 
 vec3 getOverworldSkyColor(vec3 viewPos, vec3 sunmoon, bool sky) {
 	vec3 viewDir = normalize(viewPos);
-	float upDot = max(dot(viewDir, upVec), 0.0);
+	float upDot = max(dot(viewDir, gbufferModelView[1].xyz), 0.0);
 	float mixFactor = smoothstep(0.0, 0.7, upDot);
 
 	float worldTimeAdjusted = ((worldTime + 785) % 24000) / 24000.0;
@@ -205,25 +181,16 @@ void main() {
 	vec3 col = texture2D(colortex0, texcoord).rgb;
 	vec4 col_water = texture2D(colortex2, texcoord);
 	
-	// vec3 skyCol = vec3(-1.0);
-	// if (texcoord.x < 1.0 && texcoord.y < 1.0 && texcoord.x > 0.0 && texcoord.y > 0.0 && fogDepth > 0.0) {
-	// 	skyCol = getSkyColor(fragpos.xyz);
-	// }
-	
 	vec4 sunmoon = texture2D(colortex3, texcoord) * fog_sunmoon;
 	vec4 clouds = texture2D(colortex8, texcoord);
 
-	vec3 skyCol = getOverworldSkyColor(fragpos.xyz, sunmoon.rgb, sky); 
-	
-	// sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
-	
+	sunmoon *= (1.0-rainStrength) * smoothstep(-0.2, -0.1, dot(normalfragpos, gbufferModelView[1].xyz));
+
 	vec3 fogColorFinal = vec3(-1.0);
 
 	if(inNether) {
 		if(isEyeInWater == 0)
 			fogColorFinal = normalize(fogColor) * 0.3 + 0.1;
-		else if(isEyeInWater == 1)
-			fogColorFinal = (fogColor + length(skyCol));
 		else if(isEyeInWater == 2)
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
 		else if(isEyeInWater == 3)
@@ -233,16 +200,16 @@ void main() {
 		if(isEyeInWater == 0)
 			fogColorFinal = texture2D(colortex3, texcoord).xyz;
 		else if(isEyeInWater == 1)
-			fogColorFinal = (fogColor + length(skyCol));
+			fogColorFinal = fogColor;
 		else if(isEyeInWater == 2)
 			fogColorFinal = vec3(2.0, 0.4, 0.1);
 		else if(isEyeInWater == 3)
 			fogColorFinal = vec3(1.0);
 	}
 	else {
-		if(isEyeInWater == 0) {
+		vec3 skyCol = getOverworldSkyColor(fragpos.xyz, sunmoon.rgb, sky); 
 
-			// fogColorFinal = (mix(adjustSkyColor(skyColor), skyColor, rainStrength) + skyCol);
+		if(isEyeInWater == 0) {
 			fogColorFinal = skyCol;
 
 			#ifdef fog_Cave_SkipSky
@@ -287,15 +254,12 @@ void main() {
 			
 		if(!inEnd) {
 			col += sunmoon.rgb * vec3(sky?1.0:0.0);
-			// col = sky ? sunmoon.rgb : col;
 		}
 	}
 
 	
 	vec4 rain = texture2D(colortex7, texcoord);
-	if (rain.r > 0.0001 && rainStrength > 0.01 && !(depth1 < texture2D(depthtex2, texcoord).x)){
-		col.rgb = mix(col.rgb, rain.rgb, rain.a);
-	}
+	col.rgb = mix(col.rgb, rain.rgb, rain.a);
 	
 	if(isEyeInWater > 0) {
 		col *= vec3(0.5, 0.6902, 1.0);
@@ -303,6 +267,4 @@ void main() {
 
 	gl_FragData[0] = vec4(col, 1.0);
 
-	// gl_FragData[0] = texture2D(colortex1, texcoord);
-	// gl_FragData[0] = sunmoon;
 }

@@ -18,6 +18,7 @@ uniform float viewWidth;
 uniform float viewHeight;
 uniform float aspectRatio;
 
+// (This is put here to force Optifine to bind image textures, as it doesn't search in gbuffer vertex stage)
 layout (rgba8) uniform image2D colorimg5;
 
 // HSV functions from Sam Hocevar (https://gamedev.stackexchange.com/a/59808/22302)
