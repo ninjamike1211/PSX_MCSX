@@ -50,7 +50,7 @@ void main() {
 
 	// Billboarding for falling dripstone
 	#ifdef Billboarding
-	if(entityId == 10004) {
+	if(entityId == 10004 && cornerColor == vec4(0.0, 123.0/255.0, 1.0, 25.0/255.0)) {
 		vec3 playerPos = (gbufferModelViewInverse * vertexPos).xyz;
 
 		vec2 facePos = vec2((texcoord.x - mc_midTexCoord.x) * sign(at_tangent.w) * atlasSize.x / 16.0, 0.0);
@@ -61,9 +61,6 @@ void main() {
 		playerPos.xz = (rotationMatrix * facePos) + centerPos;
 
 		vertexPos = gbufferModelView * vec4(playerPos, 1.0);
-
-		// vertexPos = vec4(0.0);
-		// color = vec4(0.0, 0.0, 0.0, 1.0);
 	}
 	#endif
 
