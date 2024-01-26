@@ -20,6 +20,7 @@ uniform vec2 texelSize;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform int entityId;
+uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform float frameTimeCounter;
 uniform sampler2D gtexture;
@@ -40,19 +41,43 @@ void main() {
 	texcoord.xy = (gl_MultiTexCoord0).xy;
 	texcoord.zw = gl_MultiTexCoord1.xy/255.0;
 	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
+	color = gl_Color;
 	
-	vec4 ftrans = ftransform();
+	vec2 halfTexSize = abs(texcoord.xy - mc_midTexCoord);
+	vec4 cornerColor = texture2D(gtexture, mc_midTexCoord - halfTexSize + 0.5 / atlasSize);
+	
+	vec4 vertexPos = gl_Vertex;
+
+	// Billboarding for falling dripstone
+	#ifdef Billboarding
+	if(entityId == 10004) {
+		vec3 playerPos = (gbufferModelViewInverse * vertexPos).xyz;
+
+		vec2 facePos = vec2((texcoord.x - mc_midTexCoord.x) * sign(at_tangent.w) * atlasSize.x / 16.0, 0.0);
+		vec2 centerPos = playerPos.xz - 1.3 * facePos.x * normalize(mat3(gbufferModelViewInverse) * at_tangent.xyz).xz * sign(at_tangent.w);
+
+		vec2 viewVec = normalize(gbufferModelViewInverse[2].xz);
+		mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+		playerPos.xz = (rotationMatrix * facePos) + centerPos;
+
+		vertexPos = gbufferModelView * vec4(playerPos, 1.0);
+
+		// vertexPos = vec4(0.0);
+		// color = vec4(0.0, 0.0, 0.0, 1.0);
+	}
+	#endif
+
+	vec4 ftrans = gl_ModelViewProjectionMatrix * vertexPos;
 	float depth = clamp(ftrans.w, 0.001, 1000.0);
 	float sqrtDepth = sqrt(depth);
 	
-	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
+	vec4 position4 = mat4(gl_ModelViewMatrix) * vertexPos + gl_ModelViewMatrix[3].xyzw;
 	vec3 position = PixelSnap(position4, vertex_inaccuracy_entities / sqrtDepth).xyz;
 	
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, 0.0, 10000.0);
 	texcoordAffine = vec4(texcoord.xy * wVal, wVal, 0);
 	
-	color = gl_Color;
 	gl_Position = toClipSpace3(position);
 
 
@@ -90,9 +115,6 @@ void main() {
 				imageStore(colorimg4, voxelIndex, vec4(custLightColors[entityId - 11000], 1.0));
 			}
 			else {
-				vec2 halfTexSize = abs(texcoord.xy - mc_midTexCoord);
-				vec4 cornerColor = texture2D(gtexture, mc_midTexCoord - halfTexSize + 0.5 / atlasSize);
-
 				if(cornerColor == vec4(1.0, 1.0, 1.0, 25.0/255.0)) {
 					imageStore(colorimg4, voxelIndex, vec4(custLightColors[2], 1.0));
 				}
