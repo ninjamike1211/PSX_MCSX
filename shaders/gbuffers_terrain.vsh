@@ -58,9 +58,10 @@ void main() {
 			}
 			
 			vec2 facePos = vec2((texcoord.x - mc_midTexCoord.x) * sign(at_tangent.w) * atlasSize.x / 16.0, 0.0);
-			vec2 centerPos = vertexPos.xz - 2.0 * facePos.x * normalize(at_tangent).xz * sign(at_tangent.w);
+			vec2 centerPos = vertexPos.xz - 1.8 * facePos.x * normalize(at_tangent).xz * sign(at_tangent.w);
 
 			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			// vec2 viewVec = -normalize(vertexPos.xz);
 			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
 			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
 		#endif
