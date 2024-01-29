@@ -1,16 +1,16 @@
 #version 420 compatibility
 #extension GL_EXT_gpu_shader4 : enable
-#include "/lib/psx_util.glsl"
 
 #define gbuffers_solid
 #define gbuffers_terrain
 #include "/shaders.settings"
+#include "/lib/psx_util.glsl"
+#include "/lib/voxel.glsl"
 
 varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
-varying vec3 voxelLightColor;
 
 attribute vec4 mc_Entity;
 attribute vec3 at_midBlock;
@@ -22,10 +22,11 @@ uniform vec3 previousCameraPosition;
 uniform mat4 gbufferModelViewInverse;
 uniform sampler2D lightmap;
 
-writeonly layout (rgba8) uniform image2D colorimg4;
-readonly layout (rgba8) uniform image2D colorimg5;
-
-#include "/lib/voxel.glsl"
+#ifdef Floodfill_Enable
+	varying vec3 voxelLightColor;
+	writeonly layout (rgba8) uniform image2D colorimg4;
+	readonly layout (rgba8) uniform image2D colorimg5;
+#endif
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
@@ -63,18 +64,20 @@ void main() {
 
 
 	// Voxelization
-	vec3 centerPos = gl_Vertex.xyz + at_midBlock/64.0;
-	int blockID = int(mc_Entity.x + 0.5);
+	#ifdef Floodfill_Enable
+		vec3 centerPos = gl_Vertex.xyz + at_midBlock/64.0;
+		int blockID = int(mc_Entity.x + 0.5);
 
-	ivec3 voxelPos = getPreviousVoxelIndex(centerPos, cameraPosition, previousCameraPosition);
-	if(all(greaterThan(abs(at_midBlock), vec3(27.0))))
-		voxelPos += ivec3(gl_Normal.xyz);
-	if(IsInVoxelizationVolume(voxelPos)) {
-		float lightMult = getLightMult(lmcoord.y, lightmap);
-		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
-	}
-	else {
-		voxelLightColor = vec3(0.0);
-	}
+		ivec3 voxelPos = getPreviousVoxelIndex(centerPos, cameraPosition, previousCameraPosition);
+		if(all(greaterThan(abs(at_midBlock), vec3(27.0))))
+			voxelPos += ivec3(gl_Normal.xyz);
+		if(IsInVoxelizationVolume(voxelPos)) {
+			float lightMult = getLightMult(lmcoord.y, lightmap);
+			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
+			voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
+		}
+		else {
+			voxelLightColor = vec3(0.0);
+		}
+	#endif
 }

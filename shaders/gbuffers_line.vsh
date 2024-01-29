@@ -1,11 +1,11 @@
 #version 120
 #extension GL_EXT_gpu_shader4 : enable
-#include "/lib/psx_util.glsl"
 
 #define gbuffers_solid
 #define gbuffers_terrain
 #define gbuffers_line
 #include "/shaders.settings"
+#include "/lib/psx_util.glsl"
 
 varying vec4 color;
 

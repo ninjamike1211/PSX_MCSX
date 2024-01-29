@@ -1,10 +1,12 @@
-#version 120
+#version 150 compatibility
 /* DRAWBUFFERS:01 */
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
 
 #define gbuffers_solid
 #include "/shaders.settings"
+#include "/lib/psx_util.glsl"
+#include "/lib/voxel.glsl"
 
 uniform float viewWidth;
 uniform float viewHeight;
@@ -16,10 +18,11 @@ varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
-in vec3 voxelLightColor;
 varying float isText;
 
-#include "/lib/psx_util.glsl"
+#ifdef Floodfill_Enable
+	varying vec3 voxelLightColor;
+#endif
 
 void main() {
 
@@ -38,8 +41,13 @@ void main() {
 		affine = texcoord.xy;
 	}
 
-	vec4 lighting = vec4(voxelLightColor, 0.0);
-	lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
+	#ifdef Floodfill_Enable
+		vec4 lighting = vec4(voxelLightColor, 0.0);
+		lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
+	#else
+		vec4 lighting =  texture2D(lightmap, lmcoord.xy);
+	#endif
+
 	vec4 col = texture2D(texture, affine) * color * lighting;
 	
 	gl_FragData[0] = col;

@@ -1,16 +1,16 @@
 #version 420 compatibility
 #extension GL_EXT_gpu_shader4 : enable
-#include "/lib/psx_util.glsl"
 
 #define gbuffers_solid
 #define gbuffers_terrain
 #include "/shaders.settings"
+#include "/lib/psx_util.glsl"
+#include "/lib/voxel.glsl"
 
 varying vec4 texcoord;
 varying vec4 texcoordAffine;
 varying vec4 lmcoord;
 varying vec4 color;
-varying vec3 voxelLightColor;
 varying float isText;
 
 attribute vec4 at_tangent;
@@ -26,10 +26,11 @@ uniform vec3 previousCameraPosition;
 uniform mat4 gbufferModelViewInverse;
 uniform sampler2D lightmap;
 
-writeonly layout (rgba8) uniform image2D colorimg4;
-readonly layout (rgba8) uniform image2D colorimg5;
-
-#include "/lib/voxel.glsl"
+#ifdef Floodfill_Enable
+	varying vec3 voxelLightColor;
+	writeonly layout (rgba8) uniform image2D colorimg4;
+	readonly layout (rgba8) uniform image2D colorimg5;
+#endif
 
 #define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
 #define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
@@ -75,30 +76,32 @@ void main() {
 
 
 	// Voxelization
-	vec2 centerDir = sign(mc_midTexCoord - texcoord.xy);
-	vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
-	vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
-	vec3 tangent = normalize(gl_NormalMatrix * at_tangent.xyz);
-	vec3 bitangent = cross(normal, tangent) * sign(-at_tangent.w);
+	#ifdef Floodfill_Enable
+		vec2 centerDir = sign(mc_midTexCoord - texcoord.xy);
+		vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
+		vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
+		vec3 tangent = normalize(gl_NormalMatrix * at_tangent.xyz);
+		vec3 bitangent = cross(normal, tangent) * sign(-at_tangent.w);
 
-	vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.5*normal + 0.01*centerDir.x*tangent + 0.01*centerDir.y*bitangent, 1.0)).xyz;
-	ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
-	if(IsInVoxelizationVolume(voxelPos)) {
-		float lightMult = getLightMult(lmcoord.y, lightmap);
-		ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-		voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
-	}
-	else {
-		voxelLightColor = vec3(0.0);
-	}
-
-	if(gl_VertexID % 4 == 0 && blockEntityId >= 11000 && blockEntityId < 12000) {
-		playerPos = (gbufferModelViewInverse * vec4(viewPos - 0.5*normal + 0.01*centerDir.x*tangent + 0.01*centerDir.y*bitangent, 1.0)).xyz;
-		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, cameraPosition)));
-
+		vec3 playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.5*normal + 0.01*centerDir.x*tangent + 0.01*centerDir.y*bitangent, 1.0)).xyz;
+		ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
 		if(IsInVoxelizationVolume(voxelPos)) {
+			float lightMult = getLightMult(lmcoord.y, lightmap);
 			ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-			imageStore(colorimg4, voxelIndex, vec4(custLightColors[blockEntityId - 11000], 1.0));
+			voxelLightColor = imageLoad(colorimg5, voxelIndex).rgb * lightMult;
 		}
-	}
+		else {
+			voxelLightColor = vec3(0.0);
+		}
+
+		if(gl_VertexID % 4 == 0 && blockEntityId >= 11000 && blockEntityId < 12000) {
+			playerPos = (gbufferModelViewInverse * vec4(viewPos - 0.5*normal + 0.01*centerDir.x*tangent + 0.01*centerDir.y*bitangent, 1.0)).xyz;
+			voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, cameraPosition)));
+
+			if(IsInVoxelizationVolume(voxelPos)) {
+				ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
+				imageStore(colorimg4, voxelIndex, vec4(custLightColors[blockEntityId - 11000], 1.0));
+			}
+		}
+	#endif
 }
