@@ -8,8 +8,8 @@
 #include "/lib/psx_util.glsl"
 #include "/lib/voxel.glsl"
 
-varying vec4 texcoord;
-varying vec4 texcoordAffine;
+varying vec2 texcoord;
+varying vec3 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
 

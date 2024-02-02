@@ -9,7 +9,7 @@ vec4 PixelSnap(vec4 pos, float inaccuracy) {
 	return pixelPos;
 }
 
-vec2 AffineMapping(vec4 aUv, vec4 oUv, vec2 ts, float clampAmt) {
+vec2 AffineMapping(vec3 aUv, vec2 oUv, vec2 ts, float clampAmt) {
 	vec2 bounds = ts * clampAmt;
 	return vec2(clamp(aUv.x / aUv.z, oUv.x - bounds.x, oUv.x + ts.x + bounds.x), clamp(aUv.y / aUv.z, oUv.y - bounds.y, oUv.y + ts.y + bounds.y));
 }

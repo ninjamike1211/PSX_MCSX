@@ -3,9 +3,9 @@
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_shader_texture_lod : enable
 
-varying vec4 texcoord;
-varying vec4 texcoordAffine;
-varying vec4 lmcoord;
+varying vec2 texcoord;
+varying vec3 texcoordAffine;
+varying vec2 lmcoord;
 varying vec4 color;
 
 #include "/lib/psx_util.glsl"

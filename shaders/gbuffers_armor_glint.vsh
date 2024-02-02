@@ -7,8 +7,8 @@
 #include "/shaders.settings"
 
 varying vec4 color;
-varying vec4 texcoord;
-varying vec4 texcoordAffine;
+varying vec2 texcoord;
+varying vec3 texcoordAffine;
 
 uniform int heldItemId;
 uniform int heldItemId2;
@@ -22,8 +22,7 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 }
 
 void main() {
-	texcoord.xy = (gl_MultiTexCoord0).xy;
-	texcoord.zw = gl_MultiTexCoord1.xy/255.0;
+	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	color = gl_Color;
 
 	vec4 position4 = gl_ModelViewMatrix * gl_Vertex + gl_ModelViewMatrix[3].xyzw;
@@ -54,5 +53,5 @@ void main() {
 
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, 0.0, 10000.0);
-	texcoordAffine = vec4(texcoord.xy * wVal, wVal, 0);
+	texcoordAffine = vec3(texcoord.xy * wVal, wVal);
 }

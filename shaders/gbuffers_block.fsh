@@ -14,9 +14,9 @@ uniform float viewHeight;
 uniform sampler2D texture;
 uniform sampler2D lightmap;
 
-varying vec4 texcoord;
-varying vec4 texcoordAffine;
-varying vec4 lmcoord;
+varying vec2 texcoord;
+varying vec3 texcoordAffine;
+varying vec2 lmcoord;
 varying vec4 color;
 varying float isText;
 

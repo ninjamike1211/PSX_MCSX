@@ -14,9 +14,9 @@ uniform float viewHeight;
 uniform sampler2D texture;
 uniform sampler2D lightmap;
 
-varying vec4 texcoord;
-varying vec4 texcoordAffine;
-varying vec4 lmcoord;
+varying vec2 texcoord;
+varying vec3 texcoordAffine;
+varying vec2 lmcoord;
 varying vec4 color;
 
 #ifdef Floodfill_Enable
@@ -41,7 +41,7 @@ void main() {
 		vec4 lighting = vec4(voxelLightColor, 0.0);
 		lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
 	#else
-		vec4 lighting = texture2D(lightmap, lmcoord.xy) * 0.8 + 0.2;
+		vec4 lighting = texture2D(lightmap, lmcoord) * 0.8 + 0.2;
 	#endif
 	vec4 col = texture2D(texture, affine) * color * lighting;
 	

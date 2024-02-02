@@ -8,10 +8,9 @@
 #include "/lib/psx_util.glsl"
 #include "/lib/voxel.glsl"
 
-varying vec4 texcoord;
-varying vec4 lmcoord;
+varying vec2 texcoord;
+varying vec2 lmcoord;
 varying vec4 color;
-varying vec4 blockColor;
 
 #ifdef Floodfill_Enable
 	varying vec3 voxelLightColor;

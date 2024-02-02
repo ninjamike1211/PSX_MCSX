@@ -7,9 +7,9 @@
 #include "/lib/psx_util.glsl"
 #include "/lib/voxel.glsl"
 
-varying vec4 texcoord;
-varying vec4 texcoordAffine;
-varying vec4 lmcoord;
+varying vec2 texcoord;
+varying vec3 texcoordAffine;
+varying vec2 lmcoord;
 varying vec4 color;
 
 attribute vec4 mc_Entity;
@@ -41,11 +41,11 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 void main() {
 	int blockID = int(mc_Entity.x + 0.5);
 
-	texcoord = gl_MultiTexCoord0;
-	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
+	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 
-	if(inNether)
-		lmcoord.r = lmcoord.r * 0.5 + 0.5;
+	// if(inNether)
+	// 	lmcoord.y = 1.0;
 	
 	color = gl_Color;
 
@@ -274,7 +274,7 @@ void main() {
 	
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, -10000.0, 0.0);
-	texcoordAffine = vec4(texcoord.xy * wVal, wVal, 0);
+	texcoordAffine = vec3(texcoord.xy * wVal, wVal);
 
 	gl_Position = position4;
 

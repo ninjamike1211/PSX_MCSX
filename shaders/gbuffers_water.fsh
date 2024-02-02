@@ -11,9 +11,9 @@
 uniform float viewWidth;
 uniform float viewHeight;
 
-varying vec4 texcoord;
-varying vec4 texcoordAffine;
-varying vec4 lmcoord;
+varying vec2 texcoord;
+varying vec3 texcoordAffine;
+varying vec2 lmcoord;
 varying vec4 color;
 
 #ifdef Floodfill_Enable

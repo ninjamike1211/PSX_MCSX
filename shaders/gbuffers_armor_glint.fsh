@@ -9,8 +9,8 @@
 uniform sampler2D texture;
 
 varying vec4 color;
-varying vec4 texcoord;
-varying vec4 texcoordAffine;
+varying vec2 texcoord;
+varying vec3 texcoordAffine;
 
 uniform int worldTime;
 uniform ivec2 eyeBrightnessSmooth;

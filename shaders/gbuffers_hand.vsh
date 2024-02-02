@@ -7,10 +7,9 @@
 #include "/lib/psx_util.glsl"
 #include "/lib/voxel.glsl"
 
-varying vec4 texcoord;
-varying vec4 lmcoord;
+varying vec2 texcoord;
+varying vec2 lmcoord;
 varying vec4 color;
-varying vec4 lightLevels;
 
 attribute vec4 mc_Entity;
 uniform vec2 texelSize;
@@ -34,9 +33,8 @@ vec4 toClipSpace3(vec3 viewSpacePosition) {
 
 
 void main() {
-	texcoord.xy = (gl_MultiTexCoord0).xy;
-	texcoord.zw = gl_MultiTexCoord1.xy/255.0;
-	lmcoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
+	texcoord.xy = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	
 	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
 
