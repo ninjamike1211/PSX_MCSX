@@ -52,7 +52,7 @@ void main() {
 	vec4 vertexPos = gl_Vertex;
 
 	// Cross models with offset (grass, plants, flowers)
-	if((blockID == 10950 || blockID == 10951)  && gl_Normal.y == 0.0) {
+	if((blockID == 10950 || blockID == 10951 || blockID == 10952)  && gl_Normal.y == 0.0) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
@@ -71,9 +71,12 @@ void main() {
 		if(blockID == 10951) {
 			blockID = 11000;
 		}
+		else if(blockID == 10952) {
+			texcoord.y += 2.0 * (texcoord.y - mc_midTexCoord.y);
+		}
 	}
 	// Vertical Amythest Buds
-	else if(blockID == 10952) {
+	else if(blockID == 10953) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.xz) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
@@ -91,7 +94,7 @@ void main() {
 		blockID = 11004;
 	}
 	// East/West Amythest Buds
-	if(blockID == 10953) {
+	if(blockID == 10954) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.yz) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
@@ -109,7 +112,7 @@ void main() {
 		blockID = 11004;
 	}
 	// North/South Amythest Buds
-	if(blockID == 10954) {
+	if(blockID == 10955) {
 		#ifdef Billboarding
 			if(sign(gl_Normal.xy) != vec2(1.0, 1.0)) {
 				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
