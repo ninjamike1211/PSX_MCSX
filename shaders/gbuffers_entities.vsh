@@ -45,7 +45,7 @@ void main() {
 	color = gl_Color;
 	
 	vec2 halfTexSize = abs(texcoord.xy - mc_midTexCoord);
-	vec4 cornerColor = texture2D(gtexture, mc_midTexCoord - halfTexSize + 0.5 / atlasSize);
+	vec4 cornerColor = texture2D(gtexture, mc_midTexCoord - vec2(-1.0, 1.0) * halfTexSize + 0.5 / atlasSize);
 	
 	vec4 vertexPos = gl_Vertex;
 
