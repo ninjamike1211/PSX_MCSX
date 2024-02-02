@@ -72,7 +72,14 @@ void main() {
 			blockID = 11000;
 		}
 		else if(blockID == 10952) {
-			texcoord.y += 2.0 * (texcoord.y - mc_midTexCoord.y);
+			texcoord.y -= 2.0 * (texcoord.y - mc_midTexCoord.y);
+
+			if(abs((texcoord.x - mc_midTexCoord.x) * atlasSize.x) > 2.0) {
+				vertexPos.y -= 9.0/16.0;
+			}
+			else {
+				vertexPos.y += 6.0/16.0;
+			}
 		}
 	}
 	// Vertical Amythest Buds
