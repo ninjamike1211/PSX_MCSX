@@ -17,6 +17,7 @@ uniform vec2 texelSize;
 uniform float viewWidth;
 uniform float viewHeight;
 uniform float aspectRatio;
+uniform float frameTimeCounter;
 
 // (This is put here to force Optifine to bind image textures, as it doesn't search in gbuffer vertex stage)
 layout (rgba8) uniform image2D colorimg5;
@@ -41,14 +42,12 @@ vec3 hsv2rgb(vec3 c)
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-vec3 GetDither(vec2 pos, vec3 c, float intensity) {
-	int DITHER_THRESHOLDS[16] = int[]( -4, 0, -3, 1, 2, -2, 3, -1, -3, 1, -4, 0, 3, -1, 2, -2 );
-	int index = (int(pos.x) & 3) * 4 + (int(pos.y) & 3);
-
-	c.xyz = clamp(c.xyz * (DITHER_COLORS-1) + DITHER_THRESHOLDS[index] * (intensity * 100), vec3(0), vec3(DITHER_COLORS-1));
-
-	c /= DITHER_COLORS;
-	return c;
+vec2 screenDistort(vec2 uv)
+{
+	uv -= vec2(.5,.5);
+	uv = uv*1.2*(1./1.2+2.*uv.x*uv.x*uv.y*uv.y);
+	uv += vec2(.5,.5);
+	return uv;
 }
 
 /* DRAWBUFFERS:0 */
@@ -56,22 +55,51 @@ void main() {
 	vec2 baseRes = vec2(viewWidth, viewHeight);
 	vec2 dsRes = baseRes * resolution_scale;
 	float pixelSize = dsRes.x / baseRes.x;
-	vec2 downscale = floor(texcoord * (dsRes - 1) + 0.5) / (dsRes - 1);
 
-	vec2 textCol     = texture2D(colortex1, texcoord).rg;
-	vec2 textColDown = texture2D(colortex1, downscale).rg;
-	if(textCol.r > 0.5 || textColDown.r > 0.5)
-		downscale = texcoord;
+	#ifdef CRT_Warp
+		vec2 texcoordWarped = screenDistort(texcoord);
+	#else
+		vec2 texcoordWarped = texcoord;
+	#endif
 
-    vec3 col = texture2D(colortex0,downscale).rgb;
+	vec2 downscale = floor(texcoordWarped * dsRes) / dsRes;
 
-	col = clamp(1.2 * (col - 0.5) + 0.5, 0, 1);
-	col = GetDither(vec2(downscale.x, downscale.y / aspectRatio) * dsRes.x, col, dither_amount);
-	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
+
+	#ifdef CRT_Blur
+		float blurOffset = 0.5 / (viewWidth * resolution_scale.x);
+		vec3 col = vec3(0.0);
+		for(int i = -CRT_Blur_Samples/2; i <= CRT_Blur_Samples/2; i++) {
+			col += texture2D(colortex0,texcoordWarped + vec2(blurOffset * i / (CRT_Blur_Samples/2), 0.0)).rgb;
+		}
+		col /= CRT_Blur_Samples;
+	#else
+		vec3 col = texture2D(colortex0, texcoordWarped).rgb;
+	#endif
 
 	col = (col - 0.5) * contrast + 0.5;
 	vec3 hsv = rgb2hsv(col);
 	hsv.y *= saturation;
 
-	gl_FragData[0].rgb = hsv2rgb(hsv);
+	col = hsv2rgb(hsv);
+
+	// ivec2 texelPos = ivec2(texcoordWarped / texelSize);
+	// int pixelWidth = int(1.0 / resolution_scale);
+	// if(abs((texcoordWarped.y) - downscale.y) < 0.50*texelSize.y) {
+	// // if(texelPos.y % pixelWidth == 0) {
+	// 	gl_FragData[0].rgb = vec3(0.0);
+	// }
+
+	#ifdef CRT_Scanlines
+		float scanlineDist = abs(((texcoordWarped.y - downscale.y) / (texelSize.y / resolution_scale)) * 2.0 - 1.0);
+		float scanelineFactor = smoothstep(1.0, 0.4, scanlineDist);
+
+		col *= mix(0.7, 1.0, scanelineFactor);
+	#endif
+
+	#ifdef CRT_Warp
+		vec2 edgeDistances = abs(texcoordWarped * 2.0 - 1.0);
+		col *= smoothstep(1.0, 0.98, max(edgeDistances.x, edgeDistances.y));
+	#endif
+
+	gl_FragData[0] = vec4(col, 1.0);
 }

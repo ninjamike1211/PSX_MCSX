@@ -85,4 +85,9 @@
 	#define fog_Darken_Mode 3				//Mode for darkening fog while in caves. 0 = off. 1 = altitude. 2 = player block brightness. 3 = player mood [0 1 2 3]
 	//#define fog_Cave_SkipSky				//Skips cave fog darkening on pixels containing only sky
 	#define fog_depth_type 0				//Method for determining fog depth. 0 = depth buffer. 1 = spherical distance. 2 = cylidrical distance
+
+	#define CRT_Scanlines					// CRT scanline effect
+	#define CRT_Blur						// Horizontal scanline blur effect
+	#define CRT_Blur_Samples 5				// Samples used in scanline blur [3 5 7 9]
+	#define CRT_Warp						// CRT-shaped warp effect, appears like curved screen
 #endif
