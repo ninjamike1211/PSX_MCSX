@@ -1,4 +1,4 @@
-// #define Floodfill_Enable // Enables floodfill colored lighting, significant performance impact
+#define Floodfill_Enable // Enables floodfill colored lighting, significant performance impact
 
 #define voxelMapResolution 2048 // [1024 2048 4096]
 const int xzRadiusBlocks = voxelMapResolution / 32;
