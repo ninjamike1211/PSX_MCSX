@@ -18,6 +18,9 @@ varying vec4 color;
 
 uniform sampler2D texture;
 uniform sampler2D lightmap;
+uniform int heldItemId;
+uniform int heldItemId2;
+uniform ivec2 atlasSize;
 
 void main() {
 	vec4 colorVal = texture2D(texture, texcoord.xy) * color;
@@ -32,9 +35,19 @@ void main() {
 		vec4 lighting = texture2D(lightmap, lmcoord.xy) * 0.8 + 0.2;
 	#endif
 
-	vec4 data0 = colorVal * lighting;
+	vec4 col = colorVal * lighting;
+
+	#ifdef Player_Ignore_Post
+		if(heldItemId == 10002 || heldItemId2 == 10002 && atlasSize.x == 0) {
+			vec3 hsv = rgb2hsv(col.rgb);
+			hsv.y /= saturation;
+			col.rgb = hsv2rgb(hsv);
+
+			col.rgb = (col.rgb - 0.5) * (1.0/contrast) + 0.5;
+		}
+	#endif
 	
-	gl_FragData[0] = data0;
+	gl_FragData[0] = col;
 
 	gl_FragData[1] = vec4(0.0);
 }
