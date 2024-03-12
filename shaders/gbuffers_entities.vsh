@@ -26,7 +26,7 @@ uniform float frameTimeCounter;
 uniform sampler2D gtexture;
 uniform sampler2D lightmap;
 
-#ifdef Floodfill_Enable
+#if Floodfill > 0
 	varying vec3 voxelLightColor;
 	writeonly layout (rgba8) uniform image2D colorimg4;
 	readonly layout (rgba8) uniform image2D colorimg5;
@@ -80,7 +80,7 @@ void main() {
 
 
 	// Voxelization
-	#ifdef Floodfill_Enable
+	#if Floodfill > 0
 		vec2 centerDir = sign(mc_midTexCoord - texcoord.xy);
 		vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
 		vec3 normal = normalize(gl_NormalMatrix * gl_Normal);

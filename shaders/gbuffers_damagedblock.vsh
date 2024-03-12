@@ -22,7 +22,7 @@ uniform vec3 previousCameraPosition;
 uniform mat4 gbufferModelViewInverse;
 uniform sampler2D lightmap;
 
-#ifdef Floodfill_Enable
+#if Floodfill > 0
 	varying vec3 voxelLightColor;
 	writeonly layout (rgba8) uniform image2D colorimg4;
 	readonly layout (rgba8) uniform image2D colorimg5;
@@ -64,7 +64,7 @@ void main() {
 
 
 	// Voxelization
-	#ifdef Floodfill_Enable
+	#if Floodfill > 0
 		vec3 centerPos = gl_Vertex.xyz + at_midBlock/64.0;
 		int blockID = int(mc_Entity.x + 0.5);
 

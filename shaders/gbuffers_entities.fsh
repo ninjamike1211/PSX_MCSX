@@ -26,7 +26,7 @@ uniform vec3 skyColor;
 uniform float frameTimeCounter;
 uniform int entityId;
 
-#ifdef Floodfill_Enable
+#if Floodfill > 0
 	varying vec3 voxelLightColor;
 #endif
 
@@ -49,7 +49,7 @@ void main() {
 		vec4 col = texture2D(texture, affine) * color;
 		col.rgb = mix(col.rgb, entityColor.rgb, entityColor.a);
 		
-		#ifdef Floodfill_Enable
+		#if Floodfill > 0
 			vec4 lighting = vec4(voxelLightColor, 0.0);
 			lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
 		#else

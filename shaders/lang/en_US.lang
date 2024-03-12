@@ -18,3 +18,7 @@ screen.MESH_SCREEN=Mesh Settings
 screen.MESH_SCREEN.comment=Options related to block, entity, and hand models.
 screen.PP_SCREEN=Post Processing Settings
 screen.PP_SCREEN.comment=Options related to post processing.
+
+value.Floodfill.0=disabled
+value.Floodfill.1=enabled (slow)
+value.Floodfill.2=enabled (instant)

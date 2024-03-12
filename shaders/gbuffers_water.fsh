@@ -16,7 +16,7 @@ varying vec3 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
 
-#ifdef Floodfill_Enable
+#if Floodfill > 0
 	varying vec3 voxelLightColor;
 #endif
 
@@ -35,7 +35,7 @@ void main() {
 	vec2 affine = texcoord.xy;
 	#endif
 
-	#ifdef Floodfill_Enable
+	#if Floodfill > 0
 		vec4 lighting = vec4(voxelLightColor, 0.0);
 		lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
 	#else

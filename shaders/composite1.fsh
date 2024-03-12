@@ -18,7 +18,8 @@ void main() {
 
 	vec4 currentBlock = texelFetch(colortex4, storagePos, 0);
 
-	#ifdef Floodfill_Instant
+	// #ifdef Floodfill_Instant
+	#if Floodfill == 2
 		gl_FragData[0] = currentBlock.a < 0.4 ? vec4(0.0) : currentBlock;
 	#else
 		ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));

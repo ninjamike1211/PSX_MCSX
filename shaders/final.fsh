@@ -19,7 +19,7 @@ uniform float frameTimeCounter;
 
 // (This is put here to force Optifine to bind image textures, as it doesn't search in gbuffer vertex stage)
 
-#ifdef Floodfill_Enable
+#if Floodfill > 0
 	layout (rgba8) uniform image2D colorimg5;
 #endif
 

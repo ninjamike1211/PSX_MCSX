@@ -20,7 +20,7 @@ uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform sampler2D lightmap;
 
-#ifdef Floodfill_Enable
+#if Floodfill > 0
 	varying vec3 voxelLightColor;
 	readonly layout (rgba8) uniform image2D colorimg5;
 #endif
@@ -53,7 +53,7 @@ void main() {
 	gl_Position = toClipSpace3(position);
 
 	// Voxelization
-	#ifdef Floodfill_Enable
+	#if Floodfill > 0
 		ivec3 voxelPos = getPreviousVoxelIndex(vec3(0.0), cameraPosition, previousCameraPosition);
 		if(IsInVoxelizationVolume(voxelPos)) {
 			float lightMult = getLightMult(lmcoord.y, lightmap);

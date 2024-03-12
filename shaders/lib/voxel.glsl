@@ -1,4 +1,5 @@
 #define Floodfill_Enable // Enables floodfill colored lighting, significant performance impact
+#define Floodfill 2 // Mode for Floodfill colored lighting. Off: use vanilla lighting, fastest. Slow: light propogates one block per frame, slightly faster than instant. Instant: light propogates instantly, slowest. [0 1 2]
 
 #define voxelMapResolution 2048 // [1024 2048 4096]
 const int xzRadiusBlocks = voxelMapResolution / 32;
@@ -14,9 +15,11 @@ const int xzRadiusBlocks = voxelMapResolution / 32;
 #endif
 #ifdef Floodfill_Particles
 #endif
+#ifdef Floodfill
+#endif
 */
 
-#ifdef Floodfill_Enable
+#if Floodfill > 0
 
     bool IsInVoxelizationVolume(ivec3 voxelIndex) {
         const ivec3 lo = ivec3(-xzRadiusBlocks    ,   0,-xzRadiusBlocks    );

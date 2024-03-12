@@ -23,7 +23,7 @@ uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform sampler2D lightmap;
 
-#ifdef Floodfill_Enable
+#if Floodfill > 0
 	varying vec3 voxelLightColor;
 	writeonly layout (rgba8) uniform image2D colorimg4;
 	readonly layout (rgba8) uniform image2D colorimg5;
@@ -73,7 +73,7 @@ void main() {
 	gl_Position = position4;
 
 	// Voxelization
-	#ifdef Floodfill_Enable
+	#if Floodfill > 0
 		vec3 centerPos = gl_Vertex.xyz + at_midBlock/64.0;
 
 		ivec3 voxelPos = getPreviousVoxelIndex(centerPos, cameraPosition, previousCameraPosition);
