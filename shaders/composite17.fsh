@@ -3,15 +3,11 @@
 
 #define composite
 #include "/shaders.settings"
-#include "/lib/voxel.glsl"
 
 #define DITHER_COLORS 128
 varying vec2 texcoord;
 
 uniform sampler2D colortex0;
-uniform sampler2D colortex4;
-uniform sampler2D colortex5;
-uniform sampler2D colortex7;
 uniform sampler2D colortex1;
 uniform vec2 texelSize;
 uniform float viewWidth;
@@ -20,7 +16,7 @@ uniform float aspectRatio;
 uniform float frameTimeCounter;
 
 // (This is put here to force Optifine to bind image textures, as it doesn't search in gbuffer vertex stage)
-layout (rgba8) uniform image2D colorimg5;
+// layout (rgba8) uniform image2D colorimg5;
 
 vec3 GetDither(vec2 pos, vec3 c, float intensity) {
 	int DITHER_THRESHOLDS[16] = int[]( -4, 0, -3, 1, 2, -2, 3, -1, -3, 1, -4, 0, 3, -1, 2, -2 );
