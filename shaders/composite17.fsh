@@ -30,10 +30,7 @@ vec3 GetDither(vec2 pos, vec3 c, float intensity) {
 
 /* DRAWBUFFERS:0 */
 void main() {
-	vec2 baseRes = vec2(viewWidth, viewHeight);
-	vec2 dsRes = baseRes * resolution_scale;
-	float pixelSize = dsRes.x / baseRes.x;
-
+	vec2 dsRes = vec2(viewWidth, viewHeight) * resolution_scale;
 	vec2 downscale = floor(texcoord * dsRes) / dsRes;
 
 	vec2 textCol     = texture2D(colortex1, texcoord).rg;
@@ -44,7 +41,7 @@ void main() {
     vec3 col = texture2D(colortex0,downscale).rgb;
 
 	col = clamp(1.2 * (col - 0.5) + 0.5, 0, 1);
-	col = GetDither(vec2(downscale.x, downscale.y / aspectRatio) * dsRes.x, col, dither_amount);
+	col = GetDither(downscale * dsRes + 0.1, col, dither_amount);
 	col = clamp(floor(col * color_depth) / color_depth, 0.0, 1.0);
 
 	gl_FragData[0].rgb = col;
