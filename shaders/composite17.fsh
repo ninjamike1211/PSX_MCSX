@@ -1,5 +1,4 @@
 #version 420 compatibility
-#extension GL_EXT_gpu_shader4 : enable
 
 #define composite
 #include "/shaders.settings"
@@ -9,14 +8,8 @@ varying vec2 texcoord;
 
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
-uniform vec2 texelSize;
 uniform float viewWidth;
 uniform float viewHeight;
-uniform float aspectRatio;
-uniform float frameTimeCounter;
-
-// (This is put here to force Optifine to bind image textures, as it doesn't search in gbuffer vertex stage)
-// layout (rgba8) uniform image2D colorimg5;
 
 vec3 GetDither(vec2 pos, vec3 c, float intensity) {
 	int DITHER_THRESHOLDS[16] = int[]( -4, 0, -3, 1, 2, -2, 3, -1, -3, 1, -4, 0, 3, -1, 2, -2 );

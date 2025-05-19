@@ -1,5 +1,4 @@
 #version 420 compatibility
-#extension GL_EXT_gpu_shader4 : enable
 
 #define gbuffers_solid
 #define gbuffers_hand
@@ -11,8 +10,6 @@ varying vec2 texcoord;
 varying vec2 lmcoord;
 varying vec4 color;
 
-attribute vec4 mc_Entity;
-uniform vec2 texelSize;
 uniform float aspectRatio;
 uniform int heldItemId;
 uniform int heldItemId2;
@@ -25,15 +22,9 @@ uniform sampler2D lightmap;
 	readonly layout (rgba8) uniform image2D colorimg5;
 #endif
 
-#define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
-#define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
-vec4 toClipSpace3(vec3 viewSpacePosition) {
-    return vec4(projMAD(gl_ProjectionMatrix, viewSpacePosition),-viewSpacePosition.z);
-}
-
 
 void main() {
-	texcoord.xy = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	
 	vec4 position4 = mat4(gl_ModelViewMatrix) * vec4(gl_Vertex) + gl_ModelViewMatrix[3].xyzw;
@@ -50,7 +41,7 @@ void main() {
 
 	color = gl_Color;
 	
-	gl_Position = toClipSpace3(position);
+	gl_Position = gl_ProjectionMatrix * vec4(position, 1.0);
 
 	// Voxelization
 	#if Floodfill > 0

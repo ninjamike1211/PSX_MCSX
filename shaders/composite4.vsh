@@ -1,4 +1,4 @@
-#version 120
+#version 420 compatibility
 
 void main() {
 	gl_Position = ftransform();

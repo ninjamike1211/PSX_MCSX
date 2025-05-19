@@ -1,7 +1,5 @@
-#version 150 compatibility
+#version 420 compatibility
 /* DRAWBUFFERS:01 */
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_shader_texture_lod : enable
 
 #define gbuffers_solid
 #include "/shaders.settings"
@@ -23,7 +21,7 @@ uniform int heldItemId2;
 uniform ivec2 atlasSize;
 
 void main() {
-	vec4 colorVal = texture2D(texture, texcoord.xy) * color;
+	vec4 colorVal = texture2D(texture, texcoord) * color;
 
 	if(colorVal.a < 0.1)
 		discard;
@@ -38,7 +36,7 @@ void main() {
 	vec4 col = colorVal * lighting;
 
 	#ifdef Player_Ignore_Post
-		if(heldItemId == 10002 || heldItemId2 == 10002 && atlasSize.x == 0) {
+		if(heldItemId == 10002 || (heldItemId2 == 10002 && atlasSize.x == 0)) {
 			vec3 hsv = rgb2hsv(col.rgb);
 			hsv.y /= saturation;
 			col.rgb = hsv2rgb(hsv);
@@ -48,6 +46,5 @@ void main() {
 	#endif
 	
 	gl_FragData[0] = col;
-
 	gl_FragData[1] = vec4(0.0);
 }

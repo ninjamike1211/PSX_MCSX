@@ -1,4 +1,4 @@
-#version 120
+#version 420 compatibility
 
 varying vec4 color;
 varying vec2 texcoord;

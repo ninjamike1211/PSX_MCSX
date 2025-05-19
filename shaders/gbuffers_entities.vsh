@@ -1,5 +1,4 @@
 #version 420 compatibility
-#extension GL_EXT_gpu_shader4 : enable
 
 #define gbuffers_solid
 #define gbuffers_entities
@@ -16,13 +15,11 @@ attribute vec2 mc_midTexCoord;
 attribute vec4 at_tangent;
 
 uniform ivec2 atlasSize;
-uniform vec2 texelSize;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform int entityId;
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
-uniform float frameTimeCounter;
 uniform sampler2D gtexture;
 uniform sampler2D lightmap;
 
@@ -32,18 +29,13 @@ uniform sampler2D lightmap;
 	readonly layout (rgba8) uniform image2D colorimg5;
 #endif
 
-#define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
-#define  projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
-vec4 toClipSpace3(vec3 viewSpacePosition) {
-  return vec4(projMAD(gl_ProjectionMatrix, viewSpacePosition),-viewSpacePosition.z);
-}
 
 void main() {
-	texcoord.xy = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	color = gl_Color;
 	
-	vec2 halfTexSize = abs(texcoord.xy - mc_midTexCoord);
+	vec2 halfTexSize = abs(texcoord - mc_midTexCoord);
 	vec4 cornerColor = texture2D(gtexture, mc_midTexCoord - vec2(-1.0, 1.0) * halfTexSize + 0.5 / atlasSize);
 	
 	vec4 vertexPos = gl_Vertex;
@@ -73,15 +65,15 @@ void main() {
 	
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, 0.0, 10000.0);
-	texcoordAffine = vec3(texcoord.xy * wVal, wVal);
+	texcoordAffine = vec3(texcoord * wVal, wVal);
 	
-	gl_Position = toClipSpace3(position);
+	gl_Position = gl_ProjectionMatrix * vec4(position, 1.0);
 
 
 
 	// Voxelization
 	#if Floodfill > 0
-		vec2 centerDir = sign(mc_midTexCoord - texcoord.xy);
+		vec2 centerDir = sign(mc_midTexCoord - texcoord);
 		vec3 viewPos = (gl_ModelViewMatrix * gl_Vertex).xyz;
 		vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
 		vec3 tangent = normalize(gl_NormalMatrix * at_tangent.xyz);
@@ -97,10 +89,6 @@ void main() {
 		else {
 			voxelLightColor = vec3(0.0);
 		}
-
-		// if(entityId == 10003) {
-		// 	voxelLightColor += mix(vec3(item_darkColor), vec3(item_lightColor), sin(frameTimeCounter * item_speed) * 0.5 + 0.5);
-		// }
 
 		playerPos = (gbufferModelViewInverse * vec4(viewPos + 0.5*centerDir.x*tangent + 0.5*centerDir.y*bitangent, 1.0)).xyz;
 		voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(playerPos, cameraPosition)));

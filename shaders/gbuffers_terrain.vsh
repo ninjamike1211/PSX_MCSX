@@ -1,5 +1,4 @@
 #version 420 compatibility
-#extension GL_EXT_gpu_shader4 : enable
 
 #define gbuffers_solid
 #define gbuffers_terrain
@@ -17,12 +16,9 @@ attribute vec3 at_midBlock;
 attribute vec4 at_tangent;
 attribute vec2 mc_midTexCoord;
 
-uniform bool inNether;
-uniform float frameTimeCounter;
 uniform ivec2 atlasSize;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
-uniform mat4 gbufferModelViewInverse;
 uniform sampler2D lightmap;
 
 #if Floodfill > 0
@@ -32,20 +28,11 @@ uniform sampler2D lightmap;
 #endif
 
 
-#define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
-#define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
-vec4 toClipSpace3(vec3 viewSpacePosition) {
-    return vec4(projMAD(gl_ProjectionMatrix, viewSpacePosition),-viewSpacePosition.z);
-}
-
 void main() {
 	int blockID = int(mc_Entity.x + 0.5);
 
 	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
-
-	// if(inNether)
-	// 	lmcoord.y = 1.0;
 	
 	color = gl_Color;
 
@@ -284,7 +271,7 @@ void main() {
 	
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, -10000.0, 0.0);
-	texcoordAffine = vec3(texcoord.xy * wVal, wVal);
+	texcoordAffine = vec3(texcoord * wVal, wVal);
 
 	gl_Position = position4;
 

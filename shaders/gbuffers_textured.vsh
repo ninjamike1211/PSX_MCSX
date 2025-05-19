@@ -1,5 +1,4 @@
 #version 420 compatibility
-#extension GL_EXT_gpu_shader4 : enable
 
 #define gbuffers_solid
 #define gbuffers_terrain
@@ -12,18 +11,10 @@ varying vec3 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
 
-attribute vec4 mc_Entity;
-
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform mat4 gbufferModelViewInverse;
 uniform sampler2D lightmap;
-
-#define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
-#define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
-vec4 toClipSpace3(vec3 viewSpacePosition) {
-    return vec4(projMAD(gl_ProjectionMatrix, viewSpacePosition),-viewSpacePosition.z);
-}
 
 
 #if defined Floodfill_Enable && defined Floodfill_Particles
@@ -40,11 +31,11 @@ void main() {
 	
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, -10000.0, 0.0);
-	texcoordAffine = vec3(texcoord.xy * wVal, wVal);
+	texcoordAffine = vec3(texcoord * wVal, wVal);
 
 	color = gl_Color;
 	
-	gl_Position = toClipSpace3(position);
+	gl_Position = gl_ProjectionMatrix * vec4(position, 1.0);
 
 	// Voxelization
 	#if defined Floodfill_Enable && defined Floodfill_Particles

@@ -1,4 +1,4 @@
-#version 120
+#version 420 compatibility
 #include "/lib/psx_util.glsl"
 
 #define gbuffers_solid
@@ -8,18 +8,12 @@
 
 varying vec4 color;
 varying vec2 texcoord;
-varying vec3 texcoordAffine;
 
 uniform int heldItemId;
 uniform int heldItemId2;
 uniform float aspectRatio;
 uniform int renderStage;
 
-#define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
-#define  projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
-vec4 toClipSpace3(vec3 viewSpacePosition) {
-  return vec4(projMAD(gl_ProjectionMatrix, viewSpacePosition),-viewSpacePosition.z);
-}
 
 void main() {
 	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
@@ -49,9 +43,6 @@ void main() {
 		position = PixelSnap(position4, vertex_inaccuracy_entities / sqrtDepth).xyz;
 	}
 	
-	gl_Position = toClipSpace3(position);
+	gl_Position = gl_ProjectionMatrix * vec4(position, 1.0);
 
-	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
-	wVal = clamp(wVal, 0.0, 10000.0);
-	texcoordAffine = vec3(texcoord.xy * wVal, wVal);
 }

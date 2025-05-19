@@ -1,20 +1,20 @@
-#version 120
+#version 420 compatibility
 /* DRAWBUFFERS:8 */
 
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_shader_texture_lod : enable
-
-varying vec4 texcoord;
+varying vec2 texcoord;
+varying vec2 lmcoord;
 varying vec4 color;
 
 uniform sampler2D texture;
 uniform sampler2D lightmap;
 
 void main() {
-	vec4 col = texture2D(texture, texcoord.xy) * color;
+	vec4 col = texture2D(texture, texcoord);
 
 	if(col.a < 0.1)
 		discard;
+
+	col *= texture2D(lightmap, lmcoord) * color;
 	
-	gl_FragData[0] = vec4(1.0);
+	gl_FragData[0] = col;
 }

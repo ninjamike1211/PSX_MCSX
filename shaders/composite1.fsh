@@ -1,4 +1,4 @@
-#version 330 compatibility
+#version 420 compatibility
 
 uniform sampler2D colortex4;
 uniform sampler2D colortex5;
@@ -7,7 +7,6 @@ uniform vec3 previousCameraPosition;
 uniform int heldItemId;
 uniform int heldItemId2;
 
-// #include "/voxel/lib/voxelization.glsl"
 #include "/lib/voxel.glsl"
 
 /* DRAWBUFFERS:5 */
@@ -18,7 +17,6 @@ void main() {
 
 	vec4 currentBlock = texelFetch(colortex4, storagePos, 0);
 
-	// #ifdef Floodfill_Instant
 	#if Floodfill == 2
 		gl_FragData[0] = currentBlock.a < 0.4 ? vec4(0.0) : currentBlock;
 	#else

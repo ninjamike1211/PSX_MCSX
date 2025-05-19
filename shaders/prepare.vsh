@@ -1,4 +1,4 @@
-#version 400 compatibility
+#version 420 compatibility
 
 #define moodSpeed 0.1
 

@@ -1,6 +1,5 @@
-#version 120
-#extension GL_EXT_gpu_shader4 : enable
+#version 420 compatibility
 
 void main() {
-	gl_Position = ftransform();
+	gl_Position = vec4(-10,-10,-10,-1);
 }

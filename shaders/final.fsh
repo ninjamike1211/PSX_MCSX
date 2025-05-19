@@ -1,24 +1,18 @@
 #version 420 compatibility
-#extension GL_EXT_gpu_shader4 : enable
 
 #define composite
 #include "/shaders.settings"
 #include "/lib/psx_util.glsl"
 #include "/lib/voxel.glsl"
 
-#define DITHER_COLORS 128
 varying vec2 texcoord;
 
 uniform sampler2D colortex0;
-uniform sampler2D colortex1;
 uniform vec2 texelSize;
 uniform float viewWidth;
 uniform float viewHeight;
-uniform float aspectRatio;
-uniform float frameTimeCounter;
 
 // (This is put here to force Optifine to bind image textures, as it doesn't search in gbuffer vertex stage)
-
 #if Floodfill > 0
 	layout (rgba8) uniform image2D colorimg5;
 #endif

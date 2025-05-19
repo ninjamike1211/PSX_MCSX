@@ -1,5 +1,4 @@
-#version 330 compatibility
-// Skybox and rain shader code from Sildurs Vibrant Shaders
+#version 420 compatibility
 
 /*
 const int  colortex0Format  = RGBA8;

@@ -1,7 +1,6 @@
-#version 120
+#version 420 compatibility
 
 varying vec2 texcoord;
-varying vec3 upVec;
 
 void main() {
 	gl_Position = ftransform();

@@ -1,5 +1,4 @@
 #version 120
-#extension GL_EXT_gpu_shader4 : enable
 
 #define gbuffers_solid
 #define gbuffers_terrain
@@ -9,18 +8,10 @@
 
 varying vec4 color;
 
-attribute vec4 mc_Entity;
-uniform vec2 texelSize;
 uniform float frameTimeCounter;
 uniform float viewWidth;
 uniform float viewHeight;
 uniform int renderStage;
-
-#define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
-#define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
-vec4 toClipSpace3(vec3 viewSpacePosition) {
-    return vec4(projMAD(gl_ProjectionMatrix, viewSpacePosition),-viewSpacePosition.z);
-}
 
 const float VIEW_SHRINK = 1.0 - (1.0 / 256.0);
 const mat4 VIEW_SCALE   = mat4(
@@ -31,8 +22,6 @@ const mat4 VIEW_SCALE   = mat4(
 );
 
 void main() {
-	
-	// vec4 ftrans = ftransform();\
 
 	vec2 resolution   = vec2(viewWidth, viewHeight);
 	vec4 linePosStart = gl_ProjectionMatrix * (VIEW_SCALE * (gl_ModelViewMatrix * gl_Vertex));
@@ -54,20 +43,14 @@ void main() {
 
 	float depth = clamp(ftrans.w, 0.001, 1000.0);
 	float sqrtDepth = sqrt(depth);
-	
-	// vec4 position4 = PixelSnap(ftrans, vertex_inaccuracy_terrain / sqrtDepth);
 
 	ftrans.z -= 0.0001 * ftrans.w;
 
 	gl_Position = ftrans;
-	// gl_Position = position4;
-
 	color = gl_Color;
 
 	if(renderStage == MC_RENDER_STAGE_OUTLINE) {
 		color.xyz = mix(vec3(outline_darkColor), vec3(outline_lightColor), sin(frameTimeCounter * outline_speed) * 0.5 + 0.5);
 		color.a = 1.0;
 	}
-	
-	// gl_Position = toClipSpace3(gl_Position);
 }

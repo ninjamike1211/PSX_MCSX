@@ -1,8 +1,6 @@
-#version 330 compatibility
+#version 420 compatibility
 
 uniform sampler2D colortex5;
-uniform vec3 cameraPosition;
-uniform vec3 previousCameraPosition;
 
 #include "/lib/voxel.glsl"
 

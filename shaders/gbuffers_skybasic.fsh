@@ -1,4 +1,4 @@
-#version 120
+#version 420 compatibility
 
 /* DRAWBUFFERS:0 */
 void main() {

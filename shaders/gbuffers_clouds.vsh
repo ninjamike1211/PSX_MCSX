@@ -1,14 +1,14 @@
-#version 120
-#extension GL_EXT_gpu_shader4 : enable
+#version 420 compatibility
 
-varying vec4 texcoord;
+varying vec2 texcoord;
+varying vec2 lmcoord;
 varying vec4 color;
 
 uniform vec2 texelSize;
 
 void main() {
-	texcoord = gl_MultiTexCoord0;
-
+	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	color = gl_Color;
 	
 	gl_Position = ftransform();

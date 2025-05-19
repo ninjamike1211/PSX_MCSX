@@ -1,7 +1,5 @@
-#version 150 compatibility
+#version 420 compatibility
 /* DRAWBUFFERS:21 */
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_shader_texture_lod : enable
 
 #define gbuffers_solid
 #include "/shaders.settings"
@@ -11,7 +9,6 @@
 varying vec2 texcoord;
 varying vec2 lmcoord;
 varying vec4 color;
-varying vec4 blockColor;
 
 #if Floodfill > 0
 	varying vec3 voxelLightColor;
@@ -21,7 +18,7 @@ uniform sampler2D texture;
 uniform sampler2D lightmap;
 
 void main() {
-	vec4 colorVal = texture2D(texture, texcoord.xy) * color;
+	vec4 colorVal = texture2D(texture, texcoord) * color;
 
 	#if Floodfill > 0
 		vec4 lighting = vec4(voxelLightColor, 0.0);
@@ -33,6 +30,5 @@ void main() {
 	vec4 data0 = colorVal * lighting;
 	
 	gl_FragData[0] = data0;
-
 	gl_FragData[1] = vec4(0.0);
 }

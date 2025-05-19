@@ -1,15 +1,12 @@
-#version 150 compatibility
+#version 420 compatibility
 /* DRAWBUFFERS:21 */
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_shader_texture_lod : enable
 
 #define gbuffers_solid
 #include "/shaders.settings"
 #include "/lib/psx_util.glsl"
 #include "/lib/voxel.glsl"
 
-uniform float viewWidth;
-uniform float viewHeight;
+uniform vec2 texelSize;
 
 varying vec2 texcoord;
 varying vec3 texcoordAffine;
@@ -26,20 +23,19 @@ uniform sampler2D lightmap;
 void main() {
 	#ifdef affine_mapping
 	#ifdef affine_clamp_enabled
-	vec2 texelSize = vec2(1.0/viewWidth, 1.0/viewHeight);
 	vec2 affine = AffineMapping(texcoordAffine, texcoord, texelSize, affine_clamp);
 	#else
 	vec2 affine = texcoordAffine.xy / texcoordAffine.z;
 	#endif
 	#else 
-	vec2 affine = texcoord.xy;
+	vec2 affine = texcoord;
 	#endif
 
 	#if Floodfill > 0
 		vec4 lighting = vec4(voxelLightColor, 0.0);
 		lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
 	#else
-		vec4 lighting = texture2D(lightmap, lmcoord.xy) * 0.8 + 0.2;
+		vec4 lighting = texture2D(lightmap, lmcoord) * 0.8 + 0.2;
 	#endif
 
 	vec4 col = texture2D(texture, affine) * color * lighting;

@@ -1,5 +1,4 @@
 #version 420 compatibility
-#extension GL_EXT_gpu_shader4 : enable
 
 #define gbuffers_solid
 #define gbuffers_terrain
@@ -15,9 +14,6 @@ varying vec4 color;
 attribute vec4 mc_Entity;
 attribute vec3 at_midBlock;
 
-uniform vec2 texelSize;
-uniform mat4 gbufferModelViewInverse;
-uniform mat4 gbufferModelView;
 uniform float frameTimeCounter;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
@@ -29,11 +25,6 @@ uniform sampler2D lightmap;
 	readonly layout (rgba8) uniform image2D colorimg5;
 #endif
 
-#define diagonal3(m) vec3((m)[0].x, (m)[1].y, m[2].z)
-#define projMAD(m, v) (diagonal3(m) * (v) + (m)[3].xyz)
-vec4 toClipSpace3(vec3 viewSpacePosition) {
-    return vec4(projMAD(gl_ProjectionMatrix, viewSpacePosition),-viewSpacePosition.z);
-}
 
 void main() {
 	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
@@ -59,7 +50,7 @@ void main() {
 	
 	float wVal = (mat3(gl_ProjectionMatrix) * position).z;
 	wVal = clamp(wVal, -10000.0, 0.0);
-	texcoordAffine = vec3(texcoord.xy * wVal, wVal);
+	texcoordAffine = vec3(texcoord * wVal, wVal);
 
 	color = gl_Color;
 	
