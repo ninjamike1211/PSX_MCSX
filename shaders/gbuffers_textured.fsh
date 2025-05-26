@@ -13,7 +13,7 @@ uniform vec2 texelSize;
 uniform sampler2D texture;
 uniform sampler2D lightmap;
 
-#if defined Floodfill_Enable && defined Floodfill_Particles
+#if Floodfill > 0 && defined Floodfill_Particles
 	varying vec3 voxelLightColor;
 #endif
 
@@ -21,7 +21,7 @@ void main() {
 	vec2 affine = AffineMapping(texcoordAffine, texcoord, texelSize, 2);
 	vec4 col = texture2D(texture, texcoord) * color;
 
-	#if defined Floodfill_Enable && defined Floodfill_Particles
+	#if Floodfill > 0 && defined Floodfill_Particles
 		vec4 lighting = vec4(voxelLightColor, 0.0);
 		lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
 	#else

@@ -34,7 +34,7 @@ void main() {
 	vec3 ndc2 = linePosEnd.xyz   / linePosEnd.w;
 
 	vec2 lineScreenDirection = normalize((ndc2.xy - ndc1.xy) * resolution);
-	vec2 lineOffset = vec2(-lineScreenDirection.y, lineScreenDirection.x) * LINE_WIDTH / resolution;
+	vec2 lineOffset = vec2(-lineScreenDirection.y, lineScreenDirection.x) * line_width / resolution;
 
 	if (lineOffset.x < 0.0) lineOffset = -lineOffset;
 	if (gl_VertexID % 2 != 0) lineOffset = -lineOffset;
@@ -47,10 +47,12 @@ void main() {
 	ftrans.z -= 0.0001 * ftrans.w;
 
 	gl_Position = ftrans;
-	color = gl_Color;
+	color = vec4(gl_Color.rgb, 1.0);
 
-	if(renderStage == MC_RENDER_STAGE_OUTLINE) {
-		color.xyz = mix(vec3(outline_darkColor), vec3(outline_lightColor), sin(frameTimeCounter * outline_speed) * 0.5 + 0.5);
-		color.a = 1.0;
-	}
+	#ifndef line_flash_everything
+	if(renderStage == MC_RENDER_STAGE_OUTLINE)
+	#endif
+		color = vec4(
+			mix(vec3(outline_darkColor), vec3(outline_lightColor), sin(frameTimeCounter * outline_speed) * 0.5 + 0.5),
+			1.0);
 }

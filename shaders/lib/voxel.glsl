@@ -1,4 +1,3 @@
-#define Floodfill_Enable // Enables floodfill colored lighting, significant performance impact
 #define Floodfill 2 // Mode for Floodfill colored lighting. Off: use vanilla lighting, fastest. Slow: light propogates one block per frame, slightly faster than instant. Instant: light propogates instantly, slowest. [0 1 2]
 
 #define voxelMapResolution 2048 // [1024 2048 4096]
@@ -138,10 +137,7 @@ const int xzRadiusBlocks = voxelMapResolution / 32;
         storagePosY = rowStart + ivec2((yIndex - 1) % 16, (yIndex - 1) / 16);
         maxLight = max(maxLight, texelFetch(lightSampler, storagePosY, 0).rgb);
 
-        // maxLight /= 4.0;
-        maxLight = clamp(maxLight - 1.0/16.0, 0.0, 1.0);
-
-        return maxLight;
+        return clamp(maxLight - 1.0/16.0, 0.0, 1.0);
     }
 
 #endif

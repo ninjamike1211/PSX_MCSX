@@ -17,7 +17,7 @@ uniform mat4 gbufferModelViewInverse;
 uniform sampler2D lightmap;
 
 
-#if defined Floodfill_Enable && defined Floodfill_Particles
+#if Floodfill > 0 && defined Floodfill_Particles
 	readonly layout (rgba8) uniform image2D colorimg5;
 	varying vec3 voxelLightColor;
 #endif
@@ -38,7 +38,7 @@ void main() {
 	gl_Position = gl_ProjectionMatrix * vec4(position, 1.0);
 
 	// Voxelization
-	#if defined Floodfill_Enable && defined Floodfill_Particles
+	#if Floodfill > 0 && defined Floodfill_Particles
 		vec3 playerPos = (gbufferModelViewInverse * position4).xyz;
 		ivec3 voxelPos = getPreviousVoxelIndex(playerPos, cameraPosition, previousCameraPosition);
 		if(IsInVoxelizationVolume(voxelPos)) {
