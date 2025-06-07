@@ -98,11 +98,11 @@ void main() {
 				ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
 
 				if(entityId >= 11000 && entityId < 12000) {
-					imageStore(colorimg4, voxelIndex, vec4(custLightColors[entityId - 11000], 1.0));
+					imageStore(colorimg4, voxelIndex, vec4(lightColors[entityId - 11000], 1.0));
 				}
 				else {
 					if(cornerColor == vec4(1.0, 1.0, 1.0, 25.0/255.0)) {
-						imageStore(colorimg4, voxelIndex, vec4(custLightColors[2], 1.0));
+						imageStore(colorimg4, voxelIndex, vec4(lightColors[2], 1.0));
 					}
 				}
 			}

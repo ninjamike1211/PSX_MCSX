@@ -15,6 +15,6 @@ uniform float frameTimeCounter;
 
 void main() {
 
-	vec4 col = texture2D(texture, texcoord + vec2(frameTimeCounter/8.0)) * color;
+	vec4 col = texture2D(texture, texcoord + vec2(frameTimeCounter/8.0)) * color * enchanted_strength;
 	gl_FragData[0] = col;
 }

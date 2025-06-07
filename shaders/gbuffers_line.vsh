@@ -49,7 +49,7 @@ void main() {
 	gl_Position = ftrans;
 	color = vec4(gl_Color.rgb, 1.0);
 
-	#ifndef line_flash_everything
+	#ifndef outline_flash_everything
 	if(renderStage == MC_RENDER_STAGE_OUTLINE)
 	#endif
 		color = vec4(

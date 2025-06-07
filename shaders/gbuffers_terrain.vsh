@@ -301,7 +301,7 @@ void main() {
 
 				vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.5);
 				if(blockID >= 11000) {
-					lightVal = vec4(custLightColors[blockID - 11000], 1.0);
+					lightVal = vec4(lightColors[blockID - 11000], 1.0);
 				}
 
 				imageStore(colorimg4, voxelIndex, lightVal);

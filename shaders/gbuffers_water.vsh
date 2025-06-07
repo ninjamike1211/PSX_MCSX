@@ -85,7 +85,7 @@ void main() {
 			voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 			if(IsInVoxelizationVolume(voxelPos)) {
 				ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-				imageStore(colorimg4, voxelIndex, vec4(custLightColors[blockID - 11000], 1.0));
+				imageStore(colorimg4, voxelIndex, vec4(lightColors[blockID - 11000], 1.0));
 			}
 		}
 	#endif
