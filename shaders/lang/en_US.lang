@@ -10,7 +10,7 @@ option.resolution_scale=Resolution Scale
 option.dither_amount=Dithering Amount
 option.color_depth=Color Depth
 option.fog_distance=Fog Distance
-option.fog_enabled=Enable Depth Fog
+//option.fog_enabled=Enable Depth Fog
 
 screen.AFFINE_SCREEN=Affine Mapping Settings
 screen.AFFINE_SCREEN.comment=Options related to texture warping.

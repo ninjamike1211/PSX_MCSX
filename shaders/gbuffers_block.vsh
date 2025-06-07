@@ -11,6 +11,7 @@ varying vec3 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
 varying float isText;
+varying vec3 viewPos;
 
 attribute vec4 at_tangent;
 attribute vec2 mc_midTexCoord;
@@ -38,7 +39,8 @@ void main() {
 
 	vec4 vertexPos = gl_Vertex;
 	
-	vec4 ftrans = gl_ModelViewProjectionMatrix * vertexPos;
+	viewPos = (gl_ModelViewMatrix * vertexPos).xyz;
+	vec4 ftrans = gl_ProjectionMatrix * vec4(viewPos, 1.0);
 	float depth = clamp(ftrans.w, 0.001, 1000.0);
 	float sqrtDepth = sqrt(depth);
 

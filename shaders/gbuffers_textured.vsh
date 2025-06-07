@@ -10,6 +10,7 @@ varying vec2 texcoord;
 varying vec3 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
+varying vec3 viewPos;
 
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
@@ -35,6 +36,7 @@ void main() {
 
 	color = gl_Color;
 	
+	viewPos = position4.xyz;
 	gl_Position = gl_ProjectionMatrix * vec4(position, 1.0);
 
 	// Voxelization

@@ -14,6 +14,14 @@ vec2 AffineMapping(vec3 aUv, vec2 oUv, vec2 ts, float clampAmt) {
 	return vec2(clamp(aUv.x / aUv.z, oUv.x - bounds.x, oUv.x + ts.x + bounds.x), clamp(aUv.y / aUv.z, oUv.y - bounds.y, oUv.y + ts.y + bounds.y));
 }
 
+float linearizeDepthFast(float depth, float near, float far) {
+	return (near * far) / (depth * (near - far) + far);
+}
+
+float luminance(vec3 v) {
+    return dot(v, vec3(0.2126f, 0.7152f, 0.0722f));
+}
+
 // HSV functions from Sam Hocevar (https://gamedev.stackexchange.com/a/59808/22302)
 vec3 rgb2hsv(vec3 c)
 {

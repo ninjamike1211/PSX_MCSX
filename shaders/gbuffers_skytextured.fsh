@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* DRAWBUFFERS:3 */
+/* DRAWBUFFERS:0 */
 
 #define gbuffers_skytextured
 #include "/shaders.settings"

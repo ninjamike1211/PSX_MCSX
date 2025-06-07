@@ -11,6 +11,7 @@ varying vec2 texcoord;
 varying vec3 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
+varying vec3 viewPos;
 
 uniform vec2 texelSize;
 uniform vec4 entityColor;
@@ -18,6 +19,22 @@ uniform float frameTimeCounter;
 uniform int entityId;
 uniform sampler2D texture;
 uniform sampler2D lightmap;
+
+uniform sampler2D colortex12;
+uniform mat4 gbufferModelView;
+uniform vec3 fogColor;
+uniform vec3 skyColor;
+uniform float sunAngle;
+uniform float rainStrength;
+uniform float eyeAltitude;
+uniform float near;
+uniform float far;
+uniform ivec2 eyeBrightnessSmooth;
+uniform int isEyeInWater;
+uniform bool inNether;
+uniform bool inEnd;
+
+#include "/lib/fog.glsl"
 
 #if Floodfill > 0
 	varying vec3 voxelLightColor;
@@ -63,6 +80,10 @@ void main() {
 				col.rgb = (col.rgb - 0.5) * (1.0/contrast) + 0.5;
 			}
 		#endif
+
+		float fogDepth = clamp(getFogDepth(viewPos, gl_FragCoord.z, near, far), 0.0, 1.0);
+		float caveFactor = fogCaveFactor(eyeAltitude, eyeBrightnessSmooth.y, colortex12);
+		applyFogColor(col.rgb, fogDepth, caveFactor, normalize(viewPos), sunAngle);
 		
 		gl_FragData[0] = col;
 	}
