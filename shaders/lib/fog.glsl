@@ -1,28 +1,3 @@
-#define fog_enabled						//Toggles depth fog
-#define fog_distance 20					//Adjusts fog starting distance in blocks [0 1 2 3 4 5 6 7 8 9 10 15 20 30 40 50 60 70 80 100 200 300 400 500 600 700 800 900 1000 1500 2000 2500 3000]
-#define fog_slope 3.0					//Adjusts distance from 0 fog to full fog in blocks [0.025 0.05 0.1 0.15 0.2 0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 15.0 20.0 25.0 30.0 40.0 50.0]
-#define fog_rain_distance 10			//Adjusts rain fog starting distance in blocks [0 1 2 3 4 5 6 7 8 9 10 15 20 30 40 50 60 70 80 100 200 300 400 500 600 700 800 900 1000 1500 2000 2500 3000]
-#define fog_rain_slope 15.0				//Adjusts rain distance from 0 fog to full fog in blocks [0.025 0.05 0.1 0.15 0.2 0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 15.0 20.0 25.0 30.0 40.0 50.0]
-
-#define fog_distance_water 7			//Adjusts underwater fog starting distance in blocks [0 1 2 3 4 5 6 7 8 9 10 15 20 30 40 50 60 70 80 100 200 300 400 500 600 700 800 900 1000 1500 2000 2500 3000]
-#define fog_slope_water 3.0				//Adjusts underwater distance from 0 fog to full fog in blocks [0.025 0.05 0.1 0.15 0.2 0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 15.0 20.0 25.0 30.0 40.0 50.0]
-#define fog_distance_lava 60			//Adjusts lava fog starting distance in blocks [-10 -9 -8 -7 -6 -5 -4 -3 -2 -1 0 1 2 3 4 5 6 7 8 9 10 15 20 30 40 50 60 70 80 100 200 300 400 500 600 700 800 900 1000 1500 2000 2500 3000]
-#define fog_slope_lava 3.0				//Adjusts lava distance from 0 fog to full fog in blocks [0.025 0.05 0.1 0.15 0.2 0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 15.0 20.0 25.0 30.0 40.0 50.0]
-#define fog_distance_snow 0 			//Adjusts powdered snow fog starting distance in blocks [-10 -9 -8 -7 -6 -5 -4 -3 -2 -1 0 1 2 3 4 5 6 7 8 9 10 15 20 30 40 50 60 70 80 100 200 300 400 500 600 700 800 900 1000 1500 2000 2500 3000]
-#define fog_slope_snow 0.15				//Adjusts powdered snow distance from 0 fog to full fog in blocks [0.025 0.05 0.1 0.15 0.2 0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 15.0 20.0 25.0 30.0 40.0 50.0]
-
-#define fog_distance_nether 0			//Adjusts fog starting distance in blocks [0 1 2 3 4 5 6 7 8 9 10 15 20 30 40 50 60 70 80 100 200 300 400 500 600 700 800 900 1000 1500 2000 2500 3000]
-#define fog_slope_nether 3.0			//Adjusts distance from 0 fog to full fog in blocks [0.025 0.05 0.1 0.15 0.2 0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 15.0 20.0 25.0 30.0 40.0 50.0]
-#define fog_distance_end 40				//Adjusts fog starting distance in blocks [0 1 2 3 4 5 6 7 8 9 10 15 20 30 40 50 60 70 80 100 200 300 400 500 600 700 800 900 1000 1500 2000 2500 3000]
-#define fog_slope_end 3.0				//Adjusts distance from 0 fog to full fog in blocks [0.025 0.05 0.1 0.15 0.2 0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 15.0 20.0 25.0 30.0 40.0 50.0]
-
-#define fog_sunmoon 0.5					//Adjusts how much sun/moon appears in sky [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define fog_Darken_Mode 2				//Mode for darkening fog while in caves. 0 = off. 1 = altitude. 2 = player block brightness. 3 = player mood [0 1 2 3]
-//#define fog_Cave_SkipSky				//Skips cave fog darkening on pixels containing only sky
-#define fog_depth_type 0				//Method for determining fog depth. 0 = depth buffer. 1 = spherical distance. 2 = cylidrical distance
-
-#ifdef fog_depth_type
-#endif
 
 const vec3 NoonHorizonColor = vec3(0.4, 0.5, 1.0);
 const vec3 NoonSkyColor = vec3(0, 0.27, 0.95);

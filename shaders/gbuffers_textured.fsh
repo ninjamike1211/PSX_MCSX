@@ -7,6 +7,7 @@ varying vec2 lmcoord;
 varying vec4 color;
 varying vec3 viewPos;
 
+#include "/shaders.settings"
 #include "/lib/psx_util.glsl"
 #include "/lib/voxel.glsl"
 
@@ -16,6 +17,7 @@ uniform sampler2D lightmap;
 
 uniform sampler2D colortex12;
 uniform mat4 gbufferModelView;
+uniform mat4 gbufferModelViewInverse;
 uniform vec3 fogColor;
 uniform vec3 skyColor;
 uniform float sunAngle;

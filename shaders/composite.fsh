@@ -18,6 +18,11 @@ const bool colortex12Clear  = false;
 #define composite
 #include "/shaders.settings"
 
+/*
+#ifdef fog_depth_type
+#endif
+*/
+
 varying vec2 texcoord;
 
 uniform vec3 skyColor;
@@ -120,17 +125,6 @@ void main() {
 	vec4 fragpos_water = gbufferProjectionInverse * (vec4(texcoord, depth, 1.0) * 2.0 - 1.0);
 	fragpos_water /= fragpos_water.w;
 	vec3 normalfragpos_water = normalize(fragpos_water.xyz);
-
-	// #if fog_depth_type == 0
-	// 	float linearDepth = linearizeDepthFast(depth1);
-	// 	float linearDepth_water = linearizeDepthFast(depth);
-	// #elif fog_depth_type == 1
-	// 	float linearDepth = length(fragpos.xyz);
-	// 	float linearDepth_water = length(fragpos_water.xyz);
-	// #elif fog_depth_type == 2
-	// 	float linearDepth = length((gbufferModelViewInverse * fragpos).xz);
-	// 	float linearDepth_water = length((gbufferModelViewInverse * fragpos_water).xz);
-	// #endif
 	
 	bool sky = depth >= 1.0;
 	bool skyNoClouds = depth1 >= 1.0;

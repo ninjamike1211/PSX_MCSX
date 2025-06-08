@@ -10,6 +10,7 @@ uniform float viewWidth;
 uniform float viewHeight;
 
 #define gbuffers_sky
+#include "/shaders.settings"
 #include "/lib/psx_util.glsl"
 #include "/lib/fog.glsl"
 
