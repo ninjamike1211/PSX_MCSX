@@ -39,9 +39,12 @@ void main() {
 	else {
 		vec4 skyColor = texture2D(gtexture,texcoord) * color * fog_sunmoon;
 
-		vec3 viewPos = screenToView(vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), 1.0));
+		vec3 viewDir = normalize(screenToView(vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), 1.0)));
+		float upDot = dot(viewDir, gbufferModelView[1].xyz);
+		skyColor *= smoothstep(-0.2, 0.0, upDot);
+
 		vec3 skyColorFog;
-		applyFogColor(skyColorFog, 1.0, 1.0, skyColor.rgb, normalize(viewPos), isEyeInWater, sunAngle);
+		applyFogColor(skyColorFog, 1.0, 1.0, skyColor.rgb, viewDir, isEyeInWater, sunAngle);
 		gl_FragData[0] = vec4(skyColorFog, skyColor.a);
 		gl_FragData[1] = skyColor;
 	}
