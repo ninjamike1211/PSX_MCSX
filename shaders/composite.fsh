@@ -2,15 +2,17 @@
 
 /*
 const int  colortex0Format  = RGBA8;
+const vec4 colortex0ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 const int  colortex1Format  = RG8;
 const vec4 colortex1ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 const int  colortex2Format  = RGBA8;
 const int  colortex3Format  = RGBA8;
 const int  colortex4Format  = RGBA8;
 const int  colortex5Format  = RGBA8;
-const bool colortex5Clear  = false;
+const bool colortex5Clear   = false;
 const int  colortex7Format  = RGBA8;
 const int  colortex8Format  = RGBA8;
+const int  colortex11Format = RGBA8;
 const int  colortex12Format = RGBA8_SNORM;
 const bool colortex12Clear  = false;
 */
@@ -246,17 +248,17 @@ void main() {
 		// col = mix(clouds.rgb, fogColorFinal, cloudsDepth);
 		col = clouds.rgb;
 		col += sunmoon.rgb/2 * vec3(skyNoClouds?1.0:0.0);
-	} else {
+	} /* else {
 		col_water.rgb /= col_water.a;
 		// col_water.rgb = mix(col_water.rgb, fogColorFinal, fogDepth_water);
 		// col = mix(col, fogColorFinal, fogDepth);
 		if(col_water.a > 0.5/255.0)
 			col = mix(col, col_water.rgb, col_water.a);
 			
-		if(!inEnd) {
-			col += sunmoon.rgb * vec3(sky?1.0:0.0);
-		}
-	}
+		// if(!inEnd) {
+		// 	col += sunmoon.rgb * vec3(sky?1.0:0.0);
+		// }
+	} */
 
 	
 	vec4 rain = texture2D(colortex7, texcoord);

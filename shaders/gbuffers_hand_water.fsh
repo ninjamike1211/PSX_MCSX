@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* DRAWBUFFERS:21 */
+/* DRAWBUFFERS:01 */
 
 #define gbuffers_solid
 #include "/shaders.settings"

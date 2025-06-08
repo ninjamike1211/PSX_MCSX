@@ -50,9 +50,7 @@ vec3 getOverworldSkyColor(in vec3 viewDir, float sunAngle) {
 	return mix(horizonSkyColor, upperSkyColor, mixFactor);
 }
 
-#ifndef gbuffers_sky
-
-float getFogDepth(in vec3 viewPos, in float depth1, float near, float far) {
+float getFogDepth(in vec3 viewPos, in float depth1, int isEyeInWater, float near, float far) {
     #if fog_depth_type == 0
 		float depth = linearizeDepthFast(depth1, near, far);
 	#elif fog_depth_type == 1
@@ -103,7 +101,7 @@ float fogCaveFactor(float eyeAltitude, float eyeBrightness, sampler2D moodTex) {
     #endif
 }
 
-void applyFogColor(inout vec3 sceneColor, in float fogDepth, in float caveFactor, in vec3 viewDir, float sunAngle) {
+void applyFogColor(inout vec3 sceneColor, in float fogDepth, in float caveFactor, in vec3 skytex, in vec3 viewDir, int isEyeInWater, float sunAngle) {
     vec3 fogTint;
 
     if(isEyeInWater == 0) {
@@ -111,10 +109,15 @@ void applyFogColor(inout vec3 sceneColor, in float fogDepth, in float caveFactor
             fogTint = normalize(fogColor) * 0.3 + 0.1;
         }
         else if(inEnd) {
-            fogTint = vec3(0.5);
+            fogTint = skytex;
         }
         else {
-			fogTint = getOverworldSkyColor(viewDir, sunAngle); 
+			fogTint = getOverworldSkyColor(viewDir, sunAngle);
+            if(luminance(skytex) > 0.3) {
+                fogTint += vec3(0.3, 0.2, -0.4);
+            }
+            fogTint += skytex;
+            
             fogTint *= mix(0.12, 1.0, caveFactor);
         }
     }
@@ -130,5 +133,3 @@ void applyFogColor(inout vec3 sceneColor, in float fogDepth, in float caveFactor
 
     sceneColor = mix(sceneColor, fogTint, fogDepth);
 }
-
-#endif

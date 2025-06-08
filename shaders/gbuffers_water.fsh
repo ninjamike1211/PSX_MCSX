@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* DRAWBUFFERS:21 */
+/* DRAWBUFFERS:01 */
 
 #define gbuffers_solid
 #include "/shaders.settings"
@@ -8,6 +8,7 @@
 
 uniform vec2 texelSize;
 
+uniform sampler2D colortex11;
 uniform sampler2D colortex12;
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
@@ -58,9 +59,10 @@ void main() {
 
 	vec4 col = texture2D(texture, affine) * color * lighting;
 
-	float fogDepth = clamp(getFogDepth(viewPos, gl_FragCoord.z, near, far), 0.0, 1.0);
+	vec3 skytex = texelFetch(colortex11, ivec2(gl_FragCoord.xy), 0).rgb;
+	float fogDepth = clamp(getFogDepth(viewPos, gl_FragCoord.z, isEyeInWater, near, far), 0.0, 1.0);
 	float caveFactor = fogCaveFactor(eyeAltitude, eyeBrightnessSmooth.y, colortex12);
-	applyFogColor(col.rgb, fogDepth, caveFactor, normalize(viewPos), sunAngle);
+	applyFogColor(col.rgb, fogDepth, caveFactor, skytex, normalize(viewPos), isEyeInWater, sunAngle);
 	
 	gl_FragData[0] = col;
 	gl_FragData[1] = vec4(0.0);
