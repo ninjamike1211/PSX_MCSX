@@ -1,3 +1,4 @@
+uniform vec3 sunPosition;
 
 const vec3 NoonHorizonColor = vec3(0.4, 0.5, 1.0);
 const vec3 NoonSkyColor = vec3(0, 0.27, 0.95);
@@ -113,8 +114,8 @@ void applyFogColor(inout vec3 sceneColor, in float fogDepth, in float caveFactor
         }
         else {
 			fogTint = getOverworldSkyColor(viewDir, sunAngle);
-            if(luminance(skytex) > 0.3) {
-                fogTint += vec3(0.3, 0.2, -0.4);
+            if(dot(viewDir, normalize(sunPosition)) > 0.5 /* && luminance(skytex) > 0.3 */) {
+                fogTint += luminance(skytex) * vec3(0.3, 0.2, -0.4);
             }
             fogTint += skytex;
             
