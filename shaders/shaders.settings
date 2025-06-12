@@ -74,6 +74,8 @@
 	#define item_lightColor 	0.3			// Brightness of selection outline at brightest phase of animation [0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 	#define item_speed			3.0			// Speed of selection outline animation (0 is off) [0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 13.0 14.0 15.0 16.0]
 
+	#define disable_sheepColor				// Disables the vanilla tinting of sheep color, intended for the resource pack to use custom textures for each color.
+
 #endif
 
 

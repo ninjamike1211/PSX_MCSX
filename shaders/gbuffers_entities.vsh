@@ -35,6 +35,11 @@ void main() {
 	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	color = gl_Color;
+
+	#ifdef disable_sheepColor
+	if(entityId == 10005)
+		color = vec4(1.0);
+	#endif
 	
 	vec2 halfTexSize = abs(texcoord - mc_midTexCoord);
 	vec4 cornerColor = texture2D(gtexture, mc_midTexCoord - vec2(-1.0, 1.0) * halfTexSize + 0.5 / atlasSize);
