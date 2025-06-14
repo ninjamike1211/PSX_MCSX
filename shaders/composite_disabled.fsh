@@ -1,22 +1,5 @@
 #version 420 compatibility
 
-/*
-const int  colortex0Format  = RGBA8;
-const vec4 colortex0ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
-const int  colortex1Format  = RG8;
-const vec4 colortex1ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
-const int  colortex2Format  = RGBA8;
-const int  colortex3Format  = RGBA8;
-const int  colortex4Format  = RGBA8;
-const int  colortex5Format  = RGBA8;
-const bool colortex5Clear   = false;
-const int  colortex7Format  = RGBA8;
-const int  colortex8Format  = RGBA8;
-const int  colortex11Format = RGBA8;
-const int  colortex12Format = RGBA8_SNORM;
-const bool colortex12Clear  = false;
-*/
-
 #define composite
 #include "/shaders.settings"
 

@@ -104,22 +104,6 @@ float fogCaveFactor(float eyeAltitude, float eyeBrightness, sampler2D moodTex) {
 
 vec3 getFogColor(int isEyeInWater, vec3 skyFogCol, vec3 fogColor) {
     if(isEyeInWater == 0) {
-        // if(inNether) {
-        //     return normalize(fogColor) * 0.3 + 0.1;
-        // }
-        // else if(inEnd) {
-        //     return skytex;
-        // }
-        // else {
-		// 	vec3 fogTint = getOverworldSkyColor(viewDir, sunAngle, fogColor, skyColor, rainStrength, modelView);
-        //     // if(dot(viewDir, normalize(sunPosition)) > 0.5) {
-        //     //     fogTint += luminance(skytex) * vec3(0.4, 0.1, -1.0);
-        //     // }
-        //     // fogTint += skytex;
-            
-        //     fogTint *= mix(0.12, 1.0, caveFactor);
-        //     return fogTint;
-        // }
         return skyFogCol;
     }
     else if(isEyeInWater == 1) {

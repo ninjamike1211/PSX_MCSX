@@ -1,5 +1,22 @@
 #version 420 compatibility
 
+/*
+const int  colortex0Format  = RGBA8;
+const vec4 colortex0ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
+const int  colortex1Format  = RG8;
+const vec4 colortex1ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
+const int  colortex2Format  = RGBA8;
+const int  colortex3Format  = RGBA8;
+const int  colortex4Format  = RGBA8;
+const int  colortex5Format  = RGBA8;
+const bool colortex5Clear   = false;
+const int  colortex7Format  = RGBA8;
+const int  colortex8Format  = RGBA8;
+const int  colortex11Format = RGBA8;
+const int  colortex12Format = RGBA8_SNORM;
+const bool colortex12Clear  = false;
+*/
+
 #define composite
 #include "/shaders.settings"
 
@@ -23,8 +40,10 @@ vec3 GetDither(vec2 pos, vec3 c, float intensity) {
 
 /* RENDERTARGETS: 0 */
 void main() {
+	// ivec2 screenRes = ivec2(viewWidth, viewHeight) * resolution_scale
+
 	vec2 dsRes = vec2(viewWidth, viewHeight) * resolution_scale;
-	vec2 downscale = floor(texcoord * dsRes) / dsRes;
+	vec2 downscale = (floor(texcoord * dsRes) + 0.5) / dsRes;
 
 	vec2 textCol     = texture2D(colortex1, texcoord).rg;
 	vec2 textColDown = texture2D(colortex1, downscale).rg;
