@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* DRAWBUFFERS:71 */
+/* RENDERTARGETS: 7,1 */
 
 varying vec4 color;
 

@@ -2,7 +2,7 @@
 
 varying vec4 color;
 
-/* DRAWBUFFERS:0 */
+/* RENDERTARGETS: 0 */
 void main() {
 
 	vec4 col = color;

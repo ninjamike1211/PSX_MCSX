@@ -2,7 +2,7 @@
 
 varying vec4 color;
 
-/* DRAWBUFFERS:01 */
+/* RENDERTARGETS: 0,1 */
 void main() {
 	
 	gl_FragData[0] = color;

@@ -34,6 +34,8 @@
 #endif
 */
 
+const float eyeBrightnessHalflife = 20.0;
+
 #ifdef gbuffers_solid
 	#define affine_mapping					//Toggles affine texture mapping
 	#define affine_clamp 0.0				//Adjusts texture coordinate bounds [0.0 1.0 2.0 3.0 4.0 5.0]

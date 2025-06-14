@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* DRAWBUFFERS:01 */
+/* RENDERTARGETS: 0 */
 
 #define gbuffers_solid
 #include "/shaders.settings"
@@ -41,5 +41,4 @@ void main() {
 	vec4 col = texture2D(texture, affine) * color * lighting;
 	
 	gl_FragData[0] = col;
-	gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);
 }

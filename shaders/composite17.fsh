@@ -21,7 +21,7 @@ vec3 GetDither(vec2 pos, vec3 c, float intensity) {
 	return c;
 }
 
-/* DRAWBUFFERS:0 */
+/* RENDERTARGETS: 0 */
 void main() {
 	vec2 dsRes = vec2(viewWidth, viewHeight) * resolution_scale;
 	vec2 downscale = floor(texcoord * dsRes) / dsRes;

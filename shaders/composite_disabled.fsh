@@ -110,7 +110,7 @@ float luminance(vec3 v) {
 // 	return mix(horizonSkyColor, upperSkyColor, mixFactor);
 // }
 
-/* DRAWBUFFERS:0 */
+/* RENDERTARGETS: 0 */
 void main() {
 	float isParticle = texture2D(colortex1, texcoord).g;
 	float depth = texture2D(depthtex0, texcoord).r;

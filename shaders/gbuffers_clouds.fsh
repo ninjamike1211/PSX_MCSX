@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* DRAWBUFFERS:8 */
+/* RENDERTARGETS: 0 */
 
 varying vec2 texcoord;
 varying vec2 lmcoord;

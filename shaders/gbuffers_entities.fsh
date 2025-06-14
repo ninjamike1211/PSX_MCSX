@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* DRAWBUFFERS:01 */
+/* RENDERTARGETS: 0,1 */
 
 #define gbuffers_solid
 #define gbuffers_entities
@@ -83,10 +83,9 @@ void main() {
 			}
 		#endif
 
-		vec3 skytex = texelFetch(colortex11, ivec2(gl_FragCoord.xy), 0).rgb;
+		vec3 fogCol = texelFetch(colortex11, ivec2(gl_FragCoord.xy), 0).rgb;
 		float fogDepth = clamp(getFogDepth(viewPos, gl_FragCoord.z, isEyeInWater, near, far), 0.0, 1.0);
-		float caveFactor = fogCaveFactor(eyeAltitude, eyeBrightnessSmooth.y, colortex12);
-		applyFogColor(col.rgb, fogDepth, caveFactor, skytex, normalize(viewPos), isEyeInWater, sunAngle);
+		col.rgb = mix(col.rgb, fogCol, fogDepth);
 		
 		gl_FragData[0] = col;
 	}

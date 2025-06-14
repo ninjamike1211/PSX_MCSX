@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* DRAWBUFFERS:0 */
+/* RENDERTARGETS: 0 */
  
 #define gbuffers_armor_glint
 #include "/shaders.settings"

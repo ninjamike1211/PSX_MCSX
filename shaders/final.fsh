@@ -25,7 +25,6 @@ vec2 screenDistort(vec2 uv)
 	return uv;
 }
 
-/* DRAWBUFFERS:0 */
 void main() {
 	vec2 baseRes = vec2(viewWidth, viewHeight);
 	vec2 dsRes = baseRes * resolution_scale;

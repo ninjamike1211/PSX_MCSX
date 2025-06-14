@@ -4,7 +4,7 @@ uniform sampler2D colortex5;
 
 #include "/lib/voxel.glsl"
 
-/* DRAWBUFFERS:5 */
+/* RENDERTARGETS: 5 */
 void main() {
 
 	ivec2 storagePos = ivec2(gl_FragCoord.xy);

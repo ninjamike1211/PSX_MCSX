@@ -7,8 +7,8 @@ const vec3 SunriseSkyColor = vec3(0.4, 0.35, 0.75);
 const vec3 NightHorizonColor = vec3(0.15);
 const vec3 NightSkyColor = vec3(0.0);
 
-vec3 getOverworldSkyColor(in vec3 viewDir, float sunAngle) {
-	float upDot = max(dot(viewDir, gbufferModelView[1].xyz), 0.0);
+vec3 getOverworldSkyColor(in vec3 viewDir, float sunAngle, vec3 fogColor, vec3 skyColor, float rainStrength, mat4 modelView) {
+	float upDot = max(dot(viewDir, modelView[1].xyz), 0.0);
 	float mixFactor = smoothstep(0.0, 0.7, upDot);
 
 	vec3 horizonSkyColor;
@@ -94,7 +94,7 @@ float fogCaveFactor(float eyeAltitude, float eyeBrightness, sampler2D moodTex) {
     #if fog_Darken_Mode == 1
         return smoothstep(54.0, 58.0, eyeAltitude);
     #elif fog_Darken_Mode == 2
-        return eyeBrightness / 240.0;
+        return smoothstep(15, 30, eyeBrightness);
     #elif fog_Darken_Mode == 3
         return texelFetch(moodTex, ivec2(0), 0).a;
     #else
@@ -102,35 +102,33 @@ float fogCaveFactor(float eyeAltitude, float eyeBrightness, sampler2D moodTex) {
     #endif
 }
 
-void applyFogColor(inout vec3 sceneColor, in float fogDepth, in float caveFactor, in vec3 skytex, in vec3 viewDir, int isEyeInWater, float sunAngle) {
-    vec3 fogTint;
-
+vec3 getFogColor(int isEyeInWater, vec3 skyFogCol, vec3 fogColor) {
     if(isEyeInWater == 0) {
-        if(inNether) {
-            fogTint = normalize(fogColor) * 0.3 + 0.1;
-        }
-        else if(inEnd) {
-            fogTint = skytex;
-        }
-        else {
-			fogTint = getOverworldSkyColor(viewDir, sunAngle);
-            if(dot(viewDir, normalize(sunPosition)) > 0.5 /* && luminance(skytex) > 0.3 */) {
-                fogTint += luminance(skytex) * vec3(0.3, 0.2, -0.4);
-            }
-            fogTint += skytex;
+        // if(inNether) {
+        //     return normalize(fogColor) * 0.3 + 0.1;
+        // }
+        // else if(inEnd) {
+        //     return skytex;
+        // }
+        // else {
+		// 	vec3 fogTint = getOverworldSkyColor(viewDir, sunAngle, fogColor, skyColor, rainStrength, modelView);
+        //     // if(dot(viewDir, normalize(sunPosition)) > 0.5) {
+        //     //     fogTint += luminance(skytex) * vec3(0.4, 0.1, -1.0);
+        //     // }
+        //     // fogTint += skytex;
             
-            fogTint *= mix(0.12, 1.0, caveFactor);
-        }
+        //     fogTint *= mix(0.12, 1.0, caveFactor);
+        //     return fogTint;
+        // }
+        return skyFogCol;
     }
     else if(isEyeInWater == 1) {
-        fogTint = fogColor;
+        return fogColor;
     }
     else if(isEyeInWater == 2) {
-        fogTint = vec3(2.0, 0.4, 0.1);
+        return vec3(2.0, 0.4, 0.1);
     }
     else if(isEyeInWater == 3) {
-        fogTint = vec3(1.0);
+        return vec3(1.0);
     }
-
-    sceneColor = mix(sceneColor, fogTint, fogDepth);
 }
