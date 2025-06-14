@@ -32,6 +32,7 @@ uniform float eyeAltitude;
 uniform float near;
 uniform float far;
 uniform ivec2 eyeBrightnessSmooth;
+uniform ivec4 blendFunc;
 uniform int isEyeInWater;
 uniform bool inNether;
 uniform bool inEnd;
@@ -83,9 +84,14 @@ void main() {
 			}
 		#endif
 
-		vec3 fogCol = texelFetch(colortex11, ivec2(gl_FragCoord.xy), 0).rgb;
 		float fogDepth = clamp(getFogDepth(viewPos, gl_FragCoord.z, isEyeInWater, near, far), 0.0, 1.0);
-		col.rgb = mix(col.rgb, fogCol, fogDepth);
+		if(entityId == 10006 && blendFunc.x == 1) {
+			col.rgb *= 1.0-fogDepth;
+		}
+		else {
+			vec3 fogCol = texelFetch(colortex11, ivec2(gl_FragCoord.xy), 0).rgb;
+			col.rgb = mix(col.rgb, fogCol, fogDepth);
+		}
 		
 		gl_FragData[0] = col;
 	}

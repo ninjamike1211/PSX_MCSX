@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* RENDERTARGETS: 7,1 */
+/* RENDERTARGETS: 0,1 */
 
 varying vec4 color;
 
