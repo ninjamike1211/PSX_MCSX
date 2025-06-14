@@ -23,6 +23,7 @@ uniform float near;
 uniform float far;
 uniform ivec2 eyeBrightnessSmooth;
 uniform int isEyeInWater;
+uniform int blockEntityId;
 uniform bool inNether;
 uniform bool inEnd;
 
@@ -63,6 +64,16 @@ void main() {
 	#endif
 
 	vec4 col = texture2D(texture, affine) * color * lighting;
+
+	#ifdef Player_Ignore_Post
+		if(blockEntityId == 10002) {
+			vec3 hsv = rgb2hsv(col.rgb);
+			hsv.y /= saturation;
+			col.rgb = hsv2rgb(hsv);
+
+			col.rgb = (col.rgb - 0.5) * (1.0/contrast) + 0.5;
+		}
+	#endif
 
 	vec3 fogCol = texelFetch(colortex11, ivec2(gl_FragCoord.xy), 0).rgb;
 	float fogDepth = clamp(getFogDepth(viewPos, gl_FragCoord.z, isEyeInWater, near, far), 0.0, 1.0);
