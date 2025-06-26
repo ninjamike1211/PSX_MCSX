@@ -60,6 +60,18 @@ void main() {
 
 		vertexPos = gbufferModelView * vec4(playerPos, 1.0);
 	}
+	else if(entityId == 10007 && atlasSize.x > 0) {
+		vec3 playerPos = (gbufferModelViewInverse * vertexPos).xyz;
+
+		vec2 facePos = vec2((texcoord.x - mc_midTexCoord.x) * sign(at_tangent.w) * atlasSize.x / 16.0, 0.0);
+		vec2 centerPos = playerPos.xz - 1.3 * facePos.x * normalize(mat3(gbufferModelViewInverse) * at_tangent.xyz).xz * sign(at_tangent.w);
+
+		vec2 viewVec = normalize(gbufferModelViewInverse[2].xz);
+		mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+		playerPos.xz = (rotationMatrix * facePos) + centerPos;
+
+		vertexPos = gbufferModelView * vec4(playerPos, 1.0);
+	}
 	#endif
 
 	viewPos = (gl_ModelViewMatrix * vertexPos).xyz;
