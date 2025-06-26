@@ -8,6 +8,7 @@
 
 varying vec4 color;
 varying vec2 texcoord;
+varying vec3 viewPos;
 
 uniform int heldItemId;
 uniform int heldItemId2;
@@ -42,6 +43,8 @@ void main() {
 
 		position = PixelSnap(position4, vertex_inaccuracy_entities / sqrtDepth).xyz;
 	}
+
+	viewPos = position;
 	
 	gl_Position = gl_ProjectionMatrix * vec4(position, 1.0);
 
