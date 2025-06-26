@@ -120,7 +120,8 @@ void main() {
 					imageStore(colorimg4, voxelIndex, vec4(lightColors[entityId - 11000], 1.0));
 				}
 				else {
-					if(cornerColor == vec4(1.0, 1.0, 1.0, 25.0/255.0)) {
+					// if(cornerColor == vec4(1.0, 1.0, 1.0, 25.0/255.0)) {
+					if(atlasSize.x > 0 && clamp(lmcoord, vec2(15.0/16.0, 0.0), vec2(1.0, 1.0/16.0)) == lmcoord) {
 						imageStore(colorimg4, voxelIndex, vec4(lightColors[2], 1.0));
 					}
 				}
