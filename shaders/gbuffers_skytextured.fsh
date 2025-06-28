@@ -18,6 +18,7 @@ uniform vec3 skyColor;
 uniform ivec2 eyeBrightnessSmooth;
 uniform float sunAngle;
 uniform float rainStrength;
+uniform float thunderStrength;
 uniform float viewWidth;
 uniform float viewHeight;
 uniform float eyeAltitude;
@@ -53,6 +54,8 @@ void main() {
 
 		float upDot = dot(viewDir, gbufferModelView[1].xyz);
 		skytex *= smoothstep(-0.2, 0.0, upDot);
+		skytex *= mix(1.0, fog_sunmoon_rain, rainStrength);
+		skytex *= 1.0 - thunderStrength;
 		
 		skyFogCol = getOverworldSkyColor(viewDir, sunAngle, fogColor, skyColor, rainStrength, gbufferModelView);
 		if(dot(viewDir, normalize(sunPosition)) > 0.5) {
