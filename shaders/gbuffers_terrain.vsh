@@ -200,7 +200,35 @@ void main() {
 			else {
 				facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
 				centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
-			} 
+			}
+
+			if(blockID == 10982) {
+				// facePos = (facePos) * 0.75;
+			}
+
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+	}
+	// Potted Bamboo
+	else if(blockID == 10982 && abs(at_midBlock.z) < 5) {
+		#ifdef Billboarding
+			// if(gl_Normal.z < 0.5 || gl_Normal.x < 0.0) {
+			// 	gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+			// 	return;
+			// }
+			
+			vec2 facePos;
+			vec2 centerPos;
+			if(gl_Normal.z > 0.9) {
+				facePos = vec2(1.5/16.0 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+				centerPos = vertexPos.xz + vec2(-0.09 * sign(texcoord.x - mc_midTexCoord.x), -1.5/16.0);
+			}
+			// else {
+			// 	facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			// 	centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
+			// }
 
 			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
 			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));

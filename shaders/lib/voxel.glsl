@@ -71,6 +71,23 @@ const int xzRadiusBlocks = voxelMapResolution / 32;
         return (fullLightVal.r - skyLightVal.r) * Floodfill_SkyLightFactor + (1.0 - Floodfill_SkyLightFactor) * Floodfill_Brightness;
     }
 
+/*
+(0.8f, 0.83f, 0.83f, 1f)
+(0.86f, 0.37f, 0f, 1f)
+(0.65f, 0.18f, 0.62f, 1f)
+(0.14f, 0.53f, 0.78f, 1f)
+(0.93f, 0.68f, 0.08f, 1f)
+(0.37f, 0.66f, 0.1f, 1f)
+(0.82f, 0.39f, 0.55f, 1f)
+(0.21f, 0.22f, 0.24f, 1f)
+(0.48f, 0.48f, 0.44f, 1f)
+(0.09f, 0.47f, 0.53f, 1f)
+(0.39f, 0.12f, 0.6f, 1f)
+(0.17f, 0.18f, 0.56f, 1f)
+(0.38f, 0.23f, 0.13f, 1f)
+(0.28f, 0.35f, 0.14f, 1f)
+(0.55f, 0.13f, 0.13f, 1f)
+*/
 
     const vec3[] lightColors = vec3[](
         vec3(1.0, 0.85, 0.6),
@@ -117,7 +134,10 @@ const int xzRadiusBlocks = voxelMapResolution / 32;
         vec3(0.3, 0.3, 0.3),
         vec3(0.3, 0.3, 0.3),
         vec3(1.0, 0.9, 0.6),
-        vec3(0.4, 0.7, 0.7)
+        vec3(0.0, 0.0, 0.0),
+        vec3(0.73, 0.4, 0.2),
+        vec3(0.0, 0.0, 0.0),
+        vec3(0.0, 0.0, 0.0)
     );
 
     vec3 getLightColor(ivec2 storagePos, sampler2D lightSampler) {

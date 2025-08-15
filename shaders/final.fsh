@@ -8,6 +8,7 @@
 varying vec2 texcoord;
 
 uniform sampler2D colortex0;
+uniform sampler2D colortex9;
 uniform vec2 texelSize;
 uniform float viewWidth;
 uniform float viewHeight;
@@ -69,4 +70,5 @@ void main() {
 	#endif
 
 	gl_FragData[0] = vec4(col, 1.0);
+	// gl_FragData[0] = texture(colortex9, texcoord);
 }
