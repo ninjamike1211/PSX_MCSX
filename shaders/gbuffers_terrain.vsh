@@ -219,17 +219,8 @@ void main() {
 				return;
 			}
 			
-			vec2 facePos;
-			vec2 centerPos;
-			// if(gl_Vertex.z == 0.5) {
-				facePos = -0.5*sign(texcoord - mc_midTexCoord).yx;
-				// centerPos = vertexPos.xz + vec2(-0.09 * sign(texcoord.x - mc_midTexCoord.x), -1.5/16.0);
-				centerPos = vertexPos.xz - vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
-			// }
-			// else {
-				// facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
-				// centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
-			// }
+			vec2 facePos = vec2((texcoord.x - mc_midTexCoord.x) * atlasSize.x / 16.0, 0.0);
+			vec2 centerPos = vertexPos.xz + at_midBlock.xz/64.0;
 
 			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
 			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
