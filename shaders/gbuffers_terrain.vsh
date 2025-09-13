@@ -211,31 +211,31 @@ void main() {
 		#endif
 	}
 	// Potted Bamboo
-	// else if(blockID == 10982 && abs(at_midBlock.z) < 5) {
-	// 	#ifdef Billboarding
-	// 		vec3 worldPos = fract(cameraPosition + (gbufferModelViewInverse * (gl_ModelViewMatrix * gl_Vertex)).xyz);
-	// 		if(!(abs(worldPos.z - 0.5) < 0.01) || gl_Normal.z > 0.0) {
-	// 			gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
-	// 			return;
-	// 		}
+	else if(blockID == 10982 && abs(at_midBlock.z) < 5) {
+		#ifdef Billboarding
+			vec3 worldPos = fract(cameraPosition + (gbufferModelViewInverse * (gl_ModelViewMatrix * gl_Vertex)).xyz);
+			if(!(abs(worldPos.z - 0.5) < 0.01) || gl_Normal.z > 0.0) {
+				gl_Position = vec4(-10.0, -10.0, -10.0, 1.0);
+				return;
+			}
 			
-	// 		vec2 facePos;
-	// 		vec2 centerPos;
-	// 		// if(gl_Vertex.z == 0.5) {
-	// 			facePos = -vec2(sign(texcoord - mc_midTexCoord));
-	// 			// centerPos = vertexPos.xz + vec2(-0.09 * sign(texcoord.x - mc_midTexCoord.x), -1.5/16.0);
-	// 			centerPos = vertexPos.xz + vec2(-0.09 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
-	// 		// }
-	// 		// else {
-	// 			// facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
-	// 			// centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
-	// 		// }
+			vec2 facePos;
+			vec2 centerPos;
+			// if(gl_Vertex.z == 0.5) {
+				facePos = -0.5*sign(texcoord - mc_midTexCoord).yx;
+				// centerPos = vertexPos.xz + vec2(-0.09 * sign(texcoord.x - mc_midTexCoord.x), -1.5/16.0);
+				centerPos = vertexPos.xz - vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+			// }
+			// else {
+				// facePos = vec2(0.5 * sign(texcoord.x - mc_midTexCoord.x), 0.0);
+				// centerPos = vertexPos.xz - 0.905 * sign(texcoord.x - mc_midTexCoord.x) * normalize(at_tangent).xz;
+			// }
 
-	// 		vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
-	// 		mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
-	// 		vertexPos.xz = (rotationMatrix * facePos) + centerPos;
-	// 	#endif
-	// }
+			vec2 viewVec = normalize(gl_ModelViewMatrixInverse[2].xz);
+			mat2 rotationMatrix = mat2(vec2(viewVec.y, -viewVec.x), vec2(viewVec.x, viewVec.y));
+			vertexPos.xz = (rotationMatrix * facePos) + centerPos;
+		#endif
+	}
 	// Remove extra geometry frame attached melon/pumpkin stems
 	else if(blockID == 10965) {
 		#ifdef Billboarding
