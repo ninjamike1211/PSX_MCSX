@@ -33,7 +33,7 @@ uniform bool inEnd;
 	varying vec3 voxelLightColor;
 #endif
 
-/* RENDERTARGETS: 0,1 */
+/* RENDERTARGETS: 10,1 */
 layout(location = 0) out vec4 colorOut;
 layout(location = 1) out vec4 textOut;
 

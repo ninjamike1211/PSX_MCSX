@@ -7,7 +7,7 @@
 
 varying vec2 texcoord;
 
-uniform sampler2D colortex0;
+uniform sampler2D colortex10;
 uniform sampler2D colortex9;
 uniform vec2 texelSize;
 uniform float viewWidth;
@@ -44,11 +44,11 @@ void main() {
 		float blurOffset = 0.5 / (viewWidth * resolution_scale.x);
 		vec3 col = vec3(0.0);
 		for(int i = -CRT_Blur_Samples/2; i <= CRT_Blur_Samples/2; i++) {
-			col += texture2D(colortex0,texcoordWarped + vec2(blurOffset * i / (CRT_Blur_Samples/2), 0.0)).rgb;
+			col += texture2D(colortex10,texcoordWarped + vec2(blurOffset * i / (CRT_Blur_Samples/2), 0.0)).rgb;
 		}
 		col /= CRT_Blur_Samples;
 	#else
-		vec3 col = texture2D(colortex0, texcoordWarped).rgb;
+		vec3 col = texture2D(colortex10, texcoordWarped).rgb;
 	#endif
 
 	col = (col - 0.5) * contrast + 0.5;

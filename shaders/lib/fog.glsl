@@ -165,7 +165,7 @@ vec3 getFogColor(int isEyeInWater, vec3 skyFogCol, vec3 fogColor) {
         return skyFogCol;
     }
     else if(isEyeInWater == 1) {
-        return fogColor;
+        return vec3(0.1, 0.1, 1.0);
     }
     else if(isEyeInWater == 2) {
         return vec3(2.0, 0.4, 0.1);

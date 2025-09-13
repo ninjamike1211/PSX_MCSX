@@ -50,7 +50,9 @@ void main() {
 	color = vec4(gl_Color.rgb, 1.0);
 
 	#ifndef outline_flash_everything
-	if(renderStage == MC_RENDER_STAGE_OUTLINE)
+	if(renderStage == MC_RENDER_STAGE_OUTLINE || gl_Color == vec4(171.0/255.0,205.0/255.0,239.0/255.0,102.0/255.0))
+	#else
+	if(gl_Color == vec4(171.0/255.0,205.0/255.0,239.0/255.0,102.0/255.0))
 	#endif
 		color = vec4(
 			mix(vec3(outline_darkColor), vec3(outline_lightColor), sin(frameTimeCounter * outline_speed) * 0.5 + 0.5),

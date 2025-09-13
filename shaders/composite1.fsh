@@ -1,11 +1,13 @@
 #version 420 compatibility
 
+uniform sampler2D colortex3;
 uniform sampler2D colortex4;
 uniform sampler2D colortex5;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
 uniform int heldItemId;
 uniform int heldItemId2;
+uniform int frameCounter;
 
 #include "/lib/voxel.glsl"
 
@@ -15,7 +17,14 @@ void main() {
 	ivec2 storagePos = ivec2(gl_FragCoord.xy);
 	ivec3 voxelIndex = GetVoxelIndex(storagePos);
 
-	vec4 currentBlock = texelFetch(colortex4, storagePos, 0);
+	vec4 currentBlock;
+	if (frameCounter % 2 == 0)
+		currentBlock = texelFetch(colortex4, storagePos, 0);
+	else
+		currentBlock = texelFetch(colortex3, storagePos, 0);
+
+	if(currentBlock.a > 0.7 && currentBlock.a < 0.8)
+		currentBlock.a = 0.0;
 
 	#if Floodfill == 2
 		gl_FragData[0] = currentBlock.a < 0.4 ? vec4(0.0) : currentBlock;

@@ -15,7 +15,7 @@ uniform vec3 fogColor;
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
-uniform sampler2D colortex0;
+uniform sampler2D colortex10;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
 uniform sampler2D colortex3;
@@ -93,7 +93,7 @@ float luminance(vec3 v) {
 // 	return mix(horizonSkyColor, upperSkyColor, mixFactor);
 // }
 
-/* RENDERTARGETS: 0 */
+/* RENDERTARGETS: 10 */
 void main() {
 	float isParticle = texture2D(colortex1, texcoord).g;
 	float depth = texture2D(depthtex0, texcoord).r;

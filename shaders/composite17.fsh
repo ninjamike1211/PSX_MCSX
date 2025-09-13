@@ -1,13 +1,15 @@
 #version 420 compatibility
 
 /*
-const int  colortex0Format  = RGBA8;
-const vec4 colortex0ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
+const int  colortex10Format  = RGBA8;
+const vec4 colortex10ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 const int  colortex1Format  = RG8;
 const vec4 colortex1ClearColor = vec4(0.0, 0.0, 0.0, 0.0);
 const int  colortex2Format  = RGBA8;
 const int  colortex3Format  = RGBA8;
+const bool colortex3Clear  = false;
 const int  colortex4Format  = RGBA8;
+const bool colortex4Clear  = false;
 const int  colortex5Format  = RGBA8;
 const bool colortex5Clear   = false;
 const int  colortex7Format  = RGBA8;
@@ -23,7 +25,7 @@ const bool colortex12Clear  = false;
 #define DITHER_COLORS 128
 varying vec2 texcoord;
 
-uniform sampler2D colortex0;
+uniform sampler2D colortex10;
 uniform sampler2D colortex1;
 uniform float viewWidth;
 uniform float viewHeight;
@@ -38,7 +40,7 @@ vec3 GetDither(vec2 pos, vec3 c, float intensity) {
 	return c;
 }
 
-/* RENDERTARGETS: 0 */
+/* RENDERTARGETS: 10 */
 void main() {
 	// ivec2 screenRes = ivec2(viewWidth, viewHeight) * resolution_scale
 
@@ -50,7 +52,7 @@ void main() {
 	if(textCol.r > 0.5 || textColDown.r > 0.5)
 		downscale = texcoord;
 
-    vec3 col = texture2D(colortex0,downscale).rgb;
+    vec3 col = texture2D(colortex10,downscale).rgb;
 
 	col = clamp(1.2 * (col - 0.5) + 0.5, 0, 1);
 	col = GetDither(downscale * dsRes + 0.1, col, dither_amount);

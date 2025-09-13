@@ -8,7 +8,7 @@ varying vec4 color;
 varying vec2 texcoord;
 
 uniform sampler2D gtexture;
-uniform sampler2D colortex0;
+uniform sampler2D colortex10;
 uniform sampler2D colortex12;
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
@@ -34,7 +34,7 @@ vec3 screenToView(vec3 screenPos) {
 	return tmp.xyz / tmp.w;
 }
 
-/* RENDERTARGETS: 0,11 */
+/* RENDERTARGETS: 10,11 */
 layout(location = 0) out vec3 colorOut;
 layout(location = 1) out vec3 skytexOut;
 

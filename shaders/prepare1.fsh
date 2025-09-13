@@ -27,7 +27,7 @@ vec3 screenToView(vec3 screenPos) {
 	return tmp.xyz / tmp.w;
 }
 
-/* RENDERTARGETS: 0,11 */
+/* RENDERTARGETS: 10,11 */
 void main() {
 	
 	vec3 skyFogCol;

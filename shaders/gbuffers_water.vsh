@@ -23,9 +23,11 @@ uniform vec3 previousCameraPosition;
 uniform sampler2D lightmap;
 uniform int isEyeInWater;
 uniform mat4 gbufferModelViewInverse;
+uniform int frameCounter;
 
 #if Floodfill > 0
 	varying vec3 voxelLightColor;
+	layout (rgba8) uniform image2D colorimg3;
 	layout (rgba8) uniform image2D colorimg4;
 	readonly layout (rgba8) uniform image2D colorimg5;
 #endif
@@ -47,19 +49,19 @@ void main() {
 	vec4 vertexPos = gl_Vertex;
 
 
-	if(blockID == 10001) {
-		vec4 viewPos = gl_ModelViewMatrix * vertexPos;
-		vec3 worldPos = fract(cameraPosition) + (gbufferModelViewInverse * viewPos).xyz;
+	if(blockID == 10001 && isEyeInWater == 1) {
+		// vec4 viewPos = gl_ModelViewMatrix * vertexPos;
+		// vec3 worldPos = fract(cameraPosition) + (gbufferModelViewInverse * viewPos).xyz;
 
-		// if(abs(gl_Vertex.x - int(gl_Vertex.x+0.5)) => 0.000) {
-		vec3 fractPos = 0.5 - abs(0.5 - fract(worldPos.xyz));
-		if (fract(gl_Normal.xyz) == vec3(0.0) &&
-			((fractPos.x > 0.0009 && fractPos.x < 0.002) ||
-			(fractPos.z > 0.0009 && fractPos.z < 0.002))) {
-			gl_Position = vec4(vec3(-10.0), 1.0);
-			return;
-			// color = vec4(vec3(0.0), 1.0);
-		}
+		// // if(abs(gl_Vertex.x - int(gl_Vertex.x+0.5)) => 0.000) {
+		// vec3 fractPos = 0.5 - abs(0.5 - fract(worldPos.xyz));
+		// if (fract(gl_Normal.xyz) == vec3(0.0) &&
+		// 	((fractPos.x > 0.0009 && fractPos.x < 0.002) ||
+		// 	(fractPos.z > 0.0009 && fractPos.z < 0.002))) {
+		// 	gl_Position = vec4(vec3(-10.0), 1.0);
+		// 	return;
+		// 	// color = vec4(vec3(0.0), 1.0);
+		// }
 
 		// vertexPos.y += water_wave_height * sin(water_wave_speed * frameTimeCounter + water_wave_length * (cos(water_wave_angle) * (vertexPos.x + cameraPosition.x) + sin(water_wave_angle) * (vertexPos.z + cameraPosition.z)));
 	}
@@ -110,7 +112,7 @@ void main() {
 		}
 
 
-		if(gl_VertexID % 4 == 0 && ((blockID < 10000 || blockID > 10902) || (blockID >= 11000 && blockID < 12000))) {
+		if(gl_VertexID % 4 == 0 && ((/* blockID < 10000 || */ blockID > 10902) || (blockID >= 11000 && blockID < 12000))) {
 			voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 			if(IsInVoxelizationVolume(voxelPos)) {
 				ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
@@ -120,46 +122,57 @@ void main() {
 					lightVal = vec4(lightColors[blockID - 11000], 1.0);
 				}
 
-				imageStore(colorimg4, voxelIndex, vec4(lightVal));
+				if (frameCounter % 2 == 0)
+					imageStore(colorimg4, voxelIndex, vec4(lightVal));
+				else
+					imageStore(colorimg3, voxelIndex, vec4(lightVal));
 			}
 		}
 
-		testOut = -1.0;
-		// if(blockID == 10001) {
+		testOut = 0.0;
+		if(blockID == 10001) {
 
-		// 	vec3 worldNormal = mat3(gbufferModelViewInverse) * normal.xyz;
-		// 	// vec3 tangent = mat3(gbufferModelViewInverse) * normalize(gl_NormalMatrix * at_tangent.xyz);
-		// 	// vec3 bitangent = cross(worldNormal, tangent) * sign(-at_tangent.w);
+			vec3 worldNormal = mat3(gbufferModelViewInverse) * normal.xyz;
+			// vec3 tangent = mat3(gbufferModelViewInverse) * normalize(gl_NormalMatrix * at_tangent.xyz);
+			// vec3 bitangent = cross(worldNormal, tangent) * sign(-at_tangent.w);
 
-		// 	// ivec3 samplePos = voxelPos + ivec3(worldNormal);
-		// 	ivec3 samplePos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos + worldNormal, cameraPosition)));
-		// 	ivec2 voxelIndex = GetVoxelStoragePos(samplePos);
-		// 	vec4 voxelData = imageLoad(colorimg4, voxelIndex);
+			// ivec3 samplePos = voxelPos + ivec3(worldNormal);
+			ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
+			ivec3 samplePos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos + 0.51*worldNormal, cameraPosition)));
+			ivec2 voxelIndex = GetVoxelStoragePos(samplePos + deltaCameraPos);
+			vec4 voxelData;
+			if (frameCounter % 2 == 0)
+				voxelData = imageLoad(colorimg3, voxelIndex);
+			else
+				voxelData = imageLoad(colorimg4, voxelIndex);
 
-		// 	testOut = voxelData.r;
-		// 	// testOut = 1.0;
-		// 	if(voxelData.a > 0.6) {
-		// 		color.a = 0.0;
-		// 		testOut = 0.0;
-		// 	}
+			testOut = voxelData.a;
+			// testOut = 1.0;
+			if(voxelData.a > 0.6) {
+				// gl_Position = vec4(vec3(-10.0), 1.0);
+				// return;
 
-		// 	// vec3 screenPos = position4.xyz / position4.w;
-		// 	// vec3 viewDir = normalize(screenToView(screenPos));
-		// 	// // normal = normalize((gl_NormalMatrix * gl_Normal).xyz);
-		// 	// float viewDot = dot(normal.xyz, viewDir);
-		// 	// // float viewDot = dot(normal, gbufferModelViewInverse[2].xyz);
-		// 	// // normal = vec3(viewDot);
+				testOut = 1.0;
+				color.a = 0.0;
+			}
+
+			// vec3 screenPos = position4.xyz / position4.w;
+			// vec3 viewDir = normalize(screenToView(screenPos));
+			// // normal = normalize((gl_NormalMatrix * gl_Normal).xyz);
+			// float viewDot = dot(normal.xyz, viewDir);
+			// // float viewDot = dot(normal, gbufferModelViewInverse[2].xyz);
+			// // normal = vec3(viewDot);
 
 
-		// 	// if(viewDot < 0.0) {
-		// 	// if(abs(fract(gl_Vertex.x)) > 0.5 || abs(fract(gl_Vertex.z)) > 0.5) {
-		// 	// if(abs(worldNormal.y) < 0.1) {
-		// 	// 	// gl_Position = vec4(vec3(-10.0), 1.0);
-		// 	// 	// return;
-		// 	// 	color.a = 0.0;
-		// 	// }
+			// if(viewDot < 0.0) {
+			// if(abs(fract(gl_Vertex.x)) > 0.5 || abs(fract(gl_Vertex.z)) > 0.5) {
+			// if(abs(worldNormal.y) < 0.1) {
+			// 	// gl_Position = vec4(vec3(-10.0), 1.0);
+			// 	// return;
+			// 	color.a = 0.0;
+			// }
 
-		// }
+		}
 	#endif
 
 }

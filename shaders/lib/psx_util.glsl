@@ -41,6 +41,16 @@ vec3 hsv2rgb(vec3 c)
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
+vec3 projectAndDivide(mat4 projectionMatrix, vec3 position) {
+	vec4 homoPos = projectionMatrix * vec4(position, 1.0);
+	return homoPos.xyz / homoPos.w;
+}
+
+vec3 screenToView(vec2 texcoord, float depth, mat4 inverseProjectionMatrix) {
+	vec3 ndcPos = vec3(texcoord * 2.0 - 1.0, depth * 2.0 - 1.0);
+	return projectAndDivide(inverseProjectionMatrix, ndcPos);
+}
+
 #ifdef FILTER3POINT
 // Wraps a texcoord value to stay within given bounds
 void wrapTexcoord(inout vec2 texcoord, vec4 textureBounds) {
@@ -59,16 +69,6 @@ vec4 texOffsetClamp(sampler2D tex, vec2 texcoord, vec2 offset, ivec2 atlasSize, 
 	texcoord = clamp(texcoord, textureBounds.xy, textureBounds.zw);
 	return textureGrad(tex, texcoord, dFdXY[0], dFdXY[1]);
 }
-
-// vec3 projectAndDivide(mat4 projectionMatrix, vec3 position) {
-// 	vec4 homoPos = projectionMatrix * vec4(position, 1.0);
-// 	return homoPos.xyz / homoPos.w;
-// }
-
-// vec3 screenToView(vec2 texcoord, float depth, mat4 inverseProjectionMatrix) {
-// 	vec3 ndcPos = vec3(texcoord * 2.0 - 1.0, depth * 2.0 - 1.0);
-// 	return projectAndDivide(inverseProjectionMatrix, ndcPos);
-// }
 
 
 vec4 texture3PointWrap(sampler2D tex, vec2 texcoord, ivec2 atlasSize, vec4 textureBounds, mat2 dFdXY) {

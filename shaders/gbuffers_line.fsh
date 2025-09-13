@@ -2,7 +2,7 @@
 
 varying vec4 color;
 
-/* RENDERTARGETS: 0 */
+/* RENDERTARGETS: 10 */
 void main() {
 
 	vec4 col = color;

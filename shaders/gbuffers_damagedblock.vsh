@@ -20,7 +20,6 @@ uniform sampler2D lightmap;
 
 #if Floodfill > 0
 	varying vec3 voxelLightColor;
-	writeonly layout (rgba8) uniform image2D colorimg4;
 	readonly layout (rgba8) uniform image2D colorimg5;
 #endif
 

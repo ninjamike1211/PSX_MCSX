@@ -23,9 +23,11 @@ uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform sampler2D gtexture;
 uniform sampler2D lightmap;
+uniform int frameCounter;
 
 #if Floodfill > 0
 	varying vec3 voxelLightColor;
+	writeonly layout (rgba8) uniform image2D colorimg3;
 	writeonly layout (rgba8) uniform image2D colorimg4;
 	readonly layout (rgba8) uniform image2D colorimg5;
 #endif
@@ -117,11 +119,17 @@ void main() {
 				ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
 
 				if(entityId >= 11000 && entityId < 12000) {
-					imageStore(colorimg4, voxelIndex, vec4(lightColors[entityId - 11000], 1.0));
+					if (frameCounter % 2 == 0)
+						imageStore(colorimg4, voxelIndex, vec4(lightColors[entityId - 11000], 1.0));
+					else
+						imageStore(colorimg3, voxelIndex, vec4(lightColors[entityId - 11000], 1.0));
 				}
 				else {
 					if(atlasSize.x > 0 && clamp(lmcoord, vec2(15.0/16.0, 0.0), vec2(1.0, 1.0/16.0)) == lmcoord) {
-						imageStore(colorimg4, voxelIndex, vec4(lightColors[2], 1.0));
+						if (frameCounter % 2 == 0)
+							imageStore(colorimg4, voxelIndex, vec4(lightColors[2], 1.0));
+						else
+							imageStore(colorimg3, voxelIndex, vec4(lightColors[2], 1.0));
 					}
 				}
 			}

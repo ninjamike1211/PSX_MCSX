@@ -17,6 +17,7 @@ attribute vec4 at_tangent;
 attribute vec2 mc_midTexCoord;
 
 uniform int blockEntityId;
+uniform int frameCounter;
 uniform ivec2 atlasSize;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
@@ -25,6 +26,7 @@ uniform sampler2D lightmap;
 
 #if Floodfill > 0
 	varying vec3 voxelLightColor;
+	writeonly layout (rgba8) uniform image2D colorimg3;
 	writeonly layout (rgba8) uniform image2D colorimg4;
 	readonly layout (rgba8) uniform image2D colorimg5;
 #endif
@@ -87,7 +89,10 @@ void main() {
 
 			if(IsInVoxelizationVolume(voxelPos)) {
 				ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
-				imageStore(colorimg4, voxelIndex, vec4(lightColors[blockEntityId - 11000], 1.0));
+				if (frameCounter % 2 == 0)
+					imageStore(colorimg4, voxelIndex, vec4(lightColors[blockEntityId - 11000], 1.0));
+				else
+					imageStore(colorimg3, voxelIndex, vec4(lightColors[blockEntityId - 11000], 1.0));
 			}
 		}
 	#endif

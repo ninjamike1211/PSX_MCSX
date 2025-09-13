@@ -1,5 +1,5 @@
 #version 420 compatibility
-/* RENDERTARGETS: 0 */
+/* RENDERTARGETS: 10 */
 
 varying vec2 texcoord;
 varying vec2 lmcoord;
