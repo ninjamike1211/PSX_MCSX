@@ -33,13 +33,6 @@ uniform int frameCounter;
 #endif
 
 
-// vec3 screenToView(vec3 screenPos) {
-// 	vec4 ndcPos = vec4(screenPos, 1.0) * 2.0 - 1.0;
-// 	vec4 tmp = gbufferProjectionInverse * ndcPos;
-// 	return tmp.xyz / tmp.w;
-// }
-
-
 void main() {
 	texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
@@ -112,7 +105,7 @@ void main() {
 		}
 
 
-		if(gl_VertexID % 4 == 0 && ((/* blockID < 10000 || */ blockID > 10902) || (blockID >= 11000 && blockID < 12000))) {
+		if(gl_VertexID % 4 == 0 && ((blockID > 10902) || (blockID >= 11000 && blockID < 12000))) {
 			voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 			if(IsInVoxelizationVolume(voxelPos)) {
 				ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
@@ -133,10 +126,7 @@ void main() {
 		if(blockID == 10001) {
 
 			vec3 worldNormal = mat3(gbufferModelViewInverse) * normal.xyz;
-			// vec3 tangent = mat3(gbufferModelViewInverse) * normalize(gl_NormalMatrix * at_tangent.xyz);
-			// vec3 bitangent = cross(worldNormal, tangent) * sign(-at_tangent.w);
 
-			// ivec3 samplePos = voxelPos + ivec3(worldNormal);
 			ivec3 deltaCameraPos = ivec3(floor(cameraPosition.xyz) - floor(previousCameraPosition.xyz));
 			ivec3 samplePos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos + 0.51*worldNormal, cameraPosition)));
 			ivec2 voxelIndex = GetVoxelStoragePos(samplePos + deltaCameraPos);
@@ -147,31 +137,10 @@ void main() {
 				voxelData = imageLoad(colorimg4, voxelIndex);
 
 			testOut = voxelData.a;
-			// testOut = 1.0;
 			if(voxelData.a > 0.6) {
-				// gl_Position = vec4(vec3(-10.0), 1.0);
-				// return;
-
 				testOut = 1.0;
 				color.a = 0.0;
 			}
-
-			// vec3 screenPos = position4.xyz / position4.w;
-			// vec3 viewDir = normalize(screenToView(screenPos));
-			// // normal = normalize((gl_NormalMatrix * gl_Normal).xyz);
-			// float viewDot = dot(normal.xyz, viewDir);
-			// // float viewDot = dot(normal, gbufferModelViewInverse[2].xyz);
-			// // normal = vec3(viewDot);
-
-
-			// if(viewDot < 0.0) {
-			// if(abs(fract(gl_Vertex.x)) > 0.5 || abs(fract(gl_Vertex.z)) > 0.5) {
-			// if(abs(worldNormal.y) < 0.1) {
-			// 	// gl_Position = vec4(vec3(-10.0), 1.0);
-			// 	// return;
-			// 	color.a = 0.0;
-			// }
-
 		}
 	#endif
 
