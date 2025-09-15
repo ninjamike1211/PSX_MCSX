@@ -1,3 +1,6 @@
+#include "/shaders.settings"
+#include "/lib/psx_util.glsl"
+
 uniform vec3 sunPosition;
 uniform float smoothTemp;
 uniform float blindness;
@@ -90,9 +93,6 @@ vec3 getOverworldSkyColor(in vec3 viewDir, float sunAngle, vec3 fogColor, vec3 s
                 snow_upperSkyColor   = mix(Snow_NightSkyColor, Snow_SunriseSkyColor, (sunAngle - 0.97) / 0.03);
             }
         }
-
-        // horizonSkyColor = mix(fogColor, vec3(0.65, 0.65, 0.7), snowFactor);
-        // upperSkyColor   = mix(skyColor, vec3(0.5, 0.5, 0.7), snowFactor);
     }
 
     if(rainStrength > 0.0) {
@@ -125,7 +125,6 @@ float getFogDepth(in vec3 viewPos, in float depth1, int isEyeInWater, float near
 		float depth = length((gbufferModelViewInverse * vec4(viewPos, 1.0)).xz);
 	#endif
 
-    // fogDepth = 0.0;
     float fogDistance;
     float fogSlope;
         

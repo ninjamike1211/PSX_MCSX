@@ -1,3 +1,6 @@
+#ifndef PSX_UTIL
+#define PSX_UTIL
+
 vec4 PixelSnap(vec4 pos, float inaccuracy) {
 	inaccuracy += 0.1;
 	vec2 screenParams = vec2(1080, 1080);
@@ -88,4 +91,6 @@ vec4 texture3PointClamp(sampler2D tex, vec2 texcoord, ivec2 atlasSize, vec4 text
 	vec4 c2 = texOffsetClamp(tex, texcoord, vec2(offset.x, offset.y - sign(offset.y)), atlasSize, textureBounds, dFdXY);
 	return c0 + abs(offset.x)*(c1-c0) + abs(offset.y)*(c2-c0);
 }
+#endif
+
 #endif
