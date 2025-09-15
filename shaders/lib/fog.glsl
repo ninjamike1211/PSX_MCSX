@@ -1,5 +1,6 @@
 uniform vec3 sunPosition;
 uniform float smoothTemp;
+uniform float blindness;
 
 const vec3 NoonHorizonColor = vec3(0.4, 0.5, 1.0);
 const vec3 NoonSkyColor = vec3(0, 0.27, 0.95);
@@ -14,6 +15,8 @@ const vec3 Snow_SunriseHorizonColor = vec3(0.7, 0.6, 0.6);
 const vec3 Snow_SunriseSkyColor = vec3(0.4, 0.35, 0.75);
 const vec3 Snow_NightHorizonColor = vec3(0.18, 0.18, 0.23);
 const vec3 Snow_NightSkyColor = vec3(0.15, 0.15, 0.2);
+
+const vec3 Blindness_Color = vec3(0.0);
 
 vec3 getOverworldSkyColor(in vec3 viewDir, float sunAngle, vec3 fogColor, vec3 skyColor, float rainStrength, mat4 modelView) {
 	float upDot = max(dot(viewDir, modelView[1].xyz), 0.0);
@@ -106,6 +109,10 @@ vec3 getOverworldSkyColor(in vec3 viewDir, float sunAngle, vec3 fogColor, vec3 s
         upperSkyColor = mix(upperSkyColor, rain_upperSkyColor, rainStrength);
     }
 
+    horizonSkyColor = mix(horizonSkyColor, Blindness_Color, blindness);
+    upperSkyColor = mix(upperSkyColor, Blindness_Color, blindness);
+
+
 	return mix(horizonSkyColor, upperSkyColor, mixFactor);
 }
 
@@ -117,35 +124,52 @@ float getFogDepth(in vec3 viewPos, in float depth1, int isEyeInWater, float near
 	#elif fog_depth_type == 2
 		float depth = length((gbufferModelViewInverse * vec4(viewPos, 1.0)).xz);
 	#endif
+
+    // fogDepth = 0.0;
+    float fogDistance;
+    float fogSlope;
         
     if(isEyeInWater == 0) {
         if(inNether) {
-            return (depth - fog_distance_nether) / fog_slope_nether;
+            fogDistance = fog_distance_nether;
+            fogSlope = fog_slope_nether;
         }
         else if(inEnd) {
-            return (depth - fog_distance_end) / fog_slope_end;
+            fogDistance = fog_distance_end;
+            fogSlope = fog_slope_end;
         }
         else {
             if(rainStrength == 0.0) {
-                return (depth - fog_distance) / fog_slope;
+                fogDistance = fog_distance;
+                fogSlope = fog_slope;
             }
             else if(rainStrength == 1.0) {
-                return (depth - fog_rain_distance) / fog_rain_slope;
+                fogDistance = fog_distance_rain;
+                fogSlope = fog_slope_rain;
             }
             else {
-                return (depth - mix(fog_distance, fog_rain_distance, rainStrength)) / mix(fog_slope, fog_rain_slope, rainStrength);
+                fogDistance = mix(fog_distance, fog_distance_rain, rainStrength);
+                fogSlope = mix(fog_slope, fog_slope_rain, rainStrength);
             }
         }
     }
     else if(isEyeInWater == 1) {
-        return (depth - fog_distance_water) / fog_slope_water;
+        fogDistance = fog_distance_water;
+        fogSlope = fog_slope_water;
     }
     else if(isEyeInWater == 2) {
-        return (depth - fog_distance_lava) / fog_slope_lava;
+        fogDistance = fog_distance_lava;
+        fogSlope = fog_slope_lava;
     }
     else if(isEyeInWater == 3) {
-        return (depth - fog_distance_snow) / fog_slope_snow;
+        fogDistance = fog_distance_snow;
+        fogSlope = fog_slope_snow;
     }
+
+    fogDistance = mix(fogDistance, fog_distance_blind, blindness);
+    fogSlope = mix(fogSlope, fog_slope_blind, blindness);
+
+    return (depth - fogDistance) / fogSlope;
 }
 
 float fogCaveFactor(float eyeAltitude, float eyeBrightness, sampler2D moodTex) {

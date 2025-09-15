@@ -133,12 +133,12 @@ void main() {
 	// 				fogDepth_water = (linearDepth_water - fog_distance) / fog_slope;
 	// 			}
 	// 			else if(rainStrength == 1.0) {
-	// 				fogDepth = (linearDepth - fog_rain_distance) / fog_rain_slope;
-	// 				fogDepth_water = (linearDepth_water - fog_rain_distance) / fog_rain_slope;
+	// 				fogDepth = (linearDepth - fog_distance_rain) / fog_slope_rain;
+	// 				fogDepth_water = (linearDepth_water - fog_distance_rain) / fog_slope_rain;
 	// 			}
 	// 			else {
-	// 				fogDepth = (linearDepth - mix(fog_distance, fog_rain_distance, rainStrength)) / mix(fog_slope, fog_rain_slope, rainStrength);
-	// 				fogDepth_water = (linearDepth_water - mix(fog_distance, fog_rain_distance, rainStrength)) / mix(fog_slope, fog_rain_slope, rainStrength);
+	// 				fogDepth = (linearDepth - mix(fog_distance, fog_distance_rain, rainStrength)) / mix(fog_slope, fog_slope_rain, rainStrength);
+	// 				fogDepth_water = (linearDepth_water - mix(fog_distance, fog_distance_rain, rainStrength)) / mix(fog_slope, fog_slope_rain, rainStrength);
 	// 			}
 	// 		}
 	// 	}
