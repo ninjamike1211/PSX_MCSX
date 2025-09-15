@@ -64,10 +64,6 @@ void main() {
 
 	vec4 col = texture2D(texture, affine) * color * lighting;
 
-	vec3 fogCol = texelFetch(colortex11, ivec2(gl_FragCoord.xy), 0).rgb;
-	float fogDepth = clamp(getFogDepth(viewPos, gl_FragCoord.z, isEyeInWater, near, far), 0.0, 1.0);
-	col.rgb = mix(col.rgb, fogCol, fogDepth);
-
 	if (testOut > 0.5) {
 		vec3 oldCol = texelFetch(colortex10, ivec2(gl_FragCoord.xy), 0).rgb;
 		float oldDepth = texelFetch(depthtex1, ivec2(gl_FragCoord.xy), 0).r;
@@ -81,6 +77,10 @@ void main() {
 
 		col = vec4(mix(oldCol, col.rgb, col.a), 1.0);
 	}
+
+	vec3 fogCol = texelFetch(colortex11, ivec2(gl_FragCoord.xy), 0).rgb;
+	float fogDepth = clamp(getFogDepth(viewPos, gl_FragCoord.z, isEyeInWater, near, far), 0.0, 1.0);
+	col.rgb = mix(col.rgb, fogCol, fogDepth);
 	
 	gl_FragData[0] = col;
 	gl_FragData[1] = vec4(0.0);
