@@ -185,16 +185,20 @@ float fogCaveFactor(float eyeAltitude, float eyeBrightness, sampler2D moodTex) {
 }
 
 vec3 getFogColor(int isEyeInWater, vec3 skyFogCol, vec3 fogColor) {
+    vec3 returnFogCol;
+
     if(isEyeInWater == 0) {
-        return skyFogCol;
+        returnFogCol = skyFogCol;
     }
     else if(isEyeInWater == 1) {
-        return vec3(0.1, 0.1, 1.0);
+        returnFogCol = vec3(0.1, 0.1, 1.0);
     }
     else if(isEyeInWater == 2) {
-        return vec3(2.0, 0.4, 0.1);
+        returnFogCol = vec3(2.0, 0.4, 0.1);
     }
     else if(isEyeInWater == 3) {
-        return vec3(1.0);
+        returnFogCol = vec3(1.0);
     }
+
+    return mix(returnFogCol, Blindness_Color, blindness);
 }

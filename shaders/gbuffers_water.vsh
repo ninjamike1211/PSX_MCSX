@@ -42,25 +42,16 @@ void main() {
 	vec4 vertexPos = gl_Vertex;
 
 
-	if(blockID == 10001 && isEyeInWater == 1) {
-		// vec4 viewPos = gl_ModelViewMatrix * vertexPos;
-		// vec3 worldPos = fract(cameraPosition) + (gbufferModelViewInverse * viewPos).xyz;
-
-		// // if(abs(gl_Vertex.x - int(gl_Vertex.x+0.5)) => 0.000) {
-		// vec3 fractPos = 0.5 - abs(0.5 - fract(worldPos.xyz));
-		// if (fract(gl_Normal.xyz) == vec3(0.0) &&
-		// 	((fractPos.x > 0.0009 && fractPos.x < 0.002) ||
-		// 	(fractPos.z > 0.0009 && fractPos.z < 0.002))) {
-		// 	gl_Position = vec4(vec3(-10.0), 1.0);
-		// 	return;
-		// 	// color = vec4(vec3(0.0), 1.0);
-		// }
-
-		// vertexPos.y += water_wave_height * sin(water_wave_speed * frameTimeCounter + water_wave_length * (cos(water_wave_angle) * (vertexPos.x + cameraPosition.x) + sin(water_wave_angle) * (vertexPos.z + cameraPosition.z)));
+	if(blockID == 10001) {
+		vertexPos.y += water_wave_height * sin(water_wave_speed * frameTimeCounter + water_wave_length * (cos(water_wave_angle) * (vertexPos.x + cameraPosition.x) + sin(water_wave_angle) * (vertexPos.z + cameraPosition.z)));
 	}
 	else if(blockID == 11030) {
 		vertexPos.y += lava_wave_height * sin(lava_wave_speed * frameTimeCounter + lava_wave_length * (cos(lava_wave_angle) * (vertexPos.x + cameraPosition.x) + sin(lava_wave_angle) * (vertexPos.z + cameraPosition.z)));
 	}
+
+	// "Fixes" z fighting with waterlogged blocks
+	vec3 normal = normalize(gl_NormalMatrix * gl_Normal);
+	vertexPos.xyz += normal * -0.001;
 	
 	viewPos = (gl_ModelViewMatrix * vertexPos).xyz;
 	vec4 ftrans = gl_ProjectionMatrix * vec4(viewPos, 1.0);
@@ -74,15 +65,7 @@ void main() {
 	wVal = clamp(wVal, -10000.0, 0.0);
 	texcoordAffine = vec3(texcoord * wVal, wVal);
 	
-	// "Fixes" z fighting with waterlogged blocks
-	vec4 normal;
-	normal.a = 4.0 / sqrtDepth;
-	normal.xyz = normalize(gl_NormalMatrix * gl_Normal);
-	
-	position4 += normal * -0.001;
-	
-	// gl_Position = position4;
-	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+	gl_Position = position4;
 
 
 	// Voxelization
