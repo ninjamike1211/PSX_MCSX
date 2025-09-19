@@ -88,7 +88,7 @@ void main() {
 		}
 
 
-		if(gl_VertexID % 4 == 0 && ((blockID > 10902) || (blockID >= 11000 && blockID < 12000))) {
+		if(gl_VertexID % 4 == 0 && ((blockID > 10902) || (blockID >= 11000 && blockID < 12000) || blockID == 10899)) {
 			voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 			if(IsInVoxelizationVolume(voxelPos)) {
 				ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
@@ -97,11 +97,14 @@ void main() {
 				if(blockID >= 11000) {
 					lightVal = vec4(lightColors[blockID - 11000], 1.0);
 				}
+				else if(blockID == 10899) {
+					lightVal = vec4(0.0, 0.0, 0.0, 0.5);
+				}
 
 				if (frameCounter % 2 == 0)
-					imageStore(colorimg4, voxelIndex, vec4(lightVal));
+					imageStore(colorimg4, voxelIndex, lightVal);
 				else
-					imageStore(colorimg3, voxelIndex, vec4(lightVal));
+					imageStore(colorimg3, voxelIndex, lightVal);
 			}
 		}
 
