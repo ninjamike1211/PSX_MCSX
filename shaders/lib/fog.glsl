@@ -12,6 +12,13 @@ const vec3 SunriseSkyColor = vec3(0.4, 0.35, 0.75);
 const vec3 NightHorizonColor = vec3(0.15);
 const vec3 NightSkyColor = vec3(0.0);
 
+const vec3 Rain_NoonHorizonColor = vec3(0.65, 0.65, 0.7);
+const vec3 Rain_NoonSkyColor = vec3(0.5, 0.5, 0.7);
+const vec3 Rain_SunriseHorizonColor = vec3(0.7, 0.6, 0.6);
+const vec3 Rain_SunriseSkyColor = vec3(0.4, 0.35, 0.75);
+const vec3 Rain_NightHorizonColor = vec3(0.18, 0.18, 0.23);
+const vec3 Rain_NightSkyColor = vec3(0.15, 0.15, 0.2);
+
 const vec3 Snow_NoonHorizonColor = vec3(0.65, 0.65, 0.7);
 const vec3 Snow_NoonSkyColor = vec3(0.5, 0.5, 0.7);
 const vec3 Snow_SunriseHorizonColor = vec3(0.7, 0.6, 0.6);
@@ -37,19 +44,19 @@ vec3 getOverworldSkyColor(in vec3 viewDir, float sunAngle, vec3 fogColor, vec3 s
             horizonSkyColor = mix(SunriseHorizonColor, NoonHorizonColor, sunAngle / 0.1);
             upperSkyColor   = mix(SunriseSkyColor, NoonSkyColor, sunAngle / 0.1);
         }
-        else if(sunAngle >= 0.1 && sunAngle < 0.465) {
+        else if(sunAngle >= 0.1 && sunAngle < 0.4) {
             horizonSkyColor = NoonHorizonColor;
             upperSkyColor   = NoonSkyColor;
         }
-        else if(sunAngle >= 0.465 && sunAngle < 0.565) {
-            horizonSkyColor = mix(NoonHorizonColor, SunriseHorizonColor, (sunAngle - 0.465) / 0.1);
-            upperSkyColor   = mix(NoonSkyColor, SunriseSkyColor, (sunAngle - 0.465) / 0.1);
+        else if(sunAngle >= 0.4 && sunAngle < 0.5) {
+            horizonSkyColor = mix(NoonHorizonColor, SunriseHorizonColor, (sunAngle - 0.4) / 0.1);
+            upperSkyColor   = mix(NoonSkyColor, SunriseSkyColor, (sunAngle - 0.4) / 0.1);
         }
-        else if(sunAngle >= 0.565 && sunAngle < 0.605) {
-            horizonSkyColor = mix(SunriseHorizonColor, NightHorizonColor, (sunAngle - 0.565) / 0.04);
-            upperSkyColor   = mix(SunriseSkyColor, NightSkyColor, (sunAngle - 0.565) / 0.04);
+        else if(sunAngle >= 0.5 && sunAngle < 0.55) {
+            horizonSkyColor = mix(SunriseHorizonColor, NightHorizonColor, (sunAngle - 0.5) / 0.05);
+            upperSkyColor   = mix(SunriseSkyColor, NightSkyColor, (sunAngle - 0.5) / 0.05);
         }
-        else if(sunAngle >= 0.605 && sunAngle < 0.97) {
+        else if(sunAngle >= 0.55 && sunAngle < 0.97) {
             horizonSkyColor = NightHorizonColor;
             upperSkyColor   = NightSkyColor;
         }
@@ -63,8 +70,30 @@ vec3 getOverworldSkyColor(in vec3 viewDir, float sunAngle, vec3 fogColor, vec3 s
     if(rainStrength > 0.0) {
 
         if(snowFactor < 1.0) {
-            rain_horizonSkyColor = mix(horizonSkyColor, fogColor, rainStrength);
-            rain_upperSkyColor   = mix(upperSkyColor, skyColor, rainStrength);
+            if(sunAngle < 0.1) {
+                rain_horizonSkyColor = mix(Rain_SunriseHorizonColor, Rain_NoonHorizonColor, sunAngle / 0.1);
+                rain_upperSkyColor   = mix(Rain_SunriseSkyColor, Rain_NoonSkyColor, sunAngle / 0.1);
+            }
+            else if(sunAngle >= 0.1 && sunAngle < 0.4) {
+                rain_horizonSkyColor = Rain_NoonHorizonColor;
+                rain_upperSkyColor   = Rain_NoonSkyColor;
+            }
+            else if(sunAngle >= 0.4 && sunAngle < 0.5) {
+                rain_horizonSkyColor = mix(Rain_NoonHorizonColor, Rain_SunriseHorizonColor, (sunAngle - 0.4) / 0.1);
+                rain_upperSkyColor   = mix(Rain_NoonSkyColor, Rain_SunriseSkyColor, (sunAngle - 0.4) / 0.1);
+            }
+            else if(sunAngle >= 0.5 && sunAngle < 0.55) {
+                rain_horizonSkyColor = mix(Rain_SunriseHorizonColor, Rain_NightHorizonColor, (sunAngle - 0.5) / 0.05);
+                rain_upperSkyColor   = mix(Rain_SunriseSkyColor, Rain_NightSkyColor, (sunAngle - 0.5) / 0.05);
+            }
+            else if(sunAngle >= 0.55 && sunAngle < 0.97) {
+                rain_horizonSkyColor = Rain_NightHorizonColor;
+                rain_upperSkyColor   = Rain_NightSkyColor;
+            }
+            else {
+                rain_horizonSkyColor = mix(Rain_NightHorizonColor, Rain_SunriseHorizonColor, (sunAngle - 0.97) / 0.03);
+                rain_upperSkyColor   = mix(Rain_NightSkyColor, Rain_SunriseSkyColor, (sunAngle - 0.97) / 0.03);
+            }
         }
 
         if(snowFactor > 0.0) {
@@ -72,19 +101,19 @@ vec3 getOverworldSkyColor(in vec3 viewDir, float sunAngle, vec3 fogColor, vec3 s
                 snow_horizonSkyColor = mix(Snow_SunriseHorizonColor, Snow_NoonHorizonColor, sunAngle / 0.1);
                 snow_upperSkyColor   = mix(Snow_SunriseSkyColor, Snow_NoonSkyColor, sunAngle / 0.1);
             }
-            else if(sunAngle >= 0.1 && sunAngle < 0.465) {
+            else if(sunAngle >= 0.1 && sunAngle < 0.4) {
                 snow_horizonSkyColor = Snow_NoonHorizonColor;
                 snow_upperSkyColor   = Snow_NoonSkyColor;
             }
-            else if(sunAngle >= 0.465 && sunAngle < 0.565) {
-                snow_horizonSkyColor = mix(Snow_NoonHorizonColor, Snow_SunriseHorizonColor, (sunAngle - 0.465) / 0.1);
-                snow_upperSkyColor   = mix(Snow_NoonSkyColor, Snow_SunriseSkyColor, (sunAngle - 0.465) / 0.1);
+            else if(sunAngle >= 0.4 && sunAngle < 0.5) {
+                snow_horizonSkyColor = mix(Snow_NoonHorizonColor, Snow_SunriseHorizonColor, (sunAngle - 0.4) / 0.1);
+                snow_upperSkyColor   = mix(Snow_NoonSkyColor, Snow_SunriseSkyColor, (sunAngle - 0.4) / 0.1);
             }
-            else if(sunAngle >= 0.565 && sunAngle < 0.605) {
-                snow_horizonSkyColor = mix(Snow_SunriseHorizonColor, Snow_NightHorizonColor, (sunAngle - 0.565) / 0.04);
-                snow_upperSkyColor   = mix(Snow_SunriseSkyColor, Snow_NightSkyColor, (sunAngle - 0.565) / 0.04);
+            else if(sunAngle >= 0.5 && sunAngle < 0.55) {
+                snow_horizonSkyColor = mix(Snow_SunriseHorizonColor, Snow_NightHorizonColor, (sunAngle - 0.5) / 0.05);
+                snow_upperSkyColor   = mix(Snow_SunriseSkyColor, Snow_NightSkyColor, (sunAngle - 0.5) / 0.05);
             }
-            else if(sunAngle >= 0.605 && sunAngle < 0.97) {
+            else if(sunAngle >= 0.55 && sunAngle < 0.97) {
                 snow_horizonSkyColor = Snow_NightHorizonColor;
                 snow_upperSkyColor   = Snow_NightSkyColor;
             }
