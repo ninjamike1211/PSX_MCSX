@@ -44,8 +44,8 @@ void main() {
 	#endif
 
 	#ifdef remove_nameplate
-	if(color.rgb == vec3(0.0) && color.a > 0.50 && color.a < 0.51) {
-		color.a = 0.0;
+	if(gl_Color.rgb == vec3(0.0) && gl_Color.a > 0.50 && gl_Color.a < 0.51) {
+		color = vec4(0.0);
 	}
 	#endif
 	
