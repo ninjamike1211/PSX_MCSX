@@ -39,8 +39,14 @@ void main() {
 	color = gl_Color;
 
 	#ifdef disable_sheepColor
-	if(entityId == 10005) // TODO: THIS IS THE SHEEP ISSUE
+	if(entityId == 10005)
 		color.rgb = vec3(1.0);
+	#endif
+
+	#ifdef remove_nameplate
+	if(color.rgb == vec3(0.0) && color.a > 0.50 && color.a < 0.51) {
+		color.a = 0.0;
+	}
 	#endif
 	
 	vec2 halfTexSize = abs(texcoord - mc_midTexCoord);
