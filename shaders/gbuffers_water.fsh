@@ -35,7 +35,7 @@ varying vec3 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
 varying vec3 viewPos;
-varying float testOut;
+varying float isWaterBackface;
 
 #if Floodfill > 0
 	varying vec3 voxelLightColor;
@@ -64,7 +64,7 @@ void main() {
 
 	vec4 col = texture2D(texture, affine) * color * lighting;
 
-	if (testOut > 0.5) {
+	if (isWaterBackface > 0.5) {
 		vec3 oldCol = texelFetch(colortex10, ivec2(gl_FragCoord.xy), 0).rgb;
 		float oldDepth = texelFetch(depthtex1, ivec2(gl_FragCoord.xy), 0).r;
 		vec3 oldFogCol = getFogColor(1, vec3(0.0), vec3(0.0));
@@ -75,7 +75,7 @@ void main() {
 		oldCol = mix(oldCol, oldFogCol, oldFogDepth);
 		// oldCol = oldFogCol;
 
-		col = vec4(mix(oldCol, col.rgb, col.a), 1.0);
+		col = vec4(oldCol, 1.0);
 	}
 
 	vec3 fogCol = texelFetch(colortex11, ivec2(gl_FragCoord.xy), 0).rgb;

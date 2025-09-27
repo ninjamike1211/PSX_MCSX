@@ -11,7 +11,7 @@ varying vec3 texcoordAffine;
 varying vec2 lmcoord;
 varying vec4 color;
 varying vec3 viewPos;
-varying float testOut;
+varying float isWaterBackface;
 
 attribute vec4 mc_Entity;
 attribute vec3 at_midBlock;
@@ -88,7 +88,7 @@ void main() {
 		}
 
 
-		if(gl_VertexID % 4 == 0 && ((blockID > 10902) || (blockID >= 11000 && blockID < 12000) || blockID == 10899)) {
+		if(gl_VertexID % 4 == 0 && (blockID >= 11000 && blockID < 12000)) {
 			voxelPos = ivec3(floor(SceneSpaceToVoxelSpace(centerPos, cameraPosition)));
 			if(IsInVoxelizationVolume(voxelPos)) {
 				ivec2 voxelIndex = GetVoxelStoragePos(voxelPos);
@@ -96,9 +96,6 @@ void main() {
 				vec4 lightVal = vec4(0.0, 0.0, 0.0, 0.75);
 				if(blockID >= 11000) {
 					lightVal = vec4(lightColors[blockID - 11000], 1.0);
-				}
-				else if(blockID == 10899) {
-					lightVal = vec4(0.0, 0.0, 0.0, 0.5);
 				}
 
 				if (frameCounter % 2 == 0)
@@ -108,7 +105,7 @@ void main() {
 			}
 		}
 
-		testOut = 0.0;
+		isWaterBackface = 0.0;
 		if(blockID == 10001) {
 
 			vec3 worldNormal = mat3(gbufferModelViewInverse) * normal.xyz;
@@ -122,9 +119,9 @@ void main() {
 			else
 				voxelData = imageLoad(colorimg4, voxelIndex);
 
-			testOut = voxelData.a;
+			isWaterBackface = voxelData.a;
 			if(voxelData.a > 0.6) {
-				testOut = 1.0;
+				isWaterBackface = 1.0;
 				color.a = 0.0;
 			}
 		}
