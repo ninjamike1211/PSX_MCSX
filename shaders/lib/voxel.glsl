@@ -50,13 +50,13 @@ const int xzRadiusBlocks = voxelMapResolution / 32;
     }
 
     ivec2 GetVoxelStoragePos(ivec3 voxelIndex) {
-        return (voxelIndex.xz + xzRadiusBlocks) * 16 + ivec2(voxelIndex.y % 16, voxelIndex.y / 16);
+        return (voxelIndex.xz + xzRadiusBlocks) * 16 + ivec2(voxelIndex.y & 15, voxelIndex.y >> 4);
     }
 
     ivec3 GetVoxelIndex(ivec2 storagePos) {
         ivec3 voxelIndex;
-        voxelIndex.xz = storagePos / 16 - xzRadiusBlocks;
-        voxelIndex.y = (storagePos.x % 16) + 16 * (storagePos.y % 16);
+        voxelIndex.xz = (storagePos >> 4) - xzRadiusBlocks;
+        voxelIndex.y = (storagePos.x & 15) + 16 * (storagePos.y & 15);
         return voxelIndex;
     }
 
@@ -163,13 +163,13 @@ const int xzRadiusBlocks = voxelMapResolution / 32;
         maxLight = max(maxLight, texelFetch(lightSampler, storagePos + ivec2( 16, 0), 0).rgb);
         maxLight = max(maxLight, texelFetch(lightSampler, storagePos + ivec2(-16, 0), 0).rgb);
 
-        ivec2 rowStart = (storagePos / 16) * 16;
+        ivec2 rowStart = (storagePos >> 4) * 16;
         int yIndex = storagePos.x - rowStart.x + 16 * (storagePos.y - rowStart.y);
 
-        ivec2 storagePosY = rowStart + ivec2((yIndex + 1) % 16, (yIndex + 1) / 16);
+        ivec2 storagePosY = rowStart + ivec2((yIndex + 1) & 15, ((yIndex + 1) >> 4));
         maxLight = max(maxLight, texelFetch(lightSampler, storagePosY, 0).rgb);
 
-        storagePosY = rowStart + ivec2((yIndex - 1) % 16, (yIndex - 1) / 16);
+        storagePosY = rowStart + ivec2((yIndex - 1) & 15, (yIndex - 1) >> 4);
         maxLight = max(maxLight, texelFetch(lightSampler, storagePosY, 0).rgb);
 
         return clamp(maxLight - 1.0/16.0, 0.0, 1.0);
