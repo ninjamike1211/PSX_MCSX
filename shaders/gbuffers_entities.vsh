@@ -39,8 +39,8 @@ void main() {
 	color = gl_Color;
 
 	#ifdef disable_sheepColor
-	if(entityId == 10005)
-		color = vec4(1.0);
+	if(entityId == 10005) // TODO: THIS IS THE SHEEP ISSUE
+		color.rgb = vec3(1.0);
 	#endif
 	
 	vec2 halfTexSize = abs(texcoord - mc_midTexCoord);
