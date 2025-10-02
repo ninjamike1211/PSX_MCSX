@@ -119,8 +119,8 @@ void main() {
 			else
 				voxelData = imageLoad(colorimg4, voxelIndex);
 
-			isWaterBackface = voxelData.a;
-			if(voxelData.a > 0.6) {
+			isWaterBackface = 0.0;
+			if(voxelData.a > 0.6 && voxelData.a < 0.8) {
 				isWaterBackface = 1.0;
 				color.a = 0.0;
 			}
