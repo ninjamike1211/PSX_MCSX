@@ -58,7 +58,13 @@ void main() {
 
 	#if Floodfill > 0
 		vec4 lighting = vec4(voxelLightColor, 0.0);
-		lighting += (texture2D(lightmap, vec2(1.0/32.0, lmcoord.y)) * 0.8 + 0.2);
+		vec2 lightCoords = vec2(1.0/32.0, lmcoord.y);
+
+		// make glow item frames glow
+		if(isText > 0.5 && lmcoord.x == 249.0/255.0)
+			lightCoords.x = lmcoord.x;
+
+		lighting += (texture2D(lightmap, lightCoords) * 0.8 + 0.2);
 	#else
 		vec4 lighting =  texture2D(lightmap, lmcoord.xy);
 	#endif
