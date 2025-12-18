@@ -95,5 +95,10 @@ void main() {
 					imageStore(colorimg3, voxelIndex, vec4(lightColors[blockEntityId - 11000], 1.0));
 			}
 		}
+
+		if(isText > 0.5 && lmcoord.x > 15.0/16.0) {
+			lmcoord.y = 1.0;
+			voxelLightColor = vec3(0.5);
+		}
 	#endif
 }
